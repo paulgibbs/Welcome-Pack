@@ -1,7 +1,7 @@
 === Plugin Name ===
 Contributors: markjaquith, mdawaffe
 Donate link: http://example.com/
-Tags: comments, spam
+Tags: comments, spam, buddypress
 Requires at least: 2.0.2
 Tested up to: 2.1
 Stable tag: 4.3

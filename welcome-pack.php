@@ -27,8 +27,8 @@ require_once(WP_CONTENT_DIR . '/mu-plugins/bp-core.php');
  * @uses get_option() Selects a site setting from the DB.
  */
 function dp_welcomepack_defaultfriend($user_id, $password, $meta) {
-	if ( '0' == get_option( 'dp-welcomepack-friend-enabled' ) ) return;
-  dp_force_add_friend( get_option( 'dp-welcomepack-friend-id' ), user_id );
+	if ( 0 == (int) get_option( 'dp-welcomepack-friend-enabled' ) ) return;
+  dp_force_add_friend( get_option( 'dp-welcomepack-friend-id' ), $user_id );
 }
 
 /**
@@ -129,13 +129,13 @@ function dp_force_add_friend( $initiator_userid, $friend_userid ) {
 	$friendship = new BP_Friends_Friendship;	
 	if ( (int)$friendship->is_confirmed )
 		return true;
-		
+
 	$friendship->initiator_user_id = $initiator_userid;
 	$friendship->friend_user_id = $friend_userid;
 	$friendship->is_confirmed = 1;
 	$friendship->is_limited = 0;
 	$friendship->date_created = time();
-	
+
 	return ( $friendship->save() );
 }
 
@@ -153,9 +153,37 @@ function dp_welcomepack_setup_globals() {
 	if ( !get_option( 'dp-welcomepack-friend-enabled' ) ) { update_option( 'dp-welcomepack-friend-enabled', '0' ); }
 }
 
+/**
+ * dp_welcomepack_deactivate()
+ *
+ * Removes custom variables on plugin deactivation.
+ *
+ * @package Welcome Pack
+ * @uses delete_option() Removes option by name and prevents removal of protected WordPress options.
+ */
+function dp_welcomepack_deactivate() {
+	delete_option( 'dp-welcomepack-friend-id' );
+	delete_option( 'dp-welcomepack-friend-enabled' );
+}
+
+/**
+ * dp_welcomepack_activate()
+ *
+ * Adds custom variables on plugin activation.
+ *
+ * @package Welcome Pack
+ * @uses dp_welcomepack_setup_globals() Set-up default values for options used by the plugins in case blog admins do not visit the admin panel.
+ */
+function dp_welcomepack_activate() {
+	dp_welcomepack_setup_globals();
+}
+
+
 add_action( 'wpmu_activate_user', 'dp_welcomepack_defaultfriend', 1, 3 );
 add_action( 'admin_menu', 'dp_welcomepack_menu' );
 
 add_action( 'plugins_loaded', 'dp_welcomepack_setup_globals', 5 );	
 add_action( 'admin_menu', 'dp_welcomepack_setup_globals', 1 );
+register_activation_hook( __FILE__, 'dp_welcomepack_activate' );
+register_deactivation_hook( __FILE__, 'dp_welcomepack_deactivate' );
 ?>

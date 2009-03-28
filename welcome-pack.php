@@ -3,13 +3,12 @@
 Plugin Name: Welcome Pack
 Author: DJPaul
 Author URI: http://www.metabiscuits.com
-Description: Provides default friend, default group and welcome mail functionality.
-Plugin URI: http://svn.dangerous-minds.com/djpaul/welcome-pack/
-Version: 0.2
+Description: Provides default friend and default group functionality to Buddypress.
+Version: 1.0
 Site Wide Only: true
-License: ??? TODO ???
-
-Requires WPMU >2.7 and BuddyPress >RC-1
+License: GNU General Public License 3.0 (GPL) http://www.gnu.org/licenses/gpl.html
+Requires at least: WPMU 2.7, BuddyPress RC-1
+Tested up to: WPMU 2.7, BuddyPress trunk (r1281)
 */
 
 require_once(WP_CONTENT_DIR . '/mu-plugins/bp-core.php');

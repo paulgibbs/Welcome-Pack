@@ -2,13 +2,13 @@
 /*
 Plugin Name: Welcome Pack
 Author: DJPaul
-Author URI: djpaul@gmail.com
-Description: Automatically add a specified user as friend after SignUp
+Author URI: http://www.metabiscuits.com
+Description: Provides default friend, default group and welcome mail functionality.
 Plugin URI: http://svn.dangerous-minds.com/djpaul/welcome-pack/
 Version: 0.1
 Site Wide Only: true
+License: ??? TODO ???
 
-Provides default friend, default group and welcome mail functionality.
 Requires WPMU >2.7 and BuddyPress >RC-1
 */
 
@@ -27,6 +27,7 @@ require_once(WP_CONTENT_DIR . '/mu-plugins/bp-core.php');
  * @uses get_option() Selects a site setting from the DB.
  */
 function dp_welcomepack_defaultfriend($user_id, $password, $meta) {
+	if ( '0' == get_option( 'dp-welcomepack-friend-enabled' ) ) return;
   dp_force_add_friend( get_option( 'dp-welcomepack-friend-id' ), user_id );
 }
 
@@ -44,7 +45,7 @@ function dp_welcomepack_menu() {
 		return false;
 
   /* Add "Welcome Pack" under the "Site Admin" tab for site administrators */
-	add_submenu_page( 'wpmu-admin.php', __( 'Welcome Pack', 'dp-welcomepack' ), __(' Welcome Pack', 'dp-welcomepack' ), 1, 'dp_welcomepack', 'dp_welcomepack_admin' );
+	add_submenu_page( 'wpmu-admin.php', __( 'Welcome Pack', 'dp-welcomepack' ), __(' Welcome Pack', 'dp-welcomepack' ), 1, 'dp_welcomepack_settings', 'dp_welcomepack_admin' );
 }
 
 /**
@@ -64,11 +65,11 @@ function dp_welcomepack_menu() {
 function dp_welcomepack_admin() {
 	global $bp;
 
-	if ( isset($_POST['submit']) ) {
+	if ( isset( $_POST['submit'] ) ) {
 		check_admin_referer( 'dp-welcomepack' );
-
 		update_option( 'dp-welcomepack-friend-id', (int) $_POST['df_id'] );
-		echo "<div id=\"message\" class=\"updated fade\"><strong>Options updated.</strong></div>";
+		update_option( 'dp-welcomepack-friend-enabled', (int) $_POST['df_enabled'] );
+		echo "<div id=\"message\" class=\"updated fade\">Options updated.</div>";
 	}
 ?>
 <div class="wrap">
@@ -76,15 +77,15 @@ function dp_welcomepack_admin() {
 	<br />
 
 	<p><?php _e( 'Welcome Pack provides default friend, default group and welcome mail functionality to a Wordpress MU & Buddypress installation.', 'dp-welcomepack' ) ?></p>
-	
-	<forum action="<?php echo $bp->root_domain . '/wp-admin/admin.php?page=dp_welcomepack' ?>" name="welcomepack-form" id="welcomepack-form" method="post">
+
+	<form action="<?php echo site_url() . '/wp-admin/admin.php?page=dp_welcomepack_settings' ?>" name="welcomepack-form" id="welcomepack-form" method="post">
 
 		<h3><?php _e( 'Default friend', 'dp-welcomepack' ) ?></h3>
 		<table class="form-table">
 			<tr valign="top">
 				<th scope="row"><label for="df_enabled"><?php _e( 'Default friend enabled', 'dp-welcomepack' ) ?></label></th>
 				<td>
-					<input name="df_enabled" type="checkbox" id="df_enabled" value="1"<?php echo( $options['df_enabled'] ? ' checked="checked"' : '' ); ?> />
+					<input name="df_enabled" type="checkbox" id="df_enabled" value="1"<?php echo( '1' == get_option( 'dp-welcomepack-friend-enabled' ) ? ' checked="checked"' : '' ); ?> />
 					<?php _e( 'Turn on the default friend feature.', 'buddypress' ); ?>
 				</td>
 			</tr>
@@ -95,7 +96,7 @@ function dp_welcomepack_admin() {
 						<?php
 						$users = BP_Core_User::get_alphabetical_users();
 						foreach ( (array) $users['users'] as $user ) { $name = bp_core_get_userlink( $user->user_id, true ); ?>
-						<option value="<?php echo $name; ?>" <?php echo( $user->user_id == get_option( 'dp-welcomepack-friend-id' ) ? ' checked="checked"' : '' ); ?>><?php echo $name; ?></option>
+						<option value="<?php echo attribute_escape( $user->user_id ); ?>"<?php echo( $user->user_id == get_option( 'dp-welcomepack-friend-id' ) ? ' selected="selected"' : '' ); ?>><?php echo $name; ?></option>
 						<?php } ?>
 					</select><br />
 					<?php _e( "The user account that becomes a person's first friend.", 'dp-welcomepack' ); ?>
@@ -148,7 +149,8 @@ function dp_force_add_friend( $initiator_userid, $friend_userid ) {
  * @uses update_option() Update the value of an option that was already added.
  */
 function dp_welcomepack_setup_globals() {
-	if (!get_option('dp-welcomepack-friend-id')) { update_option('dp-welcomepack-friend-id', '1'); }
+	if ( !get_option( 'dp-welcomepack-friend-id' ) )      { update_option( 'dp-welcomepack-friend-id', '1' ); }
+	if ( !get_option( 'dp-welcomepack-friend-enabled' ) ) { update_option( 'dp-welcomepack-friend-enabled', '0' ); }
 }
 
 add_action( 'wpmu_activate_user', 'dp_welcomepack_defaultfriend', 1, 3 );

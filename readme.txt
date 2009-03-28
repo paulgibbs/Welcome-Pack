@@ -21,3 +21,6 @@ The next version of this plugin will allow for a customisable "welcome" message 
 
 == Change log ==
 1.0	- Initial release.
+
+== Thanks ==
+I would sincerely like to thank [Dave Carson](http://solopracticeuniversity.com/) for helping me test this throughout development.

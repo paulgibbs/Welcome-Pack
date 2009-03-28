@@ -5,7 +5,6 @@ Tags: buddypress,friend,group,welcome
 Requires at least: WPMU 2.7, BuddyPress RC-1
 Tested up to: WPMU 2.7, BuddyPress trunk (r1281)
 Stable tag: 1.0
-License: GNU General Public License 3.0 (GPL) http://www.gnu.org/licenses/gpl.html
 
 Provides default friend and default group functionality to Buddypress.
 

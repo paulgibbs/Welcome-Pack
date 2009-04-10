@@ -26,23 +26,20 @@ require_once( WP_PLUGIN_DIR . '/buddypress/bp-core.php' );
  * @uses get_option() Selects a site setting from the DB.
  */
 function dp_welcomepack_defaultfriend($user_id, $password, $meta) {
-	if ( !function_exists( 'friends_install' ) )
-		return;
+	if ( !function_exists( 'friends_install' ) ) return;
+	if ( 0 == (int) get_option( 'dp-welcomepack-friend-enabled' ) ) return;
 
-	if ( 0 == (int) get_option( 'dp-welcomepack-friend-enabled' ) ||
-	     0 == get_option( 'dp-welcomepack-friend-id' ) ) return;
+	$default_friends = maybe_unserialize( get_option( 'dp-welcomepack-friend-id' ) );
+	if ( empty( $default_friends ) ) return;
+	if ( !is_array( $default_friends ) ) $default_friends = (array) $default_friends;
 
-		$default_friends = maybe_unserialize( get_option( 'dp-welcomepack-friend-id' ) );
-		if ( empty( $default_friends ) ) return;
-		if ( !is_array( $default_friends ) ) $default_friends = (array) $default_friends;
+	global $wpdb;
+	foreach ($default_friends as $friend) {
+		$sql = $wpdb->prepare( "SELECT * FROM {$wpdb->base_prefix}users WHERE id = %d", $friend );
+		if ( !$wpdb->get_row( $sql ) ) continue;
 
-		global $wpdb;
-		foreach ($default_friends as $friend) {
-			$sql = $wpdb->prepare( "SELECT * FROM {$wpdb->base_prefix}users WHERE id = %d", $friend );
-			if ( !$wpdb->get_row( $sql ) ) continue;
-
-		  dp_welcomepack_force_add_friend( $friend, $user_id );
-		}
+	  dp_welcomepack_force_add_friend( $friend, $user_id );
+	}
 }
 
 /**
@@ -58,18 +55,14 @@ function dp_welcomepack_defaultfriend($user_id, $password, $meta) {
  * @uses get_option() Selects a site setting from the DB.
  */
 function dp_welcomepack_defaultgroup($user_id, $password, $meta) {
-	if ( !function_exists( 'groups_install' ) )
-		return;
-
-	if ( 0 == (int) get_option( 'dp-welcomepack-group-enabled' ) ||
-	     0 == get_option( 'dp-welcomepack-group-id' ) ) return;
+	if ( !function_exists( 'groups_install' ) ) return;
+	if ( 0 == (int) get_option( 'dp-welcomepack-group-enabled' ) ) return;
 
 	$default_groups = maybe_unserialize( get_option( 'dp-welcomepack-group-id' ) );
 	if ( empty( $default_groups ) ) return;
 	if ( !is_array( $default_groups ) ) $default_groups = (array) $default_groups;
 
 	global $wpdb, $bp;
-
 	foreach ($default_groups as $group) {
 		$sql = $wpdb->prepare( "SELECT * FROM {$bp->groups->table_name} WHERE id = %d", $group );
 		if ( !$wpdb->get_row( $sql ) ) continue;
@@ -161,7 +154,7 @@ function dp_welcomepack_admin() {
 						if (!$default_friends) $default_friends = array();
 
 						foreach ( (array) $users['users'] as $user ) { $name = bp_core_get_userlink( $user->user_id, true ); ?>
-						<option value="<?php echo attribute_escape( $user->user_id ); ?>"<?php echo( in_array($user->user_id, $default_friends )  ? ' selected="selected"' : '' ); ?>><?php echo $name; ?></option>
+						<option value="<?php echo attribute_escape( $user->user_id ); ?>"<?php echo( in_array( $user->user_id, $default_friends )  ? ' selected="selected"' : '' ); ?>><?php echo $name; ?></option>
 						<?php } ?>
 					</select><br />
 					<?php _e( "The user accounts that become a person's first friends.", 'dp-welcomepack' ); ?>
@@ -299,12 +292,12 @@ function dp_welcomepack_force_join_group( $user_id, $group_id ) {
  */
 function dp_welcomepack_setup_globals() {
 	// Default friend
-	if ( !get_option( 'dp-welcomepack-friend-id' ) )      { update_option( 'dp-welcomepack-friend-id', '1' ); }
-	if ( !get_option( 'dp-welcomepack-friend-enabled' ) ) { update_option( 'dp-welcomepack-friend-enabled', '0' ); }
+	if ( !get_option( 'dp-welcomepack-friend-id' ) )      { update_option( 'dp-welcomepack-friend-id', serialize( array() ) ); }
+	if ( !get_option( 'dp-welcomepack-friend-enabled' ) ) { update_option( 'dp-welcomepack-friend-enabled', serialize( array() ) ); }
 
 	// Default group
-	if ( !get_option( 'dp-welcomepack-group-id' ) )      { update_option( 'dp-welcomepack-group-id', '0' ); }
-	if ( !get_option( 'dp-welcomepack-group-enabled' ) ) { update_option( 'dp-welcomepack-group-enabled', '0' ); }
+	if ( !get_option( 'dp-welcomepack-group-id' ) )      { update_option( 'dp-welcomepack-group-id', serialize( array() ) ); }
+	if ( !get_option( 'dp-welcomepack-group-enabled' ) ) { update_option( 'dp-welcomepack-group-enabled', serialize( array() ) ); }
 }
 
 /**

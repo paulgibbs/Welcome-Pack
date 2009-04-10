@@ -4,7 +4,7 @@ Plugin Name: Welcome Pack
 Author: DJPaul
 Author URI: http://www.metabiscuits.com
 Description: Provides default friend and default group functionality to BuddyPress.
-Version: 1.0.2
+Version: 1.1
 Site Wide Only: true
 License: GNU General Public License 3.0 (GPL) http://www.gnu.org/licenses/gpl.html
 Requires at least: WPMU 2.7, BuddyPress trunk (r1281)
@@ -22,15 +22,27 @@ require_once( WP_PLUGIN_DIR . '/buddypress/bp-core.php' );
  * @param $user_id The user ID of the new user
  * @param $password Password of the new user
  * @param $meta User meta
- * @uses dp_force_add_friend() Force-create a new friend relationship
+ * @uses dp_welcomepack_force_add_friend() Force-create a new friend relationship
  * @uses get_option() Selects a site setting from the DB.
  */
 function dp_welcomepack_defaultfriend($user_id, $password, $meta) {
 	if ( !function_exists( 'friends_install' ) )
 		return;
 
-	if ( 0 == (int) get_option( 'dp-welcomepack-friend-enabled' ) ) return;
-  dp_force_add_friend( get_option( 'dp-welcomepack-friend-id' ), $user_id );
+	if ( 0 == (int) get_option( 'dp-welcomepack-friend-enabled' ) ||
+	     0 == get_option( 'dp-welcomepack-friend-id' ) ) return;
+
+		$default_friends = maybe_unserialize( get_option( 'dp-welcomepack-friend-id' ) );
+		if ( empty( $default_friends ) ) return;
+		if ( !is_array( $default_friends ) ) $default_friends = (array) $default_friends;
+
+		global $wpdb;
+		foreach ($default_friends as $friend) {
+			$sql = $wpdb->prepare( "SELECT * FROM {$wpdb->base_prefix}users WHERE id = %d", $friend );
+			if ( !$wpdb->get_row( $sql ) ) continue;
+
+		  dp_welcomepack_force_add_friend( $friend, $user_id );
+		}
 }
 
 /**
@@ -42,15 +54,28 @@ function dp_welcomepack_defaultfriend($user_id, $password, $meta) {
  * @param $user_id The user ID of the new user
  * @param $password Password of the new user
  * @param $meta User meta
- * @uses dp_force_join_group() Forces the new user to join a group
+ * @uses dp_welcomepack_force_join_group() Forces the new user to join a group
  * @uses get_option() Selects a site setting from the DB.
  */
 function dp_welcomepack_defaultgroup($user_id, $password, $meta) {
 	if ( !function_exists( 'groups_install' ) )
 		return;
 
-	if ( 0 == (int) get_option( 'dp-welcomepack-group-enabled' ) || 0 == (int) get_option( 'dp-welcomepack-group-id' ) ) return;
-  dp_force_join_group( $user_id, get_option( 'dp-welcomepack-group-id' ) );
+	if ( 0 == (int) get_option( 'dp-welcomepack-group-enabled' ) ||
+	     0 == get_option( 'dp-welcomepack-group-id' ) ) return;
+
+	$default_groups = maybe_unserialize( get_option( 'dp-welcomepack-group-id' ) );
+	if ( empty( $default_groups ) ) return;
+	if ( !is_array( $default_groups ) ) $default_groups = (array) $default_groups;
+
+	global $wpdb, $bp;
+
+	foreach ($default_groups as $group) {
+		$sql = $wpdb->prepare( "SELECT * FROM {$bp->groups->table_name} WHERE id = %d", $group );
+		if ( !$wpdb->get_row( $sql ) ) continue;
+
+  	dp_welcomepack_force_join_group( $user_id, $group );
+	}
 }
 
 /**
@@ -89,13 +114,18 @@ function dp_welcomepack_admin() {
 	if ( isset( $_POST['submit'] ) ) {
 		check_admin_referer( 'dp-welcomepack' );
 
+		global $wpdb;
 		if ( function_exists( 'friends_install' ) ) {
-			update_option( 'dp-welcomepack-friend-id', (int) $_POST['df_id'] );
+
+			foreach ( (array) $_POST['df_id'] as $id ) { $id = (int) $id; }
+			update_option( 'dp-welcomepack-friend-id', serialize( $_POST['df_id'] ) );
 			update_option( 'dp-welcomepack-friend-enabled', (int) $_POST['df_enabled'] );
 		}
 
 		if ( function_exists( 'groups_install' ) ) {
-			update_option( 'dp-welcomepack-group-id', (int) $_POST['dg_id'] );
+
+			foreach ( (array) $_POST['dg_id'] as $id ) { $id = (int) $id; }
+			update_option( 'dp-welcomepack-group-id', serialize( $_POST['dg_id'] ) );
 			update_option( 'dp-welcomepack-group-enabled', (int) $_POST['dg_enabled'] );
 		}
 
@@ -106,57 +136,64 @@ function dp_welcomepack_admin() {
 	<h2><?php _e(' Welcome Pack', 'dp-welcomepack' ) ?></h2>
 	<br />
 
-	<p><?php _e( 'Welcome Pack provides default friend, default group and welcome mail functionality to a Wordpress MU & Buddypress installation.', 'dp-welcomepack' ) ?></p>
+	<p><?php _e( 'Welcome Pack provides default friends and default groups to a Wordpress MU & Buddypress installation.', 'dp-welcomepack' ) ?></p>
 
 	<form action="<?php echo site_url() . '/wp-admin/admin.php?page=dp_welcomepack_settings' ?>" name="welcomepack-form" id="welcomepack-form" method="post">
 
 	<?php if ( function_exists( 'friends_install' ) ) { ?>
-		<h3><?php _e( 'Default friend', 'dp-welcomepack' ) ?></h3>
+		<h3><?php _e( 'Default friends', 'dp-welcomepack' ) ?></h3>
 		<table class="form-table">
 			<tr valign="top">
-				<th scope="row"><label for="df_enabled"><?php _e( 'Default friend enabled', 'dp-welcomepack' ) ?></label></th>
+				<th scope="row"><label for="df_enabled"><?php _e( 'Default friends enabled', 'dp-welcomepack' ) ?></label></th>
 				<td>
 					<input name="df_enabled" type="checkbox" id="df_enabled" value="1"<?php echo( '1' == get_option( 'dp-welcomepack-friend-enabled' ) ? ' checked="checked"' : '' ); ?> />
-					<?php _e( 'Turn on the default friend feature.', 'dp-welcomepack' ); ?>
+					<?php _e( 'Turn on the default friends feature.', 'dp-welcomepack' ); ?>
 				</td>
 			</tr>
+			
 			<tr valign="top">
-				<th scope="row"><label for="df_id"><?php _e( 'Default friend', 'dp-welcomepack' ) ?></label></th>
+				<th scope="row"><label for="df_id"><?php _e( 'Default friends', 'dp-welcomepack' ) ?></label></th>
 				<td>
-					<select name="df_id" id="df_id">
+					<select name="df_id[]" id="df_id" multiple="multiple" size="8" style="height: auto;">
 						<?php
 						$users = BP_Core_User::get_alphabetical_users();
+						$default_friends = maybe_unserialize( get_option( 'dp-welcomepack-friend-id' ) );
+						if (!$default_friends) $default_friends = array();
+
 						foreach ( (array) $users['users'] as $user ) { $name = bp_core_get_userlink( $user->user_id, true ); ?>
-						<option value="<?php echo attribute_escape( $user->user_id ); ?>"<?php echo( $user->user_id == get_option( 'dp-welcomepack-friend-id' ) ? ' selected="selected"' : '' ); ?>><?php echo $name; ?></option>
+						<option value="<?php echo attribute_escape( $user->user_id ); ?>"<?php echo( in_array($user->user_id, $default_friends )  ? ' selected="selected"' : '' ); ?>><?php echo $name; ?></option>
 						<?php } ?>
 					</select><br />
-					<?php _e( "The user account that becomes a person's first friend.", 'dp-welcomepack' ); ?>
+					<?php _e( "The user accounts that become a person's first friends.", 'dp-welcomepack' ); ?>
 				</td>
 			</tr>
 		</table>
 	<?php } ?>
 
 	<?php if ( function_exists( 'groups_install' ) ) { ?>
-		<h3><?php _e( 'Default group', 'dp-welcomepack' ) ?></h3>
+		<h3><?php _e( 'Default groups', 'dp-welcomepack' ) ?></h3>
 		<table class="form-table">
 			<tr valign="top">
-				<th scope="row"><label for="dg_enabled"><?php _e( 'Default group enabled', 'dp-welcomepack' ) ?></label></th>
+				<th scope="row"><label for="dg_enabled"><?php _e( 'Default groups enabled', 'dp-welcomepack' ) ?></label></th>
 				<td>
-					<input name="dg_enabled" type="checkbox" id="dg_enabled" value="1"<?php echo( '1' == get_option( 'dp-welcomepack-group-enabled' ) ? ' checked="checked"' : '' ); ?> />
-					<?php _e( 'Turn on the default group feature.', 'dp-welcomepack' ); ?>
+					<input name="dg_enabled" type="checkbox" id="dg_enabled" value="1"<?php echo( '1' == get_option(  'dp-welcomepack-group-enabled' ) ? ' checked="checked"' : '' ); ?> />
+					<?php _e( 'Turn on the default groups feature.', 'dp-welcomepack' ); ?>
 				</td>
 			</tr>
 			<tr valign="top">
-				<th scope="row"><label for="dg_id"><?php _e( 'Default group', 'dp-welcomepack' ) ?></label></th>
+				<th scope="row"><label for="dg_id"><?php _e( 'Default groups', 'dp-welcomepack' ) ?></label></th>
 				<td>
-					<select name="dg_id" id="dg_id">
+					<select name="dg_id[]" id="dg_id" multiple="multiple" style="height: auto;">
 						<?php
 						$groups = BP_Groups_Group::get_all();
+						$default_groups = maybe_unserialize( get_option( 'dp-welcomepack-group-id' ) );
+						if (!$default_groups) $default_groups = array();
+						
 						foreach ( (array) $groups as $group ) { ?>
-						<option value="<?php echo attribute_escape( $group->group_id ); ?>"<?php echo( $group->group_id == get_option( 'dp-welcomepack-group-id' ) ? ' selected="selected"' : '' ); ?>><?php echo $group->slug; ?></option>
+						<option value="<?php echo attribute_escape( $group->group_id ); ?>"<?php echo( in_array( $group->group_id, $default_groups ) ? ' selected="selected"' : '' ); ?>><?php echo $group->slug; ?></option>
 						<?php } ?>
 					</select><br />
-					<?php _e( "The group that a new user is joined to automatically.", 'dp-welcomepack' ); ?>
+					<?php _e( "The groups that a new user is joined to automatically.", 'dp-welcomepack' ); ?>
 				</td>
 			</tr>
 		</table>
@@ -170,7 +207,7 @@ function dp_welcomepack_admin() {
 }
 
 /**
- * dp_force_add_friend()
+ * dp_welcomepack_force_add_friend()
  *
  * Force-create a new friend relationship.
  *
@@ -183,7 +220,7 @@ function dp_welcomepack_admin() {
  * @uses do_action() Calls an action that triggers any registered filters
  * @return Boolean represent success or failure creating the new relationship
  */
-function dp_force_add_friend( $initiator_user_id, $friend_user_id ) {
+function dp_welcomepack_force_add_friend( $initiator_user_id, $friend_user_id ) {
 	if ( !function_exists( 'friends_install' ) )
 		return false;
 
@@ -211,7 +248,7 @@ function dp_force_add_friend( $initiator_user_id, $friend_user_id ) {
 }
 
 /**
- * dp_force_join_group()
+ * dp_welcomepack_force_join_group()
  *
  * Force-create a group membership.
  *
@@ -224,7 +261,7 @@ function dp_force_add_friend( $initiator_user_id, $friend_user_id ) {
  * @uses do_action() Calls an action that triggers any registered filters
  * @return Boolean represent success or failure creating the group membership
  */
-function dp_force_join_group( $user_id, $group_id ) {
+function dp_welcomepack_force_join_group( $user_id, $group_id ) {
 	if ( !function_exists( 'groups_install' ) )
 		return false;
 	

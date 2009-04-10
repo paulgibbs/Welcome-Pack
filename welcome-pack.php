@@ -3,15 +3,15 @@
 Plugin Name: Welcome Pack
 Author: DJPaul
 Author URI: http://www.metabiscuits.com
-Description: Provides default friend and default group functionality to Buddypress.
-Version: 1.0.1
+Description: Provides default friend and default group functionality to BuddyPress.
+Version: 1.0.2
 Site Wide Only: true
 License: GNU General Public License 3.0 (GPL) http://www.gnu.org/licenses/gpl.html
 Requires at least: WPMU 2.7, BuddyPress trunk (r1281)
 Tested up to: WPMU 2.7, BuddyPress trunk (r1281)
 */
 
-require_once(WP_CONTENT_DIR . '/mu-plugins/bp-core.php');
+require_once( WP_PLUGIN_DIR . '/buddypress/bp-core.php' );
 
 /**
  * dp_welcomepack_defaultfriend()
@@ -66,8 +66,8 @@ function dp_welcomepack_menu() {
 	if ( !is_site_admin() )
 		return false;
 
-  /* Add "Welcome Pack" under the "Site Admin" tab for site administrators */
-	add_submenu_page( 'wpmu-admin.php', __( 'Welcome Pack', 'dp-welcomepack' ), __(' Welcome Pack', 'dp-welcomepack' ), 1, 'dp_welcomepack_settings', 'dp_welcomepack_admin' );
+  /* Add "Welcome Pack" under the "BuddyPress" tab for site administrators */
+	add_submenu_page( 'bp-core.php', __( 'Welcome Pack', 'dp-welcomepack' ), __(' Welcome Pack', 'dp-welcomepack' ), 1, 'dp_welcomepack_settings', 'dp_welcomepack_admin' );
 }
 
 /**
@@ -99,7 +99,7 @@ function dp_welcomepack_admin() {
 			update_option( 'dp-welcomepack-group-enabled', (int) $_POST['dg_enabled'] );
 		}
 
-		echo '<div id="message" class="updated fade">Options updated.</div>';
+		echo "<div id='message' class='updated fade'><p>" . __( 'Options updated.', 'dp-welcomepack' ) . "</p></div>";
 	}
 ?>
 <div class="wrap">

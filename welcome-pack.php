@@ -340,6 +340,4 @@ add_action( 'admin_menu', 'dp_welcomepack_menu' );
 
 add_action( 'plugins_loaded', 'dp_welcomepack_setup_globals', 5 );	
 add_action( 'admin_menu', 'dp_welcomepack_setup_globals', 1 );
-register_activation_hook( __FILE__, 'dp_welcomepack_activate' );
-register_deactivation_hook( __FILE__, 'dp_welcomepack_deactivate' );
 ?>

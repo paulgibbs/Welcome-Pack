@@ -3,15 +3,44 @@
 Plugin Name: Welcome Pack
 Author: DJPaul
 Author URI: http://www.metabiscuits.com
-Description: Provides default friend and default group functionality to BuddyPress.
-Version: 1.1
+Description: Provides default friend, default group and welcome message functionality to BuddyPress.
+Version: 1.11
 Site Wide Only: true
 License: GNU General Public License 3.0 (GPL) http://www.gnu.org/licenses/gpl.html
-Requires at least: WPMU 2.7, BuddyPress trunk (r1281)
-Tested up to: WPMU 2.7, BuddyPress trunk (r1281)
+Requires at least: WPMU 2.7.1, BuddyPress 1.0 RC-2
+Tested up to: WPMU 2.7.1, BuddyPress 1.0 RC-2
 */
 
 require_once( WP_PLUGIN_DIR . '/buddypress/bp-core.php' );
+
+
+/**
+ * dp_welcomepack_welcomemessage()
+ *
+ * Called by the wpmu_activate_user action when a new user activates their account (i.e. following the link in their email).
+ *
+ * @package Welcome Pack
+ * @param $user_id The user ID of the new user
+ * @param $password Password of the new user
+ * @param $meta User meta
+ * @uses get_site_option() Selects a site setting from the DB.
+ * @uses get_userdata() Get user object from the DB.
+ * @uses bp_core_get_user_domain() Returns 'http://www.example.com/members/USERNAME'.
+ * @uses dp_messages_send_message() Custom version of messages_send_message().
+ */
+function dp_welcomepack_welcomemessage( $user_id, $password, $meta ) {
+	if ( !function_exists( 'messages_install' ) ) return;
+	if ( 0 == (int) get_site_option( 'dp-welcomepack-welcomemessage-enabled' ) ) return;
+
+	$sender_id = get_site_option( 'dp-welcomepack-welcomemessage-sender' );
+	$subject   = get_site_option( 'dp-welcomepack-welcomemessage-subject' );
+	$body      = get_site_option( 'dp-welcomepack-welcomemessage-msg' );
+	if ( empty( $subject ) || empty( $body ) || empty( $sender_id ) ) return;
+
+	$user_login = get_userdata( $user_id );
+	$sender = (object) array( 'id' => $sender_id, 'domain' => bp_core_get_user_domain( $sender_id ) );
+	dp_messages_send_message( $user_login->user_login, $subject, $body, $sender, false );
+}
 
 /**
  * dp_welcomepack_defaultfriend()
@@ -23,13 +52,15 @@ require_once( WP_PLUGIN_DIR . '/buddypress/bp-core.php' );
  * @param $password Password of the new user
  * @param $meta User meta
  * @uses dp_welcomepack_force_add_friend() Force-create a new friend relationship
- * @uses get_option() Selects a site setting from the DB.
+ * @uses get_site_option() Selects a site setting from the DB.
+ * @uses maybe_unserialize() Unserialize value only if it was serialized.
+ * @uses Class WPDB Wordpress db object
  */
-function dp_welcomepack_defaultfriend($user_id, $password, $meta) {
+function dp_welcomepack_defaultfriend( $user_id, $password, $meta ) {
 	if ( !function_exists( 'friends_install' ) ) return;
-	if ( 0 == (int) get_option( 'dp-welcomepack-friend-enabled' ) ) return;
+	if ( 0 == (int) get_site_option( 'dp-welcomepack-friend-enabled' ) ) return;
 
-	$default_friends = maybe_unserialize( get_option( 'dp-welcomepack-friend-id' ) );
+	$default_friends = maybe_unserialize( get_site_option( 'dp-welcomepack-friend-id' ) );
 	if ( empty( $default_friends ) ) return;
 	if ( !is_array( $default_friends ) ) $default_friends = (array) $default_friends;
 
@@ -52,13 +83,15 @@ function dp_welcomepack_defaultfriend($user_id, $password, $meta) {
  * @param $password Password of the new user
  * @param $meta User meta
  * @uses dp_welcomepack_force_join_group() Forces the new user to join a group
- * @uses get_option() Selects a site setting from the DB.
+ * @uses get_site_option() Selects a site setting from the DB.
+ * @uses maybe_unserialize() Unserialize value only if it was serialized.
+ * @uses Class WPDB Wordpress db object
  */
-function dp_welcomepack_defaultgroup($user_id, $password, $meta) {
+function dp_welcomepack_defaultgroup( $user_id, $password, $meta ) {
 	if ( !function_exists( 'groups_install' ) ) return;
-	if ( 0 == (int) get_option( 'dp-welcomepack-group-enabled' ) ) return;
+	if ( 0 == (int) get_site_option( 'dp-welcomepack-group-enabled' ) ) return;
 
-	$default_groups = maybe_unserialize( get_option( 'dp-welcomepack-group-id' ) );
+	$default_groups = maybe_unserialize( get_site_option( 'dp-welcomepack-group-id' ) );
 	if ( empty( $default_groups ) ) return;
 	if ( !is_array( $default_groups ) ) $default_groups = (array) $default_groups;
 
@@ -85,7 +118,7 @@ function dp_welcomepack_menu() {
 		return false;
 
   /* Add "Welcome Pack" under the "BuddyPress" tab for site administrators */
-	add_submenu_page( 'bp-core.php', __( 'Welcome Pack', 'dp-welcomepack' ), __(' Welcome Pack', 'dp-welcomepack' ), 1, 'dp_welcomepack_settings', 'dp_welcomepack_admin' );
+	add_submenu_page( 'bp-core.php', __( 'Welcome Pack', 'dp-welcomepack' ), __(' Welcome Pack', 'dp-welcomepack' ), 1, 'dp_welcomepack', 'dp_welcomepack_admin' );
 }
 
 /**
@@ -95,13 +128,16 @@ function dp_welcomepack_menu() {
  *
  * @package Welcome Pack
  * @uses check_admin_referer() Makes sure that a user was referred from another admin page
- * @uses update_option() Update the value of an option that was already added
+ * @uses update_site_option() Update the value of an option that was already added
+ * @uses get_site_option() Selects a site setting from the DB.
  * @uses wp_nonce_field() Retrieve or display nonce hidden field for forms
  * @uses bp_core_get_userlink() Returns a HTML formatted link for a user with the user's full name as the link text
  * @uses BP_Core_User Class Fetches useful details for any user when provided with a user_id
  * @uses BP_Core_User::get_alphabetical_users() Return array of BP users sorted alphabetically
  * @uses BP_Groups_Group Class Fetches details for groups
  * @uses BP_Groups_Group:get_all() Returns array of BP groups sorted alphabetically
+ * @uses maybe_unserialize() Unserialize value only if it was serialized.
+ * @uses attribute_escape() Escaping for HTML attributes.
  */
 function dp_welcomepack_admin() {
 	if ( isset( $_POST['submit'] ) ) {
@@ -111,15 +147,23 @@ function dp_welcomepack_admin() {
 		if ( function_exists( 'friends_install' ) ) {
 
 			foreach ( (array) $_POST['df_id'] as $id ) { $id = (int) $id; }
-			update_option( 'dp-welcomepack-friend-id', serialize( $_POST['df_id'] ) );
-			update_option( 'dp-welcomepack-friend-enabled', (int) $_POST['df_enabled'] );
+			update_site_option( 'dp-welcomepack-friend-id', $_POST['df_id'] );
+			update_site_option( 'dp-welcomepack-friend-enabled', (int) $_POST['df_enabled'] );
 		}
 
 		if ( function_exists( 'groups_install' ) ) {
 
 			foreach ( (array) $_POST['dg_id'] as $id ) { $id = (int) $id; }
-			update_option( 'dp-welcomepack-group-id', serialize( $_POST['dg_id'] ) );
-			update_option( 'dp-welcomepack-group-enabled', (int) $_POST['dg_enabled'] );
+			update_site_option( 'dp-welcomepack-group-id', $_POST['dg_id'] );
+			update_site_option( 'dp-welcomepack-group-enabled', (int) $_POST['dg_enabled'] );
+		}
+
+		if ( function_exists( 'messages_install' ) ) {
+
+			update_site_option( 'dp-welcomepack-welcomemessage-sender', (int) $_POST['dm_sender'] );
+			update_site_option( 'dp-welcomepack-welcomemessage-subject', $_POST['dm_subject'] );
+			update_site_option( 'dp-welcomepack-welcomemessage-msg', $_POST['dm_msg'] );
+			update_site_option( 'dp-welcomepack-welcomemessage-enabled', (int) $_POST['dm_enabled'] );
 		}
 
 		echo "<div id='message' class='updated fade'><p>" . __( 'Options updated.', 'dp-welcomepack' ) . "</p></div>";
@@ -129,9 +173,9 @@ function dp_welcomepack_admin() {
 	<h2><?php _e(' Welcome Pack', 'dp-welcomepack' ) ?></h2>
 	<br />
 
-	<p><?php _e( 'Welcome Pack provides default friends and default groups to a Wordpress MU & Buddypress installation.', 'dp-welcomepack' ) ?></p>
+	<p><?php _e( 'Welcome Pack provides default friend, default group and welcome message functionality to a Wordpress MU & Buddypress installation.', 'dp-welcomepack' ) ?></p>
 
-	<form action="<?php echo site_url() . '/wp-admin/admin.php?page=dp_welcomepack_settings' ?>" name="welcomepack-form" id="welcomepack-form" method="post">
+	<form action="<?php echo site_url() . '/wp-admin/admin.php?page=dp_welcomepack' ?>" name="welcomepack-form" id="welcomepack-form" method="post">
 
 	<?php if ( function_exists( 'friends_install' ) ) { ?>
 		<h3><?php _e( 'Default friends', 'dp-welcomepack' ) ?></h3>
@@ -139,7 +183,7 @@ function dp_welcomepack_admin() {
 			<tr valign="top">
 				<th scope="row"><label for="df_enabled"><?php _e( 'Default friends enabled', 'dp-welcomepack' ) ?></label></th>
 				<td>
-					<input name="df_enabled" type="checkbox" id="df_enabled" value="1"<?php echo( '1' == get_option( 'dp-welcomepack-friend-enabled' ) ? ' checked="checked"' : '' ); ?> />
+					<input name="df_enabled" type="checkbox" id="df_enabled" value="1"<?php echo( '1' == get_site_option( 'dp-welcomepack-friend-enabled' ) ? ' checked="checked"' : '' ); ?> />
 					<?php _e( 'Turn on the default friends feature.', 'dp-welcomepack' ); ?>
 				</td>
 			</tr>
@@ -150,11 +194,11 @@ function dp_welcomepack_admin() {
 					<select name="df_id[]" id="df_id" multiple="multiple" size="8" style="height: auto;">
 						<?php
 						$users = BP_Core_User::get_alphabetical_users();
-						$default_friends = maybe_unserialize( get_option( 'dp-welcomepack-friend-id' ) );
+						$default_friends = get_site_option( 'dp-welcomepack-friend-id' );
 						if (!$default_friends) $default_friends = array();
 
 						foreach ( (array) $users['users'] as $user ) { $name = bp_core_get_userlink( $user->user_id, true ); ?>
-						<option value="<?php echo attribute_escape( $user->user_id ); ?>"<?php echo( in_array( $user->user_id, $default_friends )  ? ' selected="selected"' : '' ); ?>><?php echo $name; ?></option>
+						<option value="<?php echo attribute_escape( $user->user_id ); ?>"<?php echo( in_array( $user->user_id, $default_friends )  ? ' selected="selected"' : '' ); ?>><?php echo attribute_escape( $name ); ?></option>
 						<?php } ?>
 					</select><br />
 					<?php _e( "The user accounts that become a person's first friends.", 'dp-welcomepack' ); ?>
@@ -169,7 +213,7 @@ function dp_welcomepack_admin() {
 			<tr valign="top">
 				<th scope="row"><label for="dg_enabled"><?php _e( 'Default groups enabled', 'dp-welcomepack' ) ?></label></th>
 				<td>
-					<input name="dg_enabled" type="checkbox" id="dg_enabled" value="1"<?php echo( '1' == get_option(  'dp-welcomepack-group-enabled' ) ? ' checked="checked"' : '' ); ?> />
+					<input name="dg_enabled" type="checkbox" id="dg_enabled" value="1"<?php echo( '1' == get_site_option(  'dp-welcomepack-group-enabled' ) ? ' checked="checked"' : '' ); ?> />
 					<?php _e( 'Turn on the default groups feature.', 'dp-welcomepack' ); ?>
 				</td>
 			</tr>
@@ -179,11 +223,11 @@ function dp_welcomepack_admin() {
 					<select name="dg_id[]" id="dg_id" multiple="multiple" style="height: auto;">
 						<?php
 						$groups = BP_Groups_Group::get_all();
-						$default_groups = maybe_unserialize( get_option( 'dp-welcomepack-group-id' ) );
+						$default_groups = get_site_option( 'dp-welcomepack-group-id' );
 						if (!$default_groups) $default_groups = array();
 						
 						foreach ( (array) $groups as $group ) { ?>
-						<option value="<?php echo attribute_escape( $group->group_id ); ?>"<?php echo( in_array( $group->group_id, $default_groups ) ? ' selected="selected"' : '' ); ?>><?php echo $group->slug; ?></option>
+						<option value="<?php echo attribute_escape( $group->group_id ); ?>"<?php echo( in_array( $group->group_id, $default_groups ) ? ' selected="selected"' : '' ); ?>><?php echo attribute_escape( $group->slug ); ?></option>
 						<?php } ?>
 					</select><br />
 					<?php _e( "The groups that a new user is joined to automatically.", 'dp-welcomepack' ); ?>
@@ -191,9 +235,50 @@ function dp_welcomepack_admin() {
 			</tr>
 		</table>
 	<?php } ?>
+	
+	<?php if ( function_exists( 'messages_install' ) ) { ?>
+		<h3><?php _e( "Welcome message (sent using BuddyPress' message system)", 'dp-welcomepack' ) ?></h3>
+		<table class="form-table">
+			<tr valign="top">
+				<th scope="row"><label for="dm_enabled"><?php _e( 'Welcome message enabled', 'dp-welcomepack' ) ?></label></th>
+				<td>
+					<input name="dm_enabled" type="checkbox" id="dm_enabled" value="1"<?php echo( '1' == get_site_option(  'dp-welcomepack-welcomemessage-enabled' ) ? ' checked="checked"' : '' ); ?> />
+					<?php _e( 'Turn on the welcome message feature.', 'dp-welcomepack' ); ?>
+				</td>
+			</tr>
+			<tr valign="top">
+				<th scope="row"><label for="dm_sender"><?php _e( 'Welcome message sender', 'dp-welcomepack' ) ?></label></th>
+				<td>
+					<select name="dm_sender[]" id="dm_sender" style="height: auto;">
+						<?php
+						$users = BP_Core_User::get_alphabetical_users();
+						$default_sender = get_site_option( 'dp-welcomepack-welcomemessage-sender' );
+						if (!$default_sender) $default_sender = '';
 
-		<p class="submit"><input type="submit" name="submit" value="<?php _e( 'Save Settings', 'buddypress' ) ?>"/></p>
-		<?php wp_nonce_field( 'dp-welcomepack' ) ?>
+						foreach ( (array) $users['users'] as $user ) { $name = bp_core_get_userlink( $user->user_id, true ); ?>
+						<option value="<?php echo attribute_escape( $user->user_id ); ?>"<?php echo( ( $user->user_id == $default_sender ) ? ' selected="selected"' : '' ); ?>><?php echo attribute_escape( $name ); ?></option>
+						<?php } ?>
+					</select><br />
+					<?php _e( 'The user account that the welcome message is sent from.', 'dp-welcomepack' ); ?>
+				</td>
+			</tr>
+			<tr valign="top">
+				<th scope="row"><label for="dm_subject"><?php _e( 'Welcome message subject', 'dp-welcomepack' ) ?></label></th>
+				<td>
+					<input name="dm_subject" type="text" id="dm_subject" style="width: 95%" value="<?php echo attribute_escape( get_site_option( 'dp-welcomepack-welcomemessage-subject' ) ) ?>" size="45" />
+				</td>
+			</tr>
+			<tr valign="top">
+				<th scope="row"><label for="dm_msg"><?php _e( 'Welcome message body', 'dp-welcomepack' ) ?></label></th>
+				<td>
+					<textarea name="dm_msg" id="dm_msg" rows="5" cols="45" style="width: 95%"><?php echo attribute_escape( get_site_option( 'dp-welcomepack-welcomemessage-msg' ) ) ?></textarea>
+				</td>
+			</tr>
+		</table>
+	<?php } ?>
+
+	<p class="submit"><input type="submit" name="submit" value="<?php _e( 'Save Settings', 'buddypress' ) ?>"/></p>
+	<?php wp_nonce_field( 'dp-welcomepack' ) ?>
 	</forum>
 </div>
 <?php
@@ -238,6 +323,118 @@ function dp_welcomepack_force_add_friend( $initiator_user_id, $friend_user_id ) 
 	
 	do_action( 'friends_friendship_accepted', $friendship->id, $friendship->initiator_user_id, $friendship->friend_user_id );
 	return true;
+}
+
+/**
+ * dp_messages_send_message().
+ *
+ * Not documented as expect to use a core version of this function in future - http://trac.buddypress.org/ticket/673.
+ */
+function dp_messages_send_message( $recipients, $subject, $content, $from, $thread_id, $from_ajax = false, $from_template = false, $is_reply = false ) {
+	global $pmessage;
+	global $message, $type;
+	global $bp, $current_user;
+
+	messages_add_callback_values( $recipients, $subject, $content );
+
+	$recipients = explode( ' ', $recipients );
+	if ( count( $recipients ) < 1 ) {
+		if ( !$from_ajax ) {	
+/*			bp_core_add_message( __('Please enter at least one valid user to send this message to.', 'buddypress'), 'error' );
+			bp_core_redirect( $from->domain . $bp->current_component . '/compose' );*/
+		} else {
+			return array('status' => 0, 'message' => __('There was an error sending the reply, please try again.', 'buddypress'));
+		}
+		
+	// If there is only 1 recipient and it is the logged in user.
+	} else if ( 1 == count( $recipients ) && $recipients[0] == $current_user->user_login ) {
+/*		bp_core_add_message( __('You must send your message to one or more users not including yourself.', 'buddypress'), 'error' );
+		bp_core_redirect( $from->domain . $bp->current_component . '/compose' );	*/
+	
+	// If the subject or content boxes are empty.
+	} else if ( empty( $subject ) || empty( $content ) ) {
+		if ( !$from_ajax ) {
+/*			bp_core_add_message( __('Please make sure you fill in all the fields.', 'buddypress'), 'error' );
+			bp_core_redirect( $from->domain . $bp->current_component . '/compose' );*/
+		} else {
+			return array('status' => 0, 'message' => __('Please make sure you have typed a message before sending a reply.', 'buddypress'));
+		}
+		
+	// Passed validation continue.
+	} else {
+		// Strip the logged in user from the recipient list if they exist
+/*		if ( $key = array_search( $current_user->user_login, $recipients ) )
+			unset( $recipients[$key] );
+*/
+
+		$pmessage = new BP_Messages_Message;
+
+		$pmessage->sender_id = $from->id;
+		$pmessage->subject = $subject;
+		$pmessage->message = $content;
+		$pmessage->thread_id = $thread_id;
+		$pmessage->date_sent = time();
+		$pmessage->message_order = 0;
+		$pmessage->sender_is_group = 0;
+
+		if ( $is_reply ) {
+			$thread = new BP_Messages_Thread($thread_id);
+			$pmessage->recipients = $thread->get_recipients();
+		} else {
+			$pmessage->recipients = BP_Messages_Message::get_recipient_ids( $recipients );
+		}
+
+		if ( !is_null( $pmessage->recipients ) ) {
+			
+			if ( !$pmessage->send() ) {
+
+				$message = __('Message could not be sent, please try again.', 'buddypress');
+				$type = 'error';
+		
+				if ( $from_ajax ) {
+					return array('status' => 0, 'message' => $message);
+				} else {
+/*					bp_core_add_message( $message, $type );
+					bp_core_redirect( $from->domain . $bp->current_component . '/compose' );*/
+				} 
+			} else {
+
+				$message = __('Message sent successfully!', 'buddypress') . ' <a href="' . $from->domain . $bp->messages->slug . '/view/' . $pmessage->thread_id . '">' . __('View Message', 'buddypress') . '</a> &raquo;';
+				$type = 'success';
+				
+				// Send screen notifications to the recipients
+				for ( $i = 0; $i < count($pmessage->recipients); $i++ ) {
+					if ( $pmessage->recipients[$i] != $from->id ) {
+						bp_core_add_notification( $pmessage->id, $pmessage->recipients[$i], 'messages', 'new_message' );	
+					}
+				}
+
+				// Send email notifications to the recipients
+				require_once( WP_PLUGIN_DIR . '/buddypress/bp-messages/bp-messages-notifications.php' );
+				
+				messages_notification_new_message( array( 'item_id' => $pmessage->id, 'recipient_ids' => $pmessage->recipients, 'thread_id' => $pmessage->thread_id, 'component_name' => 'messages', 'component_action' => 'message_sent', 'is_private' => 1 ) );
+
+				do_action( 'messages_send_message', array( 'item_id' => $pmessage->id, 'recipient_ids' => $pmessage->recipients, 'thread_id' => $pmessage->thread_id, 'component_name' => 'messages', 'component_action' => 'message_sent', 'is_private' => 1 ) );
+		
+				if ( $from_ajax ) {
+					return array('status' => 1, 'message' => $message, 'reply' => $pmessage);
+				} else {
+/*					bp_core_add_message( $message );
+					bp_core_redirect( $from->domain . $bp->current_component . '/inbox' );*/
+				}
+			}
+		} else {
+			$message = __('Message could not be sent, please try again.', 'buddypress');
+			$type = 'error';
+		
+			if ( $from_ajax ) {
+				return array('status' => 0, 'message' => $message);
+			} else {
+/*				bp_core_add_message( $message, $type );
+				bp_core_redirect( $from->domain . $bp->messages->slug . '/compose' );*/
+			}
+		}
+	}
 }
 
 /**
@@ -287,48 +484,28 @@ function dp_welcomepack_force_join_group( $user_id, $group_id ) {
  * Set-up default values for options used by the plugins in case blog admins do not visit the admin panel before someone triggers the functionality.
  *
  * @package Welcome Pack
- * @uses get_option() Selects a site setting from the DB.
- * @uses update_option() Update the value of an option that was already added.
+ * @uses get_site_option() Selects a site setting from the DB.
+ * @uses update_site_option() Update the value of an option that was already added.
  */
 function dp_welcomepack_setup_globals() {
 	// Default friend
-	if ( !get_option( 'dp-welcomepack-friend-id' ) )      { update_option( 'dp-welcomepack-friend-id', serialize( array() ) ); }
-	if ( !get_option( 'dp-welcomepack-friend-enabled' ) ) { update_option( 'dp-welcomepack-friend-enabled', serialize( array() ) ); }
+	if ( !get_site_option( 'dp-welcomepack-friend-id' ) ) { update_site_option( 'dp-welcomepack-friend-id', array() ); }
+	if ( !get_site_option( 'dp-welcomepack-friend-enabled' ) ) { update_site_option( 'dp-welcomepack-friend-enabled', 0 ); }
 
 	// Default group
-	if ( !get_option( 'dp-welcomepack-group-id' ) )      { update_option( 'dp-welcomepack-group-id', serialize( array() ) ); }
-	if ( !get_option( 'dp-welcomepack-group-enabled' ) ) { update_option( 'dp-welcomepack-group-enabled', serialize( array() ) ); }
-}
+	if ( !get_site_option( 'dp-welcomepack-group-id' ) ) { update_site_option( 'dp-welcomepack-group-id', array() ); }
+	if ( !get_site_option( 'dp-welcomepack-group-enabled' ) ) { update_site_option( 'dp-welcomepack-group-enabled', 0 ); }
 
-/**
- * dp_welcomepack_deactivate()
- *
- * Removes custom variables on plugin deactivation.
- *
- * @package Welcome Pack
- * @uses delete_option() Removes option by name and prevents removal of protected WordPress options.
- */
-function dp_welcomepack_deactivate() {
-	delete_option( 'dp-welcomepack-friend-id' );
-	delete_option( 'dp-welcomepack-friend-enabled' );
-	delete_option( 'dp-welcomepack-group-id' );
-	delete_option( 'dp-welcomepack-group-enabled' );
-}
-
-/**
- * dp_welcomepack_activate()
- *
- * Adds custom variables on plugin activation.
- *
- * @package Welcome Pack
- * @uses dp_welcomepack_setup_globals() Set-up default values for options used by the plugins in case blog admins do not visit the admin panel.
- */
-function dp_welcomepack_activate() {
-	dp_welcomepack_setup_globals();
+	// Welcome message
+	if ( !get_site_option( 'dp-welcomepack-welcomemessage-sender' ) ) { update_site_option( 'dp-welcomepack-welcomemessage-sender', 0 ); }
+	if ( !get_site_option( 'dp-welcomepack-welcomemessage-subject' ) ) { update_site_option( 'dp-welcomepack-welcomemessage-subject', '' ); }
+	if ( !get_site_option( 'dp-welcomepack-welcomemessage-msg' ) ) { update_site_option( 'dp-welcomepack-welcomemessage-msg', '' ); }
+	if ( !get_site_option( 'dp-welcomepack-welcomemessage-enabled' ) ) { update_site_option( 'dp-welcomepack-welcomemessage-enabled', 0 ); }
 }
 
 add_action( 'wpmu_activate_user', 'dp_welcomepack_defaultfriend', 1, 3 );
 add_action( 'wpmu_activate_user', 'dp_welcomepack_defaultgroup', 1, 3 );
+add_action( 'wpmu_activate_user', 'dp_welcomepack_welcomemessage', 1, 3 );
 add_action( 'admin_menu', 'dp_welcomepack_menu' );
 
 add_action( 'plugins_loaded', 'dp_welcomepack_setup_globals', 5 );	

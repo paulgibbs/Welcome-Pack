@@ -4,7 +4,7 @@ Plugin Name: Welcome Pack
 Author: DJPaul
 Author URI: http://www.metabiscuits.com
 Description: Provides default friend, default group and welcome message functionality to BuddyPress.
-Version: 1.12
+Version: 1.13
 Site Wide Only: true
 License: GNU General Public License 3.0 (GPL) http://www.gnu.org/licenses/gpl.html
 Requires at least: WPMU 2.7.1, BuddyPress 1.0 RC-2
@@ -299,6 +299,8 @@ function dp_welcomepack_admin() {
  * @return Boolean represent success or failure creating the new relationship
  */
 function dp_welcomepack_force_add_friend( $initiator_user_id, $friend_user_id ) {
+	global $bp;
+
 	if ( !function_exists( 'friends_install' ) )
 		return false;
 
@@ -316,7 +318,7 @@ function dp_welcomepack_force_add_friend( $initiator_user_id, $friend_user_id ) 
 		return false;
 
 	/* Record this in activity streams */
-	friends_record_activity( array( 'item_id' => $friendship->id, 'component_name' => 'friends', 'component_action' => 'friendship_accepted', 'is_private' => 0, 'user_id' => $friendship->initiator_user_id, 'secondary_user_id' => $friendship->friend_user_id ) );
+	friends_record_activity( array( 'item_id' => $friendship->id, 'component_name' => $bp->friends->slug, 'component_action' => 'friendship_accepted', 'is_private' => 0, 'user_id' => $friendship->initiator_user_id, 'secondary_user_id' => $friendship->friend_user_id ) );
 
 	/* Modify relationship meta */
 	friends_update_friend_totals( $friendship->initiator_user_id, $friendship->friend_user_id );
@@ -412,9 +414,9 @@ function dp_messages_send_message( $recipients, $subject, $content, $from, $thre
 				// Send email notifications to the recipients
 				require_once( WP_PLUGIN_DIR . '/buddypress/bp-messages/bp-messages-notifications.php' );
 				
-				messages_notification_new_message( array( 'item_id' => $pmessage->id, 'recipient_ids' => $pmessage->recipients, 'thread_id' => $pmessage->thread_id, 'component_name' => 'messages', 'component_action' => 'message_sent', 'is_private' => 1 ) );
+				messages_notification_new_message( array( 'item_id' => $pmessage->id, 'recipient_ids' => $pmessage->recipients, 'thread_id' => $pmessage->thread_id, 'component_name' => $bp->messages->slug, 'component_action' => 'message_sent', 'is_private' => 1 ) );
 
-				do_action( 'messages_send_message', array( 'item_id' => $pmessage->id, 'recipient_ids' => $pmessage->recipients, 'thread_id' => $pmessage->thread_id, 'component_name' => 'messages', 'component_action' => 'message_sent', 'is_private' => 1 ) );
+				do_action( 'messages_send_message', array( 'item_id' => $pmessage->id, 'recipient_ids' => $pmessage->recipients, 'thread_id' => $pmessage->thread_id, 'component_name' => $bp->messages->slug, 'component_action' => 'message_sent', 'is_private' => 1 ) );
 		
 				if ( $from_ajax ) {
 					return array('status' => 1, 'message' => $message, 'reply' => $pmessage);
@@ -505,9 +507,26 @@ function dp_welcomepack_setup_globals() {
 	if ( !get_site_option( 'dp-welcomepack-welcomemessage-enabled' ) ) { update_site_option( 'dp-welcomepack-welcomemessage-enabled', 0 ); }
 }
 
+/**
+ * dp_welcomepack_onuserandblogregistration()
+ *
+ * Handles user + new blog registration.  These are handled differently by WPMU in wpmu_activate_signup().
+ *
+ * @package Welcome Pack
+ * @uses dp_welcomepack_defaultfriend() Calls default friend routine.
+ * @uses dp_welcomepack_defaultgroup() Calls default group routine.
+ * @uses dp_welcomepack_welcomemessage() Calls welcome message routine.
+ */
+function dp_welcomepack_onuserandblogregistration( $blog_id, $user_id, $password, $signup_title, $meta ) {
+	dp_welcomepack_defaultfriend( $user_id, $password, $meta );
+	dp_welcomepack_defaultgroup( $user_id, $password, $meta );
+	dp_welcomepack_welcomemessage( $user_id, $password, $meta );
+}
+
 add_action( 'wpmu_activate_user', 'dp_welcomepack_defaultfriend', 1, 3 );
 add_action( 'wpmu_activate_user', 'dp_welcomepack_defaultgroup', 1, 3 );
 add_action( 'wpmu_activate_user', 'dp_welcomepack_welcomemessage', 1, 3 );
+add_action( 'wpmu_activate_blog', 'dp_welcomepack_onuserandblogregistration', 1, 5 );
 add_action( 'admin_menu', 'dp_welcomepack_menu' );
 
 add_action( 'plugins_loaded', 'dp_welcomepack_setup_globals', 5 );	

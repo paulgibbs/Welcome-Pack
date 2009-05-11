@@ -4,7 +4,7 @@ Plugin Name: Welcome Pack
 Author: DJPaul
 Author URI: http://www.metabiscuits.com
 Description: Provides default friend, default group and welcome message functionality to BuddyPress.
-Version: 1.11
+Version: 1.12
 Site Wide Only: true
 License: GNU General Public License 3.0 (GPL) http://www.gnu.org/licenses/gpl.html
 Requires at least: WPMU 2.7.1, BuddyPress 1.0 RC-2
@@ -452,6 +452,8 @@ function dp_messages_send_message( $recipients, $subject, $content, $from, $thre
  * @return Boolean represent success or failure creating the group membership
  */
 function dp_welcomepack_force_join_group( $user_id, $group_id ) {
+	global $bp;
+
 	if ( !function_exists( 'groups_install' ) )
 		return false;
 	
@@ -468,7 +470,7 @@ function dp_welcomepack_force_join_group( $user_id, $group_id ) {
 		return false;
 
 	/* Record this in activity streams */
-	groups_record_activity( array( 'item_id' => $group_id, 'component_name' => 'groups', 'component_action' => 'joined_group', 'is_private' => 0 ) );
+	groups_record_activity( array( 'item_id' => $new_member->group_id, 'component_name' => $bp->groups->slug, 'component_action' => 'joined_group', 'is_private' => 0, 'user_id' => $user_id ) );
 	
 	/* Modify group meta */
 	groups_update_groupmeta( $group_id, 'total_member_count', (int) groups_get_groupmeta( $group_id, 'total_member_count') + 1 );

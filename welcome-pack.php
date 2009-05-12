@@ -4,11 +4,11 @@ Plugin Name: Welcome Pack
 Author: DJPaul
 Author URI: http://www.metabiscuits.com
 Description: Provides default friend, default group and welcome message functionality to BuddyPress.
-Version: 1.13
+Version: 1.2
 Site Wide Only: true
 License: GNU General Public License 3.0 (GPL) http://www.gnu.org/licenses/gpl.html
-Requires at least: WPMU 2.7.1, BuddyPress 1.0 RC-2
-Tested up to: WPMU 2.7.1, BuddyPress 1.0 RC-2
+Requires at least: WPMU 2.7.1, BuddyPress 1.0
+Tested up to: WPMU 2.7.1, BuddyPress 1.0
 */
 
 require_once( WP_PLUGIN_DIR . '/buddypress/bp-core.php' );

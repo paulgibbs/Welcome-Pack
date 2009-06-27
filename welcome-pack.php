@@ -4,11 +4,11 @@ Plugin Name: Welcome Pack
 Author: DJPaul
 Author URI: http://www.metabiscuits.com
 Description: Provides default friend, default group and welcome message functionality to BuddyPress.
-Version: 1.2
+Version: 1.21
 Site Wide Only: true
-License: GNU General Public License 3.0 (GPL) http://www.gnu.org/licenses/gpl.html
-Requires at least: WPMU 2.7.1, BuddyPress 1.0
-Tested up to: WPMU 2.7.1, BuddyPress 1.0
+License: http://creativecommons.org/licenses/by-nc-sa/2.0/uk/
+Requires at least: WPMU 2.7.1, BuddyPress 1.0.2
+Tested up to: WPMU 2.7.1, BuddyPress 1.0.2
 */
 
 require_once( WP_PLUGIN_DIR . '/buddypress/bp-core.php' );
@@ -51,10 +51,10 @@ function dp_welcomepack_welcomemessage( $user_id, $password, $meta ) {
  * @param $user_id The user ID of the new user
  * @param $password Password of the new user
  * @param $meta User meta
- * @uses dp_welcomepack_force_add_friend() Force-create a new friend relationship
+ * @uses friends_add_friend() Creates a new friend relationship
  * @uses get_site_option() Selects a site setting from the DB.
  * @uses maybe_unserialize() Unserialize value only if it was serialized.
- * @uses Class WPDB Wordpress db object
+ * @uses Class WPDB Wordpress DB object
  */
 function dp_welcomepack_defaultfriend( $user_id, $password, $meta ) {
 	if ( !function_exists( 'friends_install' ) ) return;
@@ -69,7 +69,7 @@ function dp_welcomepack_defaultfriend( $user_id, $password, $meta ) {
 		$sql = $wpdb->prepare( "SELECT * FROM {$wpdb->base_prefix}users WHERE id = %d", $friend );
 		if ( !$wpdb->get_row( $sql ) ) continue;
 
-	  dp_welcomepack_force_add_friend( $friend, $user_id );
+	  friends_add_friend( $friend, $user_id, true );
 	}
 }
 
@@ -285,49 +285,6 @@ function dp_welcomepack_admin() {
 }
 
 /**
- * dp_welcomepack_force_add_friend()
- *
- * Force-create a new friend relationship.
- *
- * @package Welcome Pack
- * @param $initiator_user_id The user ID of the person initiating the friend request
- * @param $friend_user_id The user ID of the new friend
- * @uses BP_Friends_Friendship Class Manages relationships
- * @uses friends_record_activity() Record relationship activity
- * @uses friends_update_friend_totals() Updates relationship meta
- * @uses do_action() Calls an action that triggers any registered filters
- * @return Boolean represent success or failure creating the new relationship
- */
-function dp_welcomepack_force_add_friend( $initiator_user_id, $friend_user_id ) {
-	global $bp;
-
-	if ( !function_exists( 'friends_install' ) )
-		return false;
-
-	$friendship = new BP_Friends_Friendship;	
-	if ( (int)$friendship->is_confirmed )
-		return true;
-
-	$friendship->initiator_user_id = $initiator_user_id;
-	$friendship->friend_user_id = $friend_user_id;
-	$friendship->is_confirmed = 1;
-	$friendship->is_limited = 0;
-	$friendship->date_created = time();
-
-	if ( !$friendship->save() )
-		return false;
-
-	/* Record this in activity streams */
-	friends_record_activity( array( 'item_id' => $friendship->id, 'component_name' => $bp->friends->slug, 'component_action' => 'friendship_accepted', 'is_private' => 0, 'user_id' => $friendship->initiator_user_id, 'secondary_user_id' => $friendship->friend_user_id ) );
-
-	/* Modify relationship meta */
-	friends_update_friend_totals( $friendship->initiator_user_id, $friendship->friend_user_id );
-	
-	do_action( 'friends_friendship_accepted', $friendship->id, $friendship->initiator_user_id, $friendship->friend_user_id );
-	return true;
-}
-
-/**
  * dp_messages_send_message().
  *
  * Not documented as expect to use a core version of this function in future - http://trac.buddypress.org/ticket/673.
@@ -336,39 +293,15 @@ function dp_messages_send_message( $recipients, $subject, $content, $from, $thre
 	global $pmessage;
 	global $message, $type;
 	global $bp, $current_user;
-
-	messages_add_callback_values( $recipients, $subject, $content );
-
+		
 	$recipients = explode( ' ', $recipients );
-	if ( count( $recipients ) < 1 ) {
-		if ( !$from_ajax ) {	
-/*			bp_core_add_message( __('Please enter at least one valid user to send this message to.', 'buddypress'), 'error' );
-			bp_core_redirect( $from->domain . $bp->current_component . '/compose' );*/
-		} else {
-			return array('status' => 0, 'message' => __('There was an error sending the reply, please try again.', 'buddypress'));
-		}
-		
-	// If there is only 1 recipient and it is the logged in user.
-	} else if ( 1 == count( $recipients ) && $recipients[0] == $current_user->user_login ) {
-/*		bp_core_add_message( __('You must send your message to one or more users not including yourself.', 'buddypress'), 'error' );
-		bp_core_redirect( $from->domain . $bp->current_component . '/compose' );	*/
 	
-	// If the subject or content boxes are empty.
-	} else if ( empty( $subject ) || empty( $content ) ) {
-		if ( !$from_ajax ) {
-/*			bp_core_add_message( __('Please make sure you fill in all the fields.', 'buddypress'), 'error' );
-			bp_core_redirect( $from->domain . $bp->current_component . '/compose' );*/
-		} else {
-			return array('status' => 0, 'message' => __('Please make sure you have typed a message before sending a reply.', 'buddypress'));
-		}
-		
-	// Passed validation continue.
-	} else {
-		// Strip the logged in user from the recipient list if they exist
-/*		if ( $key = array_search( $current_user->user_login, $recipients ) )
-			unset( $recipients[$key] );
-*/
+	if (true) {
 
+		// Strip the logged in user from the recipient list if they exist
+		if ( $key = array_search( $current_user->user_login, $recipients ) )
+			unset( $recipients[$key] );
+		
 		$pmessage = new BP_Messages_Message;
 
 		$pmessage->sender_id = $from->id;
@@ -376,9 +309,9 @@ function dp_messages_send_message( $recipients, $subject, $content, $from, $thre
 		$pmessage->message = $content;
 		$pmessage->thread_id = $thread_id;
 		$pmessage->date_sent = time();
-		$pmessage->message_order = 0;
+		$pmessage->message_order = 0; // TODO
 		$pmessage->sender_is_group = 0;
-
+		
 		if ( $is_reply ) {
 			$thread = new BP_Messages_Thread($thread_id);
 			$pmessage->recipients = $thread->get_recipients();
@@ -387,33 +320,29 @@ function dp_messages_send_message( $recipients, $subject, $content, $from, $thre
 		}
 
 		if ( !is_null( $pmessage->recipients ) ) {
-			
 			if ( !$pmessage->send() ) {
-
 				$message = __('Message could not be sent, please try again.', 'buddypress');
 				$type = 'error';
 		
 				if ( $from_ajax ) {
 					return array('status' => 0, 'message' => $message);
 				} else {
-/*					bp_core_add_message( $message, $type );
-					bp_core_redirect( $from->domain . $bp->current_component . '/compose' );*/
+					bp_core_add_message( $message, $type );
+					bp_core_redirect( $bp->loggedin_user->domain . $bp->current_component . '/compose' );
 				} 
 			} else {
-
-				$message = __('Message sent successfully!', 'buddypress') . ' <a href="' . $from->domain . $bp->messages->slug . '/view/' . $pmessage->thread_id . '">' . __('View Message', 'buddypress') . '</a> &raquo;';
+				$message = __('Message sent successfully!', 'buddypress') . ' <a href="' . $bp->loggedin_user->domain . $bp->messages->slug . '/view/' . $pmessage->thread_id . '">' . __('View Message', 'buddypress') . '</a> &raquo;';
 				$type = 'success';
 				
 				// Send screen notifications to the recipients
 				for ( $i = 0; $i < count($pmessage->recipients); $i++ ) {
-					if ( $pmessage->recipients[$i] != $from->id ) {
+					if ( $pmessage->recipients[$i] != $bp->loggedin_user->id ) {
 						bp_core_add_notification( $pmessage->id, $pmessage->recipients[$i], 'messages', 'new_message' );	
 					}
 				}
-
-				// Send email notifications to the recipients
-				require_once( WP_PLUGIN_DIR . '/buddypress/bp-messages/bp-messages-notifications.php' );
 				
+				// Send email notifications to the recipients
+				require_once( BP_PLUGIN_DIR . '/bp-messages/bp-messages-notifications.php' );
 				messages_notification_new_message( array( 'item_id' => $pmessage->id, 'recipient_ids' => $pmessage->recipients, 'thread_id' => $pmessage->thread_id, 'component_name' => $bp->messages->slug, 'component_action' => 'message_sent', 'is_private' => 1 ) );
 
 				do_action( 'messages_send_message', array( 'item_id' => $pmessage->id, 'recipient_ids' => $pmessage->recipients, 'thread_id' => $pmessage->thread_id, 'component_name' => $bp->messages->slug, 'component_action' => 'message_sent', 'is_private' => 1 ) );
@@ -422,7 +351,7 @@ function dp_messages_send_message( $recipients, $subject, $content, $from, $thre
 					return array('status' => 1, 'message' => $message, 'reply' => $pmessage);
 				} else {
 /*					bp_core_add_message( $message );
-					bp_core_redirect( $from->domain . $bp->current_component . '/inbox' );*/
+					bp_core_redirect( $bp->loggedin_user->domain . $bp->current_component . '/inbox' );*/
 				}
 			}
 		} else {
@@ -433,7 +362,7 @@ function dp_messages_send_message( $recipients, $subject, $content, $from, $thre
 				return array('status' => 0, 'message' => $message);
 			} else {
 /*				bp_core_add_message( $message, $type );
-				bp_core_redirect( $from->domain . $bp->messages->slug . '/compose' );*/
+				bp_core_redirect( $bp->loggedin_user->domain . $bp->messages->slug . '/compose' );*/
 			}
 		}
 	}

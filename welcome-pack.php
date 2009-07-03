@@ -284,6 +284,87 @@ function dp_welcomepack_admin() {
 <?php
 }
 
+class DP_WelcomePack_BP_Messages_Message extends BP_Messages_Message {
+	function send() {	
+		global $wpdb, $bp;
+		
+		$this->sender_id = apply_filters( 'messages_message_sender_id_before_save', $this->sender_id, $this->id );
+		$this->subject = apply_filters( 'messages_message_subject_before_save', $this->subject, $this->id );
+		$this->message = apply_filters( 'messages_message_content_before_save', $this->message, $this->id );
+		$this->date_sent = apply_filters( 'messages_message_date_sent_before_save', $this->date_sent, $this->id ); 
+		$this->message_order = apply_filters( 'messages_message_order_before_save', $this->message_order, $this->id ); 
+		$this->sender_is_group = apply_filters( 'messages_message_sender_is_group_before_save', $this->sender_is_group, $this->id );
+
+		do_action( 'messages_message_before_save', $this );
+		
+		// First insert the message into the messages table
+		if ( !$wpdb->query( $wpdb->prepare( "INSERT INTO {$bp->messages->table_name_messages} ( sender_id, subject, message, date_sent, message_order, sender_is_group ) VALUES ( %d, %s, %s, FROM_UNIXTIME(%d), %d, %d )", $this->sender_id, $this->subject, $this->message, $this->date_sent, $this->message_order, $this->sender_is_group ) ) )
+			return false;
+			
+		// Next, if thread_id is set, we are adding to an existing thread, if not, start a new one.
+		if ( $this->thread_id ) {
+			// Select and update the current message ids for the thread.
+			$the_ids = $wpdb->get_row( $wpdb->prepare( "SELECT message_ids, sender_ids FROM {$bp->messages->table_name_threads} WHERE id = %d", $this->thread_id ) );
+			$message_ids = unserialize($the_ids->message_ids);
+			$message_ids[] = $wpdb->insert_id;
+			$message_ids = serialize($message_ids);
+			
+			// We need this so we can return the new message ID.
+			$message_id = $wpdb->insert_id;
+			
+			// Update the sender ids for the thread
+			$sender_ids = unserialize($the_ids->sender_ids);
+
+			if ( !in_array( $this->sender_id, $sender_ids ) || !$sender_ids )
+				$sender_ids[] = $this->sender_id;
+				
+			$sender_ids = serialize($sender_ids);			
+			
+			// Update the thread the message belongs to.
+			$wpdb->query( $wpdb->prepare( "UPDATE {$bp->messages->table_name_threads} SET message_ids = %s, sender_ids = %s, last_message_id = %d, last_sender_id = %d, last_post_date = FROM_UNIXTIME(%d) WHERE id = %d", $message_ids, $sender_ids, $wpdb->insert_id, $this->sender_id, $this->date_sent, $this->thread_id ) );
+						
+			// Find the recipients and update the unread counts for each
+			if ( !$this->recipients )
+				$this->recipients = $this->get_recipients();
+			
+			for ( $i = 0; $i < count($this->recipients); $i++ ) {
+				if ( $this->recipients[$i]->user_id != $bp->loggedin_user->id )
+					$wpdb->query( $wpdb->prepare( "UPDATE {$bp->messages->table_name_recipients} SET unread_count = unread_count + 1, sender_only = 0 WHERE thread_id = %d AND user_id = %d", $this->thread_id, $this->recipients[$i] ) );
+			}
+		} else {
+			// Create a new thread.
+			$message_id = $wpdb->insert_id;
+			$serialized_message_id = serialize( array( (int)$message_id ) );
+			$serialized_sender_id = serialize( array( (int)$bp->loggedin_user->id ) );
+			
+			$sql = $wpdb->prepare( "INSERT INTO {$bp->messages->table_name_threads} ( message_ids, sender_ids, first_post_date, last_post_date, last_message_id, last_sender_id ) VALUES ( %s, %s, FROM_UNIXTIME(%d), FROM_UNIXTIME(%d), %d, %d )", $serialized_message_id, $serialized_sender_id, $this->date_sent, $this->date_sent, $message_id, $this->sender_id ); 
+			
+			if ( false === $wpdb->query($sql) )
+				return false;
+			
+
+			$this->thread_id = $wpdb->insert_id;
+			
+			// Add a new entry for each recipient;
+			for ( $i = 0; $i < count($this->recipients); $i++ ) {
+				$wpdb->query( $wpdb->prepare( "INSERT INTO {$bp->messages->table_name_recipients} ( user_id, thread_id, unread_count ) VALUES ( %d, %d, 1 )", $this->recipients[$i], $this->thread_id ) );
+			}
+			
+			if ( !in_array( $this->sender_id, $this->recipients ) ) {
+				// Finally, add a recipient entry for the sender, as replies need to go to this person too.
+				$wpdb->query( $wpdb->prepare( "INSERT INTO {$bp->messages->table_name_recipients} ( user_id, thread_id, unread_count, sender_only ) VALUES ( %d, %d, 0, 0 )", $this->sender_id, $this->thread_id ) );
+			}
+		}
+		
+		$this->id = $message_id;
+		//messages_remove_callback_values();
+
+		do_action( 'messages_message_after_save', $this );
+		
+		return true;
+	}
+}
+
 /**
  * dp_messages_send_message().
  *
@@ -302,7 +383,7 @@ function dp_messages_send_message( $recipients, $subject, $content, $from, $thre
 		if ( $key = array_search( $current_user->user_login, $recipients ) )
 			unset( $recipients[$key] );
 		
-		$pmessage = new BP_Messages_Message;
+		$pmessage = new DP_WelcomePack_BP_Messages_Message;
 
 		$pmessage->sender_id = $from->id;
 		$pmessage->subject = $subject;

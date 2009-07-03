@@ -11,7 +11,8 @@ Requires at least: WPMU 2.7.1, BuddyPress 1.0.2
 Tested up to: WPMU 2.7.1, BuddyPress 1.0.2
 */
 
-require_once( WP_PLUGIN_DIR . '/buddypress/bp-core.php' );
+require_once( BP_PLUGIN_DIR . '/bp-core.php' );
+require_once( BP_PLUGIN_DIR . '/bp-messages/bp-messages-classes.php' );
 
 
 /**
@@ -286,7 +287,6 @@ function dp_welcomepack_admin() {
 
 class DP_WelcomePack_BP_Messages_Message extends BP_Messages_Message {
 	function send() {
-		require_once ( BP_PLUGIN_DIR . '/bp-messages/bp-messages-classes.php' );
 		global $wpdb, $bp;
 		
 		$this->sender_id = apply_filters( 'messages_message_sender_id_before_save', $this->sender_id, $this->id );

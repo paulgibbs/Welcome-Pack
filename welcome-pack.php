@@ -285,7 +285,8 @@ function dp_welcomepack_admin() {
 }
 
 class DP_WelcomePack_BP_Messages_Message extends BP_Messages_Message {
-	function send() {	
+	function send() {
+		require_once ( BP_PLUGIN_DIR . '/bp-messages/bp-messages-classes.php' );
 		global $wpdb, $bp;
 		
 		$this->sender_id = apply_filters( 'messages_message_sender_id_before_save', $this->sender_id, $this->id );

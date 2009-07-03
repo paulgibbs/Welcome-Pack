@@ -11,8 +11,8 @@ Requires at least: WPMU 2.7.1, BuddyPress 1.0.2
 Tested up to: WPMU 2.7.1, BuddyPress 1.0.2
 */
 
-require_once( BP_PLUGIN_DIR . '/bp-core.php' );
-require_once( BP_PLUGIN_DIR . '/bp-messages/bp-messages-classes.php' );
+require_once( WP_PLUGIN_DIR . '/buddypress/bp-core.php' );
+require_once( WP_PLUGIN_DIR . '/buddypress/bp-messages/bp-messages-classes.php' );
 
 
 /**

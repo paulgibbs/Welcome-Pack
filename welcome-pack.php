@@ -160,7 +160,7 @@ function dp_welcomepack_admin() {
 
 		if ( function_exists( 'messages_install' ) ) {
 
-			update_site_option( 'dp-welcomepack-welcomemessage-sender', $_POST['dm_sender'] );
+			update_site_option( 'dp-welcomepack-welcomemessage-sender', (int) $_POST['dm_sender'] );
 			update_site_option( 'dp-welcomepack-welcomemessage-subject', $_POST['dm_subject'] );
 			update_site_option( 'dp-welcomepack-welcomemessage-msg', $_POST['dm_msg'] );
 			update_site_option( 'dp-welcomepack-welcomemessage-enabled', (int) $_POST['dm_enabled'] );
@@ -249,7 +249,7 @@ function dp_welcomepack_admin() {
 			<tr valign="top">
 				<th scope="row"><label for="dm_sender"><?php _e( 'Welcome message sender', 'dp-welcomepack' ) ?></label></th>
 				<td>
-					<select name="dm_sender[]" id="dm_sender" style="height: auto;">
+					<select name="dm_sender" id="dm_sender" style="height: auto;">
 						<?php
 						$users = BP_Core_User::get_alphabetical_users();
 						$default_sender = get_site_option( 'dp-welcomepack-welcomemessage-sender' );

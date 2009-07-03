@@ -4,7 +4,7 @@ Plugin Name: Welcome Pack
 Author: DJPaul
 Author URI: http://www.metabiscuits.com
 Description: Provides default friend, default group and welcome message functionality to BuddyPress.
-Version: 1.21
+Version: 1.22
 Site Wide Only: true
 License: http://creativecommons.org/licenses/by-nc-sa/2.0/uk/
 Requires at least: WPMU 2.7.1, BuddyPress 1.0.2
@@ -160,7 +160,7 @@ function dp_welcomepack_admin() {
 
 		if ( function_exists( 'messages_install' ) ) {
 
-			update_site_option( 'dp-welcomepack-welcomemessage-sender', (int) $_POST['dm_sender'] );
+			update_site_option( 'dp-welcomepack-welcomemessage-sender', $_POST['dm_sender'] );
 			update_site_option( 'dp-welcomepack-welcomemessage-subject', $_POST['dm_subject'] );
 			update_site_option( 'dp-welcomepack-welcomemessage-msg', $_POST['dm_msg'] );
 			update_site_option( 'dp-welcomepack-welcomemessage-enabled', (int) $_POST['dm_enabled'] );

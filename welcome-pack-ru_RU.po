@@ -1,0 +1,159 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Welcome Pack\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-07-08 19:10+0200\n"
+"PO-Revision-Date: \n"
+"Last-Translator: slaFFik <slaffik@list.ru>\n"
+"Language-Team: CosyDale <slaffik@list.ru>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Russian\n"
+"X-Poedit-Country: Ukraine\n"
+"X-Poedit-KeywordsList: __;_e\n"
+"X-Poedit-Basepath: C:\\Documents and Settings\\Admin\\Рабочий стол\\Welcome\\welcome-pack\n"
+"X-Poedit-SearchPath-0: C:\\Documents and Settings\\Admin\\Рабочий стол\\Welcome\\welcome-pack\n"
+
+#: C:\Documents
+#: and Settings\Admin\Ðàáî÷èé
+#: ñòîë\Welcome\welcome-pack/welcome-pack.php:122
+msgid "Welcome Pack"
+msgstr "Welcome Pack"
+
+#: C:\Documents
+#: and Settings\Admin\Ðàáî÷èé
+#: ñòîë\Welcome\welcome-pack/welcome-pack.php:122
+#: ñòîë\Welcome\welcome-pack/welcome-pack.php:174
+msgid " Welcome Pack"
+msgstr " Welcome Pack"
+
+#: C:\Documents
+#: and Settings\Admin\Ðàáî÷èé
+#: ñòîë\Welcome\welcome-pack/welcome-pack.php:170
+msgid "Options updated."
+msgstr "Настройки обновлены."
+
+#: C:\Documents
+#: and Settings\Admin\Ðàáî÷èé
+#: ñòîë\Welcome\welcome-pack/welcome-pack.php:177
+msgid "Welcome Pack provides default friend, default group and welcome message functionality to a Wordpress MU & Buddypress installation."
+msgstr "Welcome Pack предоставляет друга и группу по умолчанию, а также приветственное сообщение на вашем WPMU+BuddyPress сайта."
+
+#: C:\Documents
+#: and Settings\Admin\Ðàáî÷èé
+#: ñòîë\Welcome\welcome-pack/welcome-pack.php:182
+#: ñòîë\Welcome\welcome-pack/welcome-pack.php:193
+msgid "Default friends"
+msgstr "Друзья по умолчанию"
+
+#: C:\Documents
+#: and Settings\Admin\Ðàáî÷èé
+#: ñòîë\Welcome\welcome-pack/welcome-pack.php:185
+msgid "Default friends enabled"
+msgstr "Разрешить друга по умолчанию"
+
+#: C:\Documents
+#: and Settings\Admin\Ðàáî÷èé
+#: ñòîë\Welcome\welcome-pack/welcome-pack.php:188
+msgid "Turn on the default friends feature."
+msgstr "Включить"
+
+#: C:\Documents
+#: and Settings\Admin\Ðàáî÷èé
+#: ñòîë\Welcome\welcome-pack/welcome-pack.php:205
+msgid "The user accounts that become a person's first friends."
+msgstr "Пользовательский аккаунт, который становится первым другом зарегистрированного человека. <br />Можно выбрать несколько, удерживая клавишу Ctrl."
+
+#: C:\Documents
+#: and Settings\Admin\Ðàáî÷èé
+#: ñòîë\Welcome\welcome-pack/welcome-pack.php:212
+#: ñòîë\Welcome\welcome-pack/welcome-pack.php:222
+msgid "Default groups"
+msgstr "Группы по умолчанию"
+
+#: C:\Documents
+#: and Settings\Admin\Ðàáî÷èé
+#: ñòîë\Welcome\welcome-pack/welcome-pack.php:215
+msgid "Default groups enabled"
+msgstr "Разрешить группы по умолчанию"
+
+#: C:\Documents
+#: and Settings\Admin\Ðàáî÷èé
+#: ñòîë\Welcome\welcome-pack/welcome-pack.php:218
+msgid "Turn on the default groups feature."
+msgstr "Включить"
+
+#: C:\Documents
+#: and Settings\Admin\Ðàáî÷èé
+#: ñòîë\Welcome\welcome-pack/welcome-pack.php:234
+msgid "The groups that a new user is joined to automatically."
+msgstr "Группы, в которые новый пользователь вступает автоматически. <br />Можно выбрать несколько, удерживая клавишу Ctrl."
+
+#: C:\Documents
+#: and Settings\Admin\Ðàáî÷èé
+#: ñòîë\Welcome\welcome-pack/welcome-pack.php:241
+msgid "Welcome message (sent using BuddyPress' message system)"
+msgstr "Приветственное сообщение (отправляется через систему сообщений BuddyPress)"
+
+#: C:\Documents
+#: and Settings\Admin\Ðàáî÷èé
+#: ñòîë\Welcome\welcome-pack/welcome-pack.php:244
+msgid "Welcome message enabled"
+msgstr "Разрешить приветственное сообщение"
+
+#: C:\Documents
+#: and Settings\Admin\Ðàáî÷èé
+#: ñòîë\Welcome\welcome-pack/welcome-pack.php:247
+msgid "Turn on the welcome message feature."
+msgstr "Включить"
+
+#: C:\Documents
+#: and Settings\Admin\Ðàáî÷èé
+#: ñòîë\Welcome\welcome-pack/welcome-pack.php:251
+msgid "Welcome message sender"
+msgstr "Отправитель сообщения"
+
+#: C:\Documents
+#: and Settings\Admin\Ðàáî÷èé
+#: ñòîë\Welcome\welcome-pack/welcome-pack.php:263
+msgid "The user account that the welcome message is sent from."
+msgstr "Аккаунт пользователя, от имени которого будет отправляться сообщение."
+
+#: C:\Documents
+#: and Settings\Admin\Ðàáî÷èé
+#: ñòîë\Welcome\welcome-pack/welcome-pack.php:267
+msgid "Welcome message subject"
+msgstr "Тема сообщения"
+
+#: C:\Documents
+#: and Settings\Admin\Ðàáî÷èé
+#: ñòîë\Welcome\welcome-pack/welcome-pack.php:273
+msgid "Welcome message body"
+msgstr "Текст сообщения"
+
+#: C:\Documents
+#: and Settings\Admin\Ðàáî÷èé
+#: ñòîë\Welcome\welcome-pack/welcome-pack.php:281
+msgid "Save Settings"
+msgstr "Сохранить настройки"
+
+#: C:\Documents
+#: and Settings\Admin\Ðàáî÷èé
+#: ñòîë\Welcome\welcome-pack/welcome-pack.php:406
+#: ñòîë\Welcome\welcome-pack/welcome-pack.php:440
+msgid "Message could not be sent, please try again."
+msgstr "Сообщение не может быть отправлено, пожалуйста, попробуйте еще раз."
+
+#: C:\Documents
+#: and Settings\Admin\Ðàáî÷èé
+#: ñòîë\Welcome\welcome-pack/welcome-pack.php:416
+msgid "Message sent successfully!"
+msgstr "Сообщение успешно отправлено!"
+
+#: C:\Documents
+#: and Settings\Admin\Ðàáî÷èé
+#: ñòîë\Welcome\welcome-pack/welcome-pack.php:416
+msgid "View Message"
+msgstr "Прочитать сообщение"
+

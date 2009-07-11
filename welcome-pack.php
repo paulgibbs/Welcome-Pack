@@ -4,16 +4,35 @@ Plugin Name: Welcome Pack
 Author: DJPaul
 Author URI: http://www.metabiscuits.com
 Description: Provides default friend, default group and welcome message functionality to BuddyPress.
-Version: 1.22
+Version: 1.23
 Site Wide Only: true
-License: http://creativecommons.org/licenses/by-nc-sa/2.0/uk/
-Requires at least: WPMU 2.7.1, BuddyPress 1.0.2
-Tested up to: WPMU 2.7.1, BuddyPress 1.0.2
-*/
+License: General Public License version 3 
+Requires at least: WPMU 2.8.1, BuddyPress 1.0.2
+Tested up to: WPMU 2.8.1, BuddyPress 1.0.2
 
+
+"Welcome Pack" for BuddyPress
+Copyright (C) 2009 Paul Gibbs
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License version 3 as published by
+the Free Software Foundation.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see http://www.gnu.org/licenses/.
+*/
 require_once( WP_PLUGIN_DIR . '/buddypress/bp-core.php' );
 require_once( WP_PLUGIN_DIR . '/buddypress/bp-messages/bp-messages-classes.php' );
 
+
+/* Load the language file */
+if ( file_exists( dirname(__FILE__) . '/welcome-pack-' . get_locale() . '.mo' ) )
+load_textdomain( 'dp-welcomepack', dirname(__FILE__) . '/welcome-pack-' . get_locale() . '.mo' );
 
 /**
  * dp_welcomepack_welcomemessage()
@@ -83,10 +102,9 @@ function dp_welcomepack_defaultfriend( $user_id, $password, $meta ) {
  * @param $user_id The user ID of the new user
  * @param $password Password of the new user
  * @param $meta User meta
- * @uses dp_welcomepack_force_join_group() Forces the new user to join a group
+ * @uses groups_invite_user() Sends a group invitation to the specified user.
  * @uses get_site_option() Selects a site setting from the DB.
  * @uses maybe_unserialize() Unserialize value only if it was serialized.
- * @uses Class WPDB Wordpress db object
  */
 function dp_welcomepack_defaultgroup( $user_id, $password, $meta ) {
 	if ( !function_exists( 'groups_install' ) ) return;
@@ -96,12 +114,8 @@ function dp_welcomepack_defaultgroup( $user_id, $password, $meta ) {
 	if ( empty( $default_groups ) ) return;
 	if ( !is_array( $default_groups ) ) $default_groups = (array) $default_groups;
 
-	global $wpdb, $bp;
-	foreach ($default_groups as $group) {
-		$sql = $wpdb->prepare( "SELECT * FROM {$bp->groups->table_name} WHERE id = %d", $group );
-		if ( !$wpdb->get_row( $sql ) ) continue;
-
-  	dp_welcomepack_force_join_group( $user_id, $group );
+	foreach ($default_groups as $group_id) {
+		groups_invite_user( $user_id, $group_id );
 	}
 }
 
@@ -138,7 +152,7 @@ function dp_welcomepack_menu() {
  * @uses BP_Groups_Group Class Fetches details for groups
  * @uses BP_Groups_Group:get_all() Returns array of BP groups sorted alphabetically
  * @uses maybe_unserialize() Unserialize value only if it was serialized.
- * @uses attribute_escape() Escaping for HTML attributes.
+ * @uses esc_attr_e() Escaping for HTML attributes.
  */
 function dp_welcomepack_admin() {
 	if ( isset( $_POST['submit'] ) ) {
@@ -199,7 +213,7 @@ function dp_welcomepack_admin() {
 						if (!$default_friends) $default_friends = array();
 
 						foreach ( (array) $users['users'] as $user ) { $name = bp_core_get_userlink( $user->user_id, true ); ?>
-						<option value="<?php echo attribute_escape( $user->user_id ); ?>"<?php echo( in_array( $user->user_id, $default_friends )  ? ' selected="selected"' : '' ); ?>><?php echo attribute_escape( $name ); ?></option>
+						<option value="<?php esc_attr_e( $user->user_id ); ?>"<?php echo( in_array( $user->user_id, $default_friends )  ? ' selected="selected"' : '' ); ?>><?php esc_attr_e( $name ); ?></option>
 						<?php } ?>
 					</select><br />
 					<?php _e( "The user accounts that become a person's first friends.", 'dp-welcomepack' ); ?>
@@ -228,7 +242,7 @@ function dp_welcomepack_admin() {
 						if (!$default_groups) $default_groups = array();
 						
 						foreach ( (array) $groups as $group ) { ?>
-						<option value="<?php echo attribute_escape( $group->group_id ); ?>"<?php echo( in_array( $group->group_id, $default_groups ) ? ' selected="selected"' : '' ); ?>><?php echo attribute_escape( $group->slug ); ?></option>
+						<option value="<?php esc_attr_e( $group->group_id ); ?>"<?php echo( in_array( $group->group_id, $default_groups ) ? ' selected="selected"' : '' ); ?>><?php esc_attr_e( $group->slug ); ?></option>
 						<?php } ?>
 					</select><br />
 					<?php _e( "The groups that a new user is joined to automatically.", 'dp-welcomepack' ); ?>
@@ -257,7 +271,7 @@ function dp_welcomepack_admin() {
 						if (!$default_sender) $default_sender = '';
 
 						foreach ( (array) $users['users'] as $user ) { $name = bp_core_get_userlink( $user->user_id, true ); ?>
-						<option value="<?php echo attribute_escape( $user->user_id ); ?>"<?php echo( ( $user->user_id == $default_sender ) ? ' selected="selected"' : '' ); ?>><?php echo attribute_escape( $name ); ?></option>
+						<option value="<?php esc_attr_e( $user->user_id ); ?>"<?php echo( ( $user->user_id == $default_sender ) ? ' selected="selected"' : '' ); ?>><?php esc_attr_e( $name ); ?></option>
 						<?php } ?>
 					</select><br />
 					<?php _e( 'The user account that the welcome message is sent from.', 'dp-welcomepack' ); ?>
@@ -266,13 +280,13 @@ function dp_welcomepack_admin() {
 			<tr valign="top">
 				<th scope="row"><label for="dm_subject"><?php _e( 'Welcome message subject', 'dp-welcomepack' ) ?></label></th>
 				<td>
-					<input name="dm_subject" type="text" id="dm_subject" style="width: 95%" value="<?php echo attribute_escape( get_site_option( 'dp-welcomepack-welcomemessage-subject' ) ) ?>" size="45" />
+					<input name="dm_subject" type="text" id="dm_subject" style="width: 95%" value="<?php esc_attr_e( get_site_option( 'dp-welcomepack-welcomemessage-subject' ) ) ?>" size="45" />
 				</td>
 			</tr>
 			<tr valign="top">
 				<th scope="row"><label for="dm_msg"><?php _e( 'Welcome message body', 'dp-welcomepack' ) ?></label></th>
 				<td>
-					<textarea name="dm_msg" id="dm_msg" rows="5" cols="45" style="width: 95%"><?php echo attribute_escape( get_site_option( 'dp-welcomepack-welcomemessage-msg' ) ) ?></textarea>
+					<textarea name="dm_msg" id="dm_msg" rows="5" cols="45" style="width: 95%"><?php esc_attr_e( get_site_option( 'dp-welcomepack-welcomemessage-msg' ) ) ?></textarea>
 				</td>
 			</tr>
 		</table>
@@ -448,49 +462,6 @@ function dp_messages_send_message( $recipients, $subject, $content, $from, $thre
 			}
 		}
 	}
-}
-
-/**
- * dp_welcomepack_force_join_group()
- *
- * Force-create a group membership.
- *
- * @package Welcome Pack
- * @param $user_id  The user ID to add to the group
- * @param $group_id The ID of the group to join
- * @uses BP_Groups_Member Class Manages group membership
- * @uses groups_record_activity() Record group activity
- * @uses groups_update_groupmeta() Updates group meta
- * @uses do_action() Calls an action that triggers any registered filters
- * @return Boolean represent success or failure creating the group membership
- */
-function dp_welcomepack_force_join_group( $user_id, $group_id ) {
-	global $bp;
-
-	if ( !function_exists( 'groups_install' ) )
-		return false;
-	
-	$new_member = new BP_Groups_Member;
-	$new_member->group_id = $group_id;
-	$new_member->user_id = $user_id;
-	$new_member->inviter_id = 0;
-	$new_member->is_admin = 0;
-	$new_member->user_title = '';
-	$new_member->date_modified = time();
-	$new_member->is_confirmed = 1;
-
-	if ( !$new_member->save() )
-		return false;
-
-	/* Record this in activity streams */
-	groups_record_activity( array( 'item_id' => $new_member->group_id, 'component_name' => $bp->groups->slug, 'component_action' => 'joined_group', 'is_private' => 0, 'user_id' => $user_id ) );
-	
-	/* Modify group meta */
-	groups_update_groupmeta( $group_id, 'total_member_count', (int) groups_get_groupmeta( $group_id, 'total_member_count') + 1 );
-	groups_update_groupmeta( $group_id, 'last_activity', time() );
-
-	do_action( 'groups_join_group', $group_id, $user_id );
-	return true;
 }
 
 /**

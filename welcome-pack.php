@@ -1,14 +1,15 @@
 <?php
 /*
 Plugin Name: Welcome Pack
+Plugin URI: http://www.twitter.com/pgibbs
 Author: DJPaul
-Author URI: http://www.metabiscuits.com
+Author URI: http://www.twitter.com/pgibbs
 Description: Provides default friend, default group and welcome message functionality to BuddyPress.
-Version: 1.23
+Version: 1.3
 Site Wide Only: true
 License: General Public License version 3 
 Requires at least: WPMU 2.8.1, BuddyPress 1.0.2
-Tested up to: WPMU 2.8.1, BuddyPress 1.0.2
+Tested up to: WPMU 2.8.2, BuddyPress 1.0.3
 
 
 "Welcome Pack" for BuddyPress
@@ -30,7 +31,6 @@ require_once( WP_PLUGIN_DIR . '/buddypress/bp-core.php' );
 require_once( WP_PLUGIN_DIR . '/buddypress/bp-messages/bp-messages-classes.php' );
 
 
-/* Load the language file */
 if ( file_exists( dirname(__FILE__) . '/welcome-pack-' . get_locale() . '.mo' ) )
 load_textdomain( 'dp-welcomepack', dirname(__FILE__) . '/welcome-pack-' . get_locale() . '.mo' );
 
@@ -115,9 +115,55 @@ function dp_welcomepack_defaultgroup( $user_id, $password, $meta ) {
 	if ( !is_array( $default_groups ) ) $default_groups = (array) $default_groups;
 
 	foreach ($default_groups as $group_id) {
-		groups_invite_user( $user_id, $group_id );
+		dp_welcomepack_groups_invite_user( $user_id, $group_id );
 	}
 }
+
+/* Copy of groups_invite_user as we can't specify the inviter_id yet - http://trac.buddypress.org/ticket/868. */
+function dp_welcomepack_groups_invite_user( $user_id, $group_id ) {
+	global $bp;
+	
+	if ( groups_is_user_member( $user_id, $group_id ) )
+		return false;
+
+	$group = new BP_Groups_Group( $group_id );
+
+	$invite = new BP_Groups_Member;
+	$invite->group_id = $group_id;
+	$invite->user_id = $user_id;
+	$invite->date_modified = time();
+	$invite->inviter_id = $group->creator_id;  //changed
+	$invite->is_confirmed = 0;
+	
+	if ( !$invite->save() )
+		return false;
+	
+	dp_welcomepack_groups_send_invites( $group );  //added
+	do_action( 'groups_invite_user', $group_id, $user_id );
+		
+	return true;
+}
+
+/* Copy of groups_send_invites as it is uses the logged in user id */
+function dp_welcomepack_groups_send_invites( $group_obj, $deprecated = true ) {
+	require_once ( BP_PLUGIN_DIR . '/bp-groups/bp-groups-notifications.php' );
+
+	// Send friend invites.
+	$invited_users = groups_get_invites_for_group( $group_obj->creator_id, $group_obj->id );
+	
+	for ( $i = 0; $i < count( $invited_users ); $i++ ) {
+		$member = new BP_Groups_Member( $invited_users[$i], $group_obj->id );
+		
+		// Send the actual invite
+		groups_notification_group_invites( $group_obj, $member, $group_obj->creator_id );
+		
+		$member->invite_sent = 1;
+		$member->save();
+	}
+	
+	do_action( 'groups_send_invites', $group_obj->id, $invited_users );
+}
+
 
 /**
  * dp_welcomepack_menu()

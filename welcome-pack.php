@@ -4,12 +4,12 @@ Plugin Name: Welcome Pack
 Plugin URI: http://www.twitter.com/pgibbs
 Author: DJPaul
 Author URI: http://www.twitter.com/pgibbs
-Description: Provides default friend, default group and welcome message functionality to BuddyPress.
-Version: 1.3
+Description: Brings default friend, default group and welcome message functionality to BuddyPress.
+Version: 1.4
 Site Wide Only: true
 License: General Public License version 3 
-Requires at least: WPMU 2.8.1, BuddyPress 1.0.2
-Tested up to: WPMU 2.8.2, BuddyPress 1.0.3
+Requires at least: WPMU 2.8.1, BuddyPress 1.1
+Tested up to: WPMU 2.8.4a, BuddyPress 1.1
 
 
 "Welcome Pack" for BuddyPress
@@ -26,13 +26,36 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/.
+
+
+This code isn't written particulary well.  I'll tidy it up in a future release.  --DJPaul
 */
-require_once( WP_PLUGIN_DIR . '/buddypress/bp-core.php' );
-require_once( WP_PLUGIN_DIR . '/buddypress/bp-messages/bp-messages-classes.php' );
+function dp_welcomepack_load_textdomain() {
+	$locale = apply_filters( 'buddypress_locale', get_locale() );
+	$mofile = WP_PLUGIN_DIR . "/welcome-pack/welcome-pack-$locale.mo";
 
+	if ( file_exists( $mofile ) )
+		load_textdomain( 'dp-welcomepack', $mofile );
+}
 
-if ( file_exists( dirname(__FILE__) . '/welcome-pack-' . get_locale() . '.mo' ) )
-load_textdomain( 'dp-welcomepack', dirname(__FILE__) . '/welcome-pack-' . get_locale() . '.mo' );
+/* Check that BuddyPress is loaded before Welcome Pack */
+function dp_welcomepack_load_buddypress() {
+	if ( function_exists( 'bp_core_setup_globals' ) )
+		return true;
+
+	/* Get the list of active sitewide plugins */
+	$active_sitewide_plugins = maybe_unserialize( get_site_option( 'active_sitewide_plugins' ) );
+
+	if ( !isset( $active_sidewide_plugins['buddypress/bp-loader.php'] ) )
+		return false;
+
+	if ( isset( $active_sidewide_plugins['buddypress/bp-loader.php'] ) && !function_exists( 'bp_core_setup_globals' ) ) {
+		require_once( WP_PLUGIN_DIR . '/buddypress/bp-loader.php' );
+		return true;
+	}
+
+	return false;
+}
 
 /**
  * dp_welcomepack_welcomemessage()
@@ -46,7 +69,7 @@ load_textdomain( 'dp-welcomepack', dirname(__FILE__) . '/welcome-pack-' . get_lo
  * @uses get_site_option() Selects a site setting from the DB.
  * @uses get_userdata() Get user object from the DB.
  * @uses bp_core_get_user_domain() Returns 'http://www.example.com/members/USERNAME'.
- * @uses dp_messages_send_message() Custom version of messages_send_message().
+ * @uses messages_new_message() Creates a new message.
  */
 function dp_welcomepack_welcomemessage( $user_id, $password, $meta ) {
 	if ( !function_exists( 'messages_install' ) ) return;
@@ -54,12 +77,13 @@ function dp_welcomepack_welcomemessage( $user_id, $password, $meta ) {
 
 	$sender_id = get_site_option( 'dp-welcomepack-welcomemessage-sender' );
 	$subject   = get_site_option( 'dp-welcomepack-welcomemessage-subject' );
-	$body      = get_site_option( 'dp-welcomepack-welcomemessage-msg' );
+	$content   = get_site_option( 'dp-welcomepack-welcomemessage-msg' );
 	if ( empty( $subject ) || empty( $body ) || empty( $sender_id ) ) return;
 
-	$user_login = get_userdata( $user_id );
-	$sender = (object) array( 'id' => $sender_id, 'domain' => bp_core_get_user_domain( $sender_id ) );
-	dp_messages_send_message( $user_login->user_login, $subject, $body, $sender, false );
+	messages_new_message( array( 'sender_id' => $sender_id,
+	                             'recipients' => array( $user_id ),
+	                             'subject' => $subject,
+	                             'content' => $content ) );
 }
 
 /**
@@ -74,7 +98,6 @@ function dp_welcomepack_welcomemessage( $user_id, $password, $meta ) {
  * @uses friends_add_friend() Creates a new friend relationship
  * @uses get_site_option() Selects a site setting from the DB.
  * @uses maybe_unserialize() Unserialize value only if it was serialized.
- * @uses Class WPDB Wordpress DB object
  */
 function dp_welcomepack_defaultfriend( $user_id, $password, $meta ) {
 	if ( !function_exists( 'friends_install' ) ) return;
@@ -85,7 +108,7 @@ function dp_welcomepack_defaultfriend( $user_id, $password, $meta ) {
 	if ( !is_array( $default_friends ) ) $default_friends = (array) $default_friends;
 
 	global $wpdb;
-	foreach ($default_friends as $friend) {
+	foreach ( $default_friends as $friend ) {
 		$sql = $wpdb->prepare( "SELECT * FROM {$wpdb->base_prefix}users WHERE id = %d", $friend );
 		if ( !$wpdb->get_row( $sql ) ) continue;
 
@@ -115,55 +138,11 @@ function dp_welcomepack_defaultgroup( $user_id, $password, $meta ) {
 	if ( !is_array( $default_groups ) ) $default_groups = (array) $default_groups;
 
 	foreach ($default_groups as $group_id) {
-		dp_welcomepack_groups_invite_user( $user_id, $group_id );
+		$group = new BP_Groups_Group( $group_id );
+		groups_invite_user( array( 'user_id' => $user_id, 'group_id' => $group_id, 'inviter_id' => $group->creator_id ) );
+		groups_send_invites( $group->creator_id, $group_id );
 	}
 }
-
-/* Copy of groups_invite_user as we can't specify the inviter_id yet - http://trac.buddypress.org/ticket/868. */
-function dp_welcomepack_groups_invite_user( $user_id, $group_id ) {
-	global $bp;
-	
-	if ( groups_is_user_member( $user_id, $group_id ) )
-		return false;
-
-	$group = new BP_Groups_Group( $group_id );
-
-	$invite = new BP_Groups_Member;
-	$invite->group_id = $group_id;
-	$invite->user_id = $user_id;
-	$invite->date_modified = time();
-	$invite->inviter_id = $group->creator_id;  //changed
-	$invite->is_confirmed = 0;
-	
-	if ( !$invite->save() )
-		return false;
-	
-	dp_welcomepack_groups_send_invites( $group );  //added
-	do_action( 'groups_invite_user', $group_id, $user_id );
-		
-	return true;
-}
-
-/* Copy of groups_send_invites as it is uses the logged in user id */
-function dp_welcomepack_groups_send_invites( $group_obj, $deprecated = true ) {
-	require_once ( BP_PLUGIN_DIR . '/bp-groups/bp-groups-notifications.php' );
-
-	// Send friend invites.
-	$invited_users = groups_get_invites_for_group( $group_obj->creator_id, $group_obj->id );
-	
-	for ( $i = 0; $i < count( $invited_users ); $i++ ) {
-		$member = new BP_Groups_Member( $invited_users[$i], $group_obj->id );
-		
-		// Send the actual invite
-		groups_notification_group_invites( $group_obj, $member, $group_obj->creator_id );
-		
-		$member->invite_sent = 1;
-		$member->save();
-	}
-	
-	do_action( 'groups_send_invites', $group_obj->id, $invited_users );
-}
-
 
 /**
  * dp_welcomepack_menu()
@@ -237,6 +216,7 @@ function dp_welcomepack_admin() {
 	<p><?php _e( 'Welcome Pack provides default friend, default group and welcome message functionality to a Wordpress MU & Buddypress installation.', 'dp-welcomepack' ) ?></p>
 
 	<form action="<?php echo site_url() . '/wp-admin/admin.php?page=dp_welcomepack' ?>" name="welcomepack-form" id="welcomepack-form" method="post">
+	<?php wp_nonce_field( 'dp-welcomepack' ) ?>
 
 	<?php if ( function_exists( 'friends_install' ) ) { ?>
 		<h3><?php _e( 'Default friends', 'dp-welcomepack' ) ?></h3>
@@ -339,175 +319,9 @@ function dp_welcomepack_admin() {
 	<?php } ?>
 
 	<p class="submit"><input type="submit" name="submit" value="<?php _e( 'Save Settings', 'buddypress' ) ?>"/></p>
-	<?php wp_nonce_field( 'dp-welcomepack' ) ?>
 	</forum>
 </div>
 <?php
-}
-
-class DP_WelcomePack_BP_Messages_Message extends BP_Messages_Message {
-	function send() {
-		global $wpdb, $bp;
-		
-		$this->sender_id = apply_filters( 'messages_message_sender_id_before_save', $this->sender_id, $this->id );
-		$this->subject = apply_filters( 'messages_message_subject_before_save', $this->subject, $this->id );
-		$this->message = apply_filters( 'messages_message_content_before_save', $this->message, $this->id );
-		$this->date_sent = apply_filters( 'messages_message_date_sent_before_save', $this->date_sent, $this->id ); 
-		$this->message_order = apply_filters( 'messages_message_order_before_save', $this->message_order, $this->id ); 
-		$this->sender_is_group = apply_filters( 'messages_message_sender_is_group_before_save', $this->sender_is_group, $this->id );
-
-		do_action( 'messages_message_before_save', $this );
-		
-		// First insert the message into the messages table
-		if ( !$wpdb->query( $wpdb->prepare( "INSERT INTO {$bp->messages->table_name_messages} ( sender_id, subject, message, date_sent, message_order, sender_is_group ) VALUES ( %d, %s, %s, FROM_UNIXTIME(%d), %d, %d )", $this->sender_id, $this->subject, $this->message, $this->date_sent, $this->message_order, $this->sender_is_group ) ) )
-			return false;
-			
-		// Next, if thread_id is set, we are adding to an existing thread, if not, start a new one.
-		if ( $this->thread_id ) {
-			// Select and update the current message ids for the thread.
-			$the_ids = $wpdb->get_row( $wpdb->prepare( "SELECT message_ids, sender_ids FROM {$bp->messages->table_name_threads} WHERE id = %d", $this->thread_id ) );
-			$message_ids = unserialize($the_ids->message_ids);
-			$message_ids[] = $wpdb->insert_id;
-			$message_ids = serialize($message_ids);
-			
-			// We need this so we can return the new message ID.
-			$message_id = $wpdb->insert_id;
-			
-			// Update the sender ids for the thread
-			$sender_ids = unserialize($the_ids->sender_ids);
-
-			if ( !in_array( $this->sender_id, $sender_ids ) || !$sender_ids )
-				$sender_ids[] = $this->sender_id;
-				
-			$sender_ids = serialize($sender_ids);			
-			
-			// Update the thread the message belongs to.
-			$wpdb->query( $wpdb->prepare( "UPDATE {$bp->messages->table_name_threads} SET message_ids = %s, sender_ids = %s, last_message_id = %d, last_sender_id = %d, last_post_date = FROM_UNIXTIME(%d) WHERE id = %d", $message_ids, $sender_ids, $wpdb->insert_id, $this->sender_id, $this->date_sent, $this->thread_id ) );
-						
-			// Find the recipients and update the unread counts for each
-			if ( !$this->recipients )
-				$this->recipients = $this->get_recipients();
-			
-			for ( $i = 0; $i < count($this->recipients); $i++ ) {
-				if ( $this->recipients[$i]->user_id != $bp->loggedin_user->id )
-					$wpdb->query( $wpdb->prepare( "UPDATE {$bp->messages->table_name_recipients} SET unread_count = unread_count + 1, sender_only = 0 WHERE thread_id = %d AND user_id = %d", $this->thread_id, $this->recipients[$i] ) );
-			}
-		} else {
-			// Create a new thread.
-			$message_id = $wpdb->insert_id;
-			$serialized_message_id = serialize( array( (int)$message_id ) );
-			$serialized_sender_id = serialize( array( (int)$bp->loggedin_user->id ) );
-			
-			$sql = $wpdb->prepare( "INSERT INTO {$bp->messages->table_name_threads} ( message_ids, sender_ids, first_post_date, last_post_date, last_message_id, last_sender_id ) VALUES ( %s, %s, FROM_UNIXTIME(%d), FROM_UNIXTIME(%d), %d, %d )", $serialized_message_id, $serialized_sender_id, $this->date_sent, $this->date_sent, $message_id, $this->sender_id ); 
-			
-			if ( false === $wpdb->query($sql) )
-				return false;
-			
-
-			$this->thread_id = $wpdb->insert_id;
-			
-			// Add a new entry for each recipient;
-			for ( $i = 0; $i < count($this->recipients); $i++ ) {
-				$wpdb->query( $wpdb->prepare( "INSERT INTO {$bp->messages->table_name_recipients} ( user_id, thread_id, unread_count ) VALUES ( %d, %d, 1 )", $this->recipients[$i], $this->thread_id ) );
-			}
-			
-			if ( !in_array( $this->sender_id, $this->recipients ) ) {
-				// Finally, add a recipient entry for the sender, as replies need to go to this person too.
-				$wpdb->query( $wpdb->prepare( "INSERT INTO {$bp->messages->table_name_recipients} ( user_id, thread_id, unread_count, sender_only ) VALUES ( %d, %d, 0, 0 )", $this->sender_id, $this->thread_id ) );
-			}
-		}
-		
-		$this->id = $message_id;
-		//messages_remove_callback_values();
-
-		do_action( 'messages_message_after_save', $this );
-		
-		return true;
-	}
-}
-
-/**
- * dp_messages_send_message().
- *
- * Not documented as expect to use a core version of this function in future - http://trac.buddypress.org/ticket/673.
- */
-function dp_messages_send_message( $recipients, $subject, $content, $from, $thread_id, $from_ajax = false, $from_template = false, $is_reply = false ) {
-	global $pmessage;
-	global $message, $type;
-	global $bp, $current_user;
-		
-	$recipients = explode( ' ', $recipients );
-	
-	if (true) {
-
-		// Strip the logged in user from the recipient list if they exist
-		if ( $key = array_search( $current_user->user_login, $recipients ) )
-			unset( $recipients[$key] );
-		
-		$pmessage = new DP_WelcomePack_BP_Messages_Message;
-
-		$pmessage->sender_id = $from->id;
-		$pmessage->subject = $subject;
-		$pmessage->message = $content;
-		$pmessage->thread_id = $thread_id;
-		$pmessage->date_sent = time();
-		$pmessage->message_order = 0; // TODO
-		$pmessage->sender_is_group = 0;
-		
-		if ( $is_reply ) {
-			$thread = new BP_Messages_Thread($thread_id);
-			$pmessage->recipients = $thread->get_recipients();
-		} else {
-			$pmessage->recipients = BP_Messages_Message::get_recipient_ids( $recipients );
-		}
-
-		if ( !is_null( $pmessage->recipients ) ) {
-			if ( !$pmessage->send() ) {
-				$message = __('Message could not be sent, please try again.', 'buddypress');
-				$type = 'error';
-		
-				if ( $from_ajax ) {
-					return array('status' => 0, 'message' => $message);
-				} else {
-					bp_core_add_message( $message, $type );
-					bp_core_redirect( $bp->loggedin_user->domain . $bp->current_component . '/compose' );
-				} 
-			} else {
-				$message = __('Message sent successfully!', 'buddypress') . ' <a href="' . $bp->loggedin_user->domain . $bp->messages->slug . '/view/' . $pmessage->thread_id . '">' . __('View Message', 'buddypress') . '</a> &raquo;';
-				$type = 'success';
-				
-				// Send screen notifications to the recipients
-				for ( $i = 0; $i < count($pmessage->recipients); $i++ ) {
-					if ( $pmessage->recipients[$i] != $bp->loggedin_user->id ) {
-						bp_core_add_notification( $pmessage->id, $pmessage->recipients[$i], 'messages', 'new_message' );	
-					}
-				}
-				
-				// Send email notifications to the recipients
-				require_once( BP_PLUGIN_DIR . '/bp-messages/bp-messages-notifications.php' );
-				messages_notification_new_message( array( 'item_id' => $pmessage->id, 'recipient_ids' => $pmessage->recipients, 'thread_id' => $pmessage->thread_id, 'component_name' => $bp->messages->slug, 'component_action' => 'message_sent', 'is_private' => 1 ) );
-
-				do_action( 'messages_send_message', array( 'item_id' => $pmessage->id, 'recipient_ids' => $pmessage->recipients, 'thread_id' => $pmessage->thread_id, 'component_name' => $bp->messages->slug, 'component_action' => 'message_sent', 'is_private' => 1 ) );
-		
-				if ( $from_ajax ) {
-					return array('status' => 1, 'message' => $message, 'reply' => $pmessage);
-				} else {
-/*					bp_core_add_message( $message );
-					bp_core_redirect( $bp->loggedin_user->domain . $bp->current_component . '/inbox' );*/
-				}
-			}
-		} else {
-			$message = __('Message could not be sent, please try again.', 'buddypress');
-			$type = 'error';
-		
-			if ( $from_ajax ) {
-				return array('status' => 0, 'message' => $message);
-			} else {
-/*				bp_core_add_message( $message, $type );
-				bp_core_redirect( $bp->loggedin_user->domain . $bp->messages->slug . '/compose' );*/
-			}
-		}
-	}
 }
 
 /**
@@ -551,12 +365,13 @@ function dp_welcomepack_onuserandblogregistration( $blog_id, $user_id, $password
 	dp_welcomepack_welcomemessage( $user_id, $password, $meta );
 }
 
+add_action( 'plugins_loaded', 'dp_welcomepack_load_buddypress', 11 );
 add_action( 'wpmu_activate_user', 'dp_welcomepack_defaultfriend', 1, 3 );
 add_action( 'wpmu_activate_user', 'dp_welcomepack_defaultgroup', 1, 3 );
 add_action( 'wpmu_activate_user', 'dp_welcomepack_welcomemessage', 1, 3 );
 add_action( 'wpmu_activate_blog', 'dp_welcomepack_onuserandblogregistration', 1, 5 );
 add_action( 'admin_menu', 'dp_welcomepack_menu' );
-
-add_action( 'plugins_loaded', 'dp_welcomepack_setup_globals', 5 );	
-add_action( 'admin_menu', 'dp_welcomepack_setup_globals', 1 );
+add_action( 'plugins_loaded', 'dp_welcomepack_setup_globals', 15 );	
+add_action( 'admin_menu', 'dp_welcomepack_setup_globals', 12 );
+add_action ( 'plugins_loaded', 'dp_welcomepack_load_textdomain', 19 );
 ?>

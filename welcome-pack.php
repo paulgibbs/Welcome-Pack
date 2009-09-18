@@ -78,7 +78,7 @@ function dp_welcomepack_welcomemessage( $user_id, $password, $meta ) {
 	$sender_id = get_site_option( 'dp-welcomepack-welcomemessage-sender' );
 	$subject   = get_site_option( 'dp-welcomepack-welcomemessage-subject' );
 	$content   = get_site_option( 'dp-welcomepack-welcomemessage-msg' );
-	if ( empty( $subject ) || empty( $body ) || empty( $sender_id ) ) return;
+	if ( empty( $subject ) || empty( $content ) || empty( $sender_id ) ) return;
 
 	messages_new_message( array( 'sender_id' => $sender_id,
 	                             'recipients' => array( $user_id ),
@@ -112,7 +112,7 @@ function dp_welcomepack_defaultfriend( $user_id, $password, $meta ) {
 		$sql = $wpdb->prepare( "SELECT * FROM {$wpdb->base_prefix}users WHERE id = %d", $friend );
 		if ( !$wpdb->get_row( $sql ) ) continue;
 
-	  friends_add_friend( $friend, $user_id, true );
+	  friends_add_friend( $friend, $user_id );
 	}
 }
 
@@ -186,14 +186,14 @@ function dp_welcomepack_admin() {
 		global $wpdb;
 		if ( function_exists( 'friends_install' ) ) {
 
-			foreach ( (array) $_POST['df_id'] as $id ) { $id = (int) $id; }
+			foreach ( (array) $_POST['df_id'] as $key => $value) { $_POST[$key] = (int) $value; }	
 			update_site_option( 'dp-welcomepack-friend-id', $_POST['df_id'] );
 			update_site_option( 'dp-welcomepack-friend-enabled', (int) $_POST['df_enabled'] );
 		}
 
 		if ( function_exists( 'groups_install' ) ) {
 
-			foreach ( (array) $_POST['dg_id'] as $id ) { $id = (int) $id; }
+			foreach ( (array) $_POST['dg_id'] as $key => $value) { $_POST[$key] = (int) $value; }	
 			update_site_option( 'dp-welcomepack-group-id', $_POST['dg_id'] );
 			update_site_option( 'dp-welcomepack-group-enabled', (int) $_POST['dg_enabled'] );
 		}
@@ -261,14 +261,14 @@ function dp_welcomepack_admin() {
 			<tr valign="top">
 				<th scope="row"><label for="dg_id"><?php _e( 'Default groups', 'dp-welcomepack' ) ?></label></th>
 				<td>
-					<select name="dg_id[]" id="dg_id" multiple="multiple" style="height: auto;">
+					<select name="dg_id[]" id="dg_id" multiple="multiple" size="8" style="height: auto;">
 						<?php
 						$groups = BP_Groups_Group::get_all();
 						$default_groups = get_site_option( 'dp-welcomepack-group-id' );
 						if (!$default_groups) $default_groups = array();
 						
 						foreach ( (array) $groups as $group ) { ?>
-						<option value="<?php esc_attr_e( $group->group_id ); ?>"<?php echo( in_array( $group->group_id, $default_groups ) ? ' selected="selected"' : '' ); ?>><?php esc_attr_e( $group->slug ); ?></option>
+						<option value="<?php esc_attr_e( $group->id ); ?>"<?php echo( in_array( $group->id, $default_groups ) ? ' selected="selected"' : '' ); ?>><?php esc_attr_e( $group->slug ); ?></option>
 						<?php } ?>
 					</select><br />
 					<?php _e( "The groups that a new user is joined to automatically.", 'dp-welcomepack' ); ?>

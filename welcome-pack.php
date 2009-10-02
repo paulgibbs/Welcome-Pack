@@ -373,5 +373,5 @@ add_action( 'wpmu_activate_blog', 'dp_welcomepack_onuserandblogregistration', 1,
 add_action( 'admin_menu', 'dp_welcomepack_menu' );
 add_action( 'plugins_loaded', 'dp_welcomepack_setup_globals', 15 );	
 add_action( 'admin_menu', 'dp_welcomepack_setup_globals', 12 );
-add_action ( 'plugins_loaded', 'dp_welcomepack_load_textdomain', 19 );
+add_action( 'plugins_loaded', 'dp_welcomepack_load_textdomain', 19 );
 ?>

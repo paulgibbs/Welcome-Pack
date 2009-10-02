@@ -158,7 +158,7 @@ function dp_welcomepack_menu() {
 		return false;
 
   /* Add "Welcome Pack" under the "BuddyPress" tab for site administrators */
-	add_submenu_page( 'bp-core.php', __( 'Welcome Pack', 'dp-welcomepack' ), __(' Welcome Pack', 'dp-welcomepack' ), 1, 'dp_welcomepack', 'dp_welcomepack_admin' );
+	add_submenu_page( 'bp-general-settings', __( 'Welcome Pack', 'dp-welcomepack' ), __(' Welcome Pack', 'dp-welcomepack' ), 'manage_options', 'dp_welcomepack', 'dp_welcomepack_admin' );
 }
 
 /**

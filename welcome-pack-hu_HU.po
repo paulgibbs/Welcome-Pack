@@ -1,0 +1,157 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Wehunlcome pack\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-07-08 19:10+0200\n"
+"PO-Revision-Date: \n"
+"Last-Translator: Urbanczyk András <andras@ingatlanpartner.com>\n"
+"Language-Team: András <andras@ingatlanpartner.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Hungarian\n"
+"X-Poedit-Country: HUNGARY\n"
+"X-Poedit-SourceCharset: utf-8\n"
+
+#: C:\Documents
+#: and Settings\Admin\Ðàáî÷èé
+#: ñòîë\Welcome\welcome-pack/welcome-pack.php:122
+msgid "Welcome Pack"
+msgstr "Welcome Pack"
+
+#: C:\Documents
+#: and Settings\Admin\Ðàáî÷èé
+#: ñòîë\Welcome\welcome-pack/welcome-pack.php:122
+#: ñòîë\Welcome\welcome-pack/welcome-pack.php:174
+msgid " Welcome Pack"
+msgstr "Welcome Pack"
+
+#: C:\Documents
+#: and Settings\Admin\Ðàáî÷èé
+#: ñòîë\Welcome\welcome-pack/welcome-pack.php:170
+msgid "Options updated."
+msgstr "Beállítások módosítva."
+
+#: C:\Documents
+#: and Settings\Admin\Ðàáî÷èé
+#: ñòîë\Welcome\welcome-pack/welcome-pack.php:177
+msgid "Welcome Pack provides default friend, default group and welcome message functionality to a Wordpress MU & Buddypress installation."
+msgstr "Welcome Packban  beállíthatod, hogy az új felhasználó alapértelmezett barátját, csoportját és a üzenetét amit a regisztráció után fog megkapni. Csak akkor működik ha a Wordpress MU és a Buddypress telepítve van. "
+
+#: C:\Documents
+#: and Settings\Admin\Ðàáî÷èé
+#: ñòîë\Welcome\welcome-pack/welcome-pack.php:182
+#: ñòîë\Welcome\welcome-pack/welcome-pack.php:193
+msgid "Default friends"
+msgstr "Alapértelmezett barátok"
+
+#: C:\Documents
+#: and Settings\Admin\Ðàáî÷èé
+#: ñòîë\Welcome\welcome-pack/welcome-pack.php:185
+msgid "Default friends enabled"
+msgstr "Alapértelmezett barátok beállításai"
+
+#: C:\Documents
+#: and Settings\Admin\Ðàáî÷èé
+#: ñòîë\Welcome\welcome-pack/welcome-pack.php:188
+msgid "Turn on the default friends feature."
+msgstr "Kapcsold be a alapértelmezett barátok  funkciót"
+
+#: C:\Documents
+#: and Settings\Admin\Ðàáî÷èé
+#: ñòîë\Welcome\welcome-pack/welcome-pack.php:205
+msgid "The user accounts that become a person's first friends."
+msgstr "Az új felhasználók automatikusan barátai lesznek a kiválasztott felhasználó(k.)"
+
+#: C:\Documents
+#: and Settings\Admin\Ðàáî÷èé
+#: ñòîë\Welcome\welcome-pack/welcome-pack.php:212
+#: ñòîë\Welcome\welcome-pack/welcome-pack.php:222
+msgid "Default groups"
+msgstr "Alapértelmezett csoport"
+
+#: C:\Documents
+#: and Settings\Admin\Ðàáî÷èé
+#: ñòîë\Welcome\welcome-pack/welcome-pack.php:215
+msgid "Default groups enabled"
+msgstr "Alapértelmezett csoport bekapcsolva"
+
+#: C:\Documents
+#: and Settings\Admin\Ðàáî÷èé
+#: ñòîë\Welcome\welcome-pack/welcome-pack.php:218
+msgid "Turn on the default groups feature."
+msgstr "Kapcsold be a alapértelmezett csoport funkciót"
+
+#: C:\Documents
+#: and Settings\Admin\Ðàáî÷èé
+#: ñòîë\Welcome\welcome-pack/welcome-pack.php:234
+msgid "The groups that a new user is joined to automatically."
+msgstr "A csoport (ok), ahova az új felhasználók csatlakoznak automatikusan."
+
+#: C:\Documents
+#: and Settings\Admin\Ðàáî÷èé
+#: ñòîë\Welcome\welcome-pack/welcome-pack.php:241
+msgid "Welcome message (sent using BuddyPress' message system)"
+msgstr "Az üdvözlő üzenet a Buddypress levelező rendszerében kerül elküldésre."
+
+#: C:\Documents
+#: and Settings\Admin\Ðàáî÷èé
+#: ñòîë\Welcome\welcome-pack/welcome-pack.php:244
+msgid "Welcome message enabled"
+msgstr "Üdvözlő üzenet bekapcsolva"
+
+#: C:\Documents
+#: and Settings\Admin\Ðàáî÷èé
+#: ñòîë\Welcome\welcome-pack/welcome-pack.php:247
+msgid "Turn on the welcome message feature."
+msgstr "Kapcsold be a alapértelmezett üzenet küldés funkciót"
+
+#: C:\Documents
+#: and Settings\Admin\Ðàáî÷èé
+#: ñòîë\Welcome\welcome-pack/welcome-pack.php:251
+msgid "Welcome message sender"
+msgstr "Üdvözlő üzenetküldés"
+
+#: C:\Documents
+#: and Settings\Admin\Ðàáî÷èé
+#: ñòîë\Welcome\welcome-pack/welcome-pack.php:263
+msgid "The user account that the welcome message is sent from."
+msgstr "A felhasználói fiók az üdvözlő üzenetet küldött."
+
+#: C:\Documents
+#: and Settings\Admin\Ðàáî÷èé
+#: ñòîë\Welcome\welcome-pack/welcome-pack.php:267
+msgid "Welcome message subject"
+msgstr "Üdvözlő üzenet címe"
+
+#: C:\Documents
+#: and Settings\Admin\Ðàáî÷èé
+#: ñòîë\Welcome\welcome-pack/welcome-pack.php:273
+msgid "Welcome message body"
+msgstr "Üdvözlő üzenet szövege"
+
+#: C:\Documents
+#: and Settings\Admin\Ðàáî÷èé
+#: ñòîë\Welcome\welcome-pack/welcome-pack.php:281
+msgid "Save Settings"
+msgstr "Beállítások mentése"
+
+#: C:\Documents
+#: and Settings\Admin\Ðàáî÷èé
+#: ñòîë\Welcome\welcome-pack/welcome-pack.php:406
+#: ñòîë\Welcome\welcome-pack/welcome-pack.php:440
+msgid "Message could not be sent, please try again."
+msgstr "Az üzenetet nem lehetet elküldeni, kérjük, próbáld meg újra."
+
+#: C:\Documents
+#: and Settings\Admin\Ðàáî÷èé
+#: ñòîë\Welcome\welcome-pack/welcome-pack.php:416
+msgid "Message sent successfully!"
+msgstr "Üzenet elküldve!"
+
+#: C:\Documents
+#: and Settings\Admin\Ðàáî÷èé
+#: ñòîë\Welcome\welcome-pack/welcome-pack.php:416
+msgid "View Message"
+msgstr "Üzenetet megtekíntése"
+

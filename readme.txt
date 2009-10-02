@@ -21,7 +21,7 @@ NOTE: VERSION 1.4 REQUIRES BUDDYPRESS 1.1!
 1. Visit BuddyPress > Welcome Pack to configure the plugin.
 
 == Change log ==
-* 1.4 - Updated for BuddyPress 1.1.  Now requires BuddyPress 1.1+.
+* 1.4 - Updated for BuddyPress 1.1.  Now requires BuddyPress 1.1+.  Added Hungarian translation courtesy of urband.
 * 1.3 - Added Russian translation courtesy of SlaFFik. Changed the default group behaviour from "auto-join" to "auto-invite". Tested with WPMU 2.8.2.
 * 1.22 - Fixes cookie warnings in web server logs, and fixes bug preventing only the default admin user account (ID 1) sending the Welcome Message.
 * 1.21 - Updated for BuddyPress 1.0.2. Changed license from GPL v3. Private release.
@@ -37,3 +37,4 @@ NOTE: VERSION 1.4 REQUIRES BUDDYPRESS 1.1!
 * Big thanks to [BeLogical](http://buddypress.org/developers/BeLogical/) for his bug reports and time in testing v1.2.
 * Thanks to Jason DeVelvis for reporting bugs in version v1.22.
 * Thanks to [SlaFFik](http://buddypress.org/developers/slaffik/) for providing a Russian translation in version v1.3.
+* Thanks to [urband](http://buddypress.org/developers/urband/) for providing a Hungarian translation in version v1.4.

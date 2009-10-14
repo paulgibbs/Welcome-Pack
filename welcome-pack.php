@@ -5,11 +5,11 @@ Plugin URI: http://www.twitter.com/pgibbs
 Author: DJPaul
 Author URI: http://www.twitter.com/pgibbs
 Description: Brings default friend, default group and welcome message functionality to BuddyPress.
-Version: 1.4
+Version: 1.41
 Site Wide Only: true
 License: General Public License version 3 
 Requires at least: WPMU 2.8.1, BuddyPress 1.1
-Tested up to: WPMU 2.8.4a, BuddyPress 1.1
+Tested up to: WPMU 2.8.4a, BuddyPress 1.1.1
 
 
 "Welcome Pack" for BuddyPress
@@ -365,13 +365,18 @@ function dp_welcomepack_onuserandblogregistration( $blog_id, $user_id, $password
 	dp_welcomepack_welcomemessage( $user_id, $password, $meta );
 }
 
-add_action( 'plugins_loaded', 'dp_welcomepack_load_buddypress', 11 );
 add_action( 'wpmu_activate_user', 'dp_welcomepack_defaultfriend', 1, 3 );
 add_action( 'wpmu_activate_user', 'dp_welcomepack_defaultgroup', 1, 3 );
 add_action( 'wpmu_activate_user', 'dp_welcomepack_welcomemessage', 1, 3 );
+add_action( 'bp_core_account_activated', 'dp_welcomepack_defaultfriend', 1, 3 );
+add_action( 'bp_core_account_activated', 'dp_welcomepack_defaultgroup', 1, 3 );
+add_action( 'bp_core_account_activated', 'dp_welcomepack_welcomemessage', 1, 3 );
+
 add_action( 'wpmu_activate_blog', 'dp_welcomepack_onuserandblogregistration', 1, 5 );
-add_action( 'admin_menu', 'dp_welcomepack_menu' );
-add_action( 'plugins_loaded', 'dp_welcomepack_setup_globals', 15 );	
-add_action( 'admin_menu', 'dp_welcomepack_setup_globals', 12 );
+
+add_action( 'plugins_loaded', 'dp_welcomepack_load_buddypress', 11 );
 add_action( 'plugins_loaded', 'dp_welcomepack_load_textdomain', 19 );
+add_action( 'plugins_loaded', 'dp_welcomepack_setup_globals', 15 );	
+add_action( 'admin_menu', 'dp_welcomepack_menu' );
+add_action( 'admin_menu', 'dp_welcomepack_setup_globals', 12 );
 ?>

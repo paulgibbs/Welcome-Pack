@@ -3,9 +3,9 @@ Contributors: DJPaul
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=P3K7Z7NHWZ5CL&lc=GB&item_name=DJPaul%20%2d%20wordpress%20plugins&currency_code=GBP&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted
 Tags: buddypress,friend,group,welcome,default,message
 License: General Public License version 3
-Requires at least: WPMU 2.8.1, BuddyPress 1.1
-Tested up to: WPMU 2.8.4a, BuddyPress 1.1.1
-Stable tag: 1.41
+Requires at least: WPMU 2.8.6, BuddyPress 1.2
+Tested up to: WPMU 2.8.6, BuddyPress 1.2
+Stable tag: 1.5
 
 Brings default friend, default group and welcome message functionality to BuddyPress.
 
@@ -20,7 +20,8 @@ Welcome Pack is a BuddyPress plugin that enhances the new user experience. A new
 1. Visit BuddyPress > Welcome Pack to configure the plugin.
 
 == Change log ==
-* 1.41 - fix for BuddyPress 1.1.1.
+* 1.5 - Fixes for BuddyPress 1.2.
+* 1.41 - Fix for BuddyPress 1.1.1.
 * 1.4 - Updated for BuddyPress 1.1.  Now requires BuddyPress 1.1+.  Added Hungarian translation courtesy of urband.
 * 1.3 - Added Russian translation courtesy of SlaFFik. Changed the default group behaviour from "auto-join" to "auto-invite". Tested with WPMU 2.8.2.
 * 1.22 - Fixes cookie warnings in web server logs, and fixes bug preventing only the default admin user account (ID 1) sending the Welcome Message.

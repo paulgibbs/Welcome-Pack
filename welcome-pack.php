@@ -5,11 +5,11 @@ Plugin URI: http://www.twitter.com/pgibbs
 Author: DJPaul
 Author URI: http://www.twitter.com/pgibbs
 Description: Brings default friend, default group and welcome message functionality to BuddyPress.
-Version: 1.41
+Version: 1.5
 Site Wide Only: true
 License: General Public License version 3 
-Requires at least: WPMU 2.8.1, BuddyPress 1.1
-Tested up to: WPMU 2.8.4a, BuddyPress 1.1.1
+Requires at least: WPMU 2.8.6, BuddyPress 1.2
+Tested up to: WPMU 2.8.6, BuddyPress 1.2
 
 
 "Welcome Pack" for BuddyPress
@@ -57,21 +57,7 @@ function dp_welcomepack_load_buddypress() {
 	return false;
 }
 
-/**
- * dp_welcomepack_welcomemessage()
- *
- * Called by the wpmu_activate_user action when a new user activates their account (i.e. following the link in their email).
- *
- * @package Welcome Pack
- * @param $user_id The user ID of the new user
- * @param $password Password of the new user
- * @param $meta User meta
- * @uses get_site_option() Selects a site setting from the DB.
- * @uses get_userdata() Get user object from the DB.
- * @uses bp_core_get_user_domain() Returns 'http://www.example.com/members/USERNAME'.
- * @uses messages_new_message() Creates a new message.
- */
-function dp_welcomepack_welcomemessage( $user_id, $password, $meta ) {
+function dp_welcomepack_welcomemessage( $signup, $key ) {
 	if ( !function_exists( 'messages_install' ) ) return;
 	if ( 0 == (int) get_site_option( 'dp-welcomepack-welcomemessage-enabled' ) ) return;
 
@@ -81,7 +67,7 @@ function dp_welcomepack_welcomemessage( $user_id, $password, $meta ) {
 	if ( empty( $subject ) || empty( $content ) || empty( $sender_id ) ) return;
 
 	messages_new_message( array( 'sender_id' => $sender_id,
-	                             'recipients' => array( $user_id ),
+	                             'recipients' => array( $signup['user_id'] ),
 	                             'subject' => $subject,
 	                             'content' => $content ) );
 }
@@ -99,7 +85,7 @@ function dp_welcomepack_welcomemessage( $user_id, $password, $meta ) {
  * @uses get_site_option() Selects a site setting from the DB.
  * @uses maybe_unserialize() Unserialize value only if it was serialized.
  */
-function dp_welcomepack_defaultfriend( $user_id, $password, $meta ) {
+function dp_welcomepack_defaultfriend( $signup, $key ) {
 	if ( !function_exists( 'friends_install' ) ) return;
 	if ( 0 == (int) get_site_option( 'dp-welcomepack-friend-enabled' ) ) return;
 
@@ -109,10 +95,10 @@ function dp_welcomepack_defaultfriend( $user_id, $password, $meta ) {
 
 	global $wpdb;
 	foreach ( $default_friends as $friend ) {
-		$sql = $wpdb->prepare( "SELECT * FROM {$wpdb->base_prefix}users WHERE id = %d", $friend );
+		$sql = $wpdb->prepare( "SELECT * FROM {$wpdb->base_prefix}users WHERE id = %d LIMIT 1", $friend );
 		if ( !$wpdb->get_row( $sql ) ) continue;
 
-	  friends_add_friend( $friend, $user_id );
+	  friends_add_friend( $friend, $signup['user_id'] );
 	}
 }
 
@@ -129,7 +115,7 @@ function dp_welcomepack_defaultfriend( $user_id, $password, $meta ) {
  * @uses get_site_option() Selects a site setting from the DB.
  * @uses maybe_unserialize() Unserialize value only if it was serialized.
  */
-function dp_welcomepack_defaultgroup( $user_id, $password, $meta ) {
+function dp_welcomepack_defaultgroup( $signup, $key ) {
 	if ( !function_exists( 'groups_install' ) ) return;
 	if ( 0 == (int) get_site_option( 'dp-welcomepack-group-enabled' ) ) return;
 
@@ -139,7 +125,7 @@ function dp_welcomepack_defaultgroup( $user_id, $password, $meta ) {
 
 	foreach ($default_groups as $group_id) {
 		$group = new BP_Groups_Group( $group_id );
-		groups_invite_user( array( 'user_id' => $user_id, 'group_id' => $group_id, 'inviter_id' => $group->creator_id ) );
+		groups_invite_user( array( 'user_id' => $signup['user_id'], 'group_id' => $group_id, 'inviter_id' => $group->creator_id ) );
 		groups_send_invites( $group->creator_id, $group_id );
 	}
 }
@@ -359,20 +345,24 @@ function dp_welcomepack_setup_globals() {
  * @uses dp_welcomepack_defaultgroup() Calls default group routine.
  * @uses dp_welcomepack_welcomemessage() Calls welcome message routine.
  */
+do_action('wpmu_activate_user', $user_id, $password, $meta);
+
+do_action('wpmu_activate_blog', $blog_id, $user_id, $password, $signup->title, $meta);
+
 function dp_welcomepack_onuserandblogregistration( $blog_id, $user_id, $password, $signup_title, $meta ) {
 	dp_welcomepack_defaultfriend( $user_id, $password, $meta );
 	dp_welcomepack_defaultgroup( $user_id, $password, $meta );
 	dp_welcomepack_welcomemessage( $user_id, $password, $meta );
 }
 
-add_action( 'wpmu_activate_user', 'dp_welcomepack_defaultfriend', 1, 3 );
+/*add_action( 'wpmu_activate_user', 'dp_welcomepack_defaultfriend', 1, 3 );
 add_action( 'wpmu_activate_user', 'dp_welcomepack_defaultgroup', 1, 3 );
-add_action( 'wpmu_activate_user', 'dp_welcomepack_welcomemessage', 1, 3 );
-add_action( 'bp_core_account_activated', 'dp_welcomepack_defaultfriend', 1, 3 );
-add_action( 'bp_core_account_activated', 'dp_welcomepack_defaultgroup', 1, 3 );
-add_action( 'bp_core_account_activated', 'dp_welcomepack_welcomemessage', 1, 3 );
+add_action( 'wpmu_activate_user', 'dp_welcomepack_welcomemessage', 1, 3 );*/
+add_action( 'bp_core_account_activated', 'dp_welcomepack_defaultfriend', 1, 2 );
+add_action( 'bp_core_account_activated', 'dp_welcomepack_defaultgroup', 1, 2 );
+add_action( 'bp_core_account_activated', 'dp_welcomepack_welcomemessage', 1, 2 );
 
-add_action( 'wpmu_activate_blog', 'dp_welcomepack_onuserandblogregistration', 1, 5 );
+//add_action( 'wpmu_activate_blog', 'dp_welcomepack_onuserandblogregistration', 1, 5 );
 
 add_action( 'plugins_loaded', 'dp_welcomepack_load_buddypress', 11 );
 add_action( 'plugins_loaded', 'dp_welcomepack_load_textdomain', 19 );

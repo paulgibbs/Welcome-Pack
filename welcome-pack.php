@@ -188,10 +188,10 @@ function dpw_new_user_registration( $signup, $key = null ) {
 
 	if ( $settings['welcomemsgtoggle'] && function_exists( 'messages_install' ) ) {
 
-		messages_new_message( array( 'sender_id' => $settings['welcomemsgsender'],
-		                             'recipients' => $new_user_id,
-		                             'subject' => $settings['welcomemsgsubject'],
-		                             'content' => $settings['welcomemsg'] ) );
+		if ( empty( $settings['welcomemsgsender'] ) || empty( $settings['welcomemsgsubject'] ) || empty( $settings['welcomemsg'] ) )
+			return;
+
+		messages_new_message( array( 'sender_id' => $settings['welcomemsgsender'], 'recipients' => $new_user_id, 'subject' => $settings['welcomemsgsubject'], 'content' => $settings['welcomemsg'] ) );
 	}
 }
 add_action( 'bp_core_account_activated', 'dpw_new_user_registration', 10, 2 );

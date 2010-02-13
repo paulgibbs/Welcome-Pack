@@ -7,7 +7,7 @@ Requires at least: WP/MU 2.9, BuddyPress 1.2
 Tested up to: WP/MU 2.9, BuddyPress 1.2
 Stable tag: 2.0
 
-When a user registers on your site, you may want to automatically send them a friend or group invitation, and send them a welcome message. This plugin lets you do that.
+When a user registers on your site, you may want to automatically send them a friend or group invitation, or a welcome message. This plugin lets you do that. If you want to customise the default emails that your site sends, well, we do that too.
 
 
 == Description ==

@@ -189,7 +189,6 @@ function dpw_deactivation_hook() {
 }
 register_deactivation_hook( __FILE__, 'dpw_deactivation_hook' );
 
-
 function dpw_load_textdomain() {
 	$locale = apply_filters( 'buddypress_locale', get_locale() );
 	$mofile = dirname( __FILE__ ) . "/i18n/$locale.mo";
@@ -230,7 +229,7 @@ function dpw_admin_settings() {
 		<div id="icon-options-general" class="icon32"><br /></div>
 		<h2><?php _e( 'Welcome Pack', 'dpw' ) ?></h2>
 		<p><?php _e( 'When a user registers on your site, you may want to automatically send them a friend or group invitation, or a welcome message. This plugin lets you do that.', 'dpw' ) ?></p>
-		<p><?php echo sprintf( __( "If you want to customise the default emails that your site sends, jump to the <a href='%s'>email customisation</a> section.", 'dpw' ), '#emails' ) ?></p>
+		<p><?php _e( 'If you want to customise the default emails that your site sends, jump to the <a href="#emails">email customisation</a> section.', 'dpw' ) ?></p>
 
 		<h3><?php _e( 'Your Welcome Pack', 'dpw' ) ?></h3>
 		<a name="welcomepack"></a>

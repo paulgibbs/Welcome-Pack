@@ -49,7 +49,7 @@ function dpw_activation_hook() {
 	update_blog_option( BP_ROOT_BLOG, 'welcomepack', serialize( $default_settings ) );
 
 	$emails = array();
-	$emails['bp_activity_at_message_notification'] = array( 'subject' => '%s mentioned you in an update', 'message' => 
+	$emails['bp_activity_at_message_notification'] = array( 'subject' => '%s mentioned you in an update', 'message' => __( 
 '%s mentioned you in an update:
 
 "%s"
@@ -57,9 +57,9 @@ function dpw_activation_hook() {
 To view and respond to the message, log in and visit: %s
 
 ---------------------
-' );
+', 'buddypress' ) );
 
-	$emails['bp_activity_new_comment_notification-updates'] = array( 'subject' => '%s replied to one of your updates', 'message' => 
+	$emails['bp_activity_new_comment_notification-updates'] = array( 'subject' => '%s replied to one of your updates', 'message' => __( 
 '%s replied to one of your updates:
 
 "%s"
@@ -67,9 +67,9 @@ To view and respond to the message, log in and visit: %s
 To view your original update and all comments, log in and visit: %s
 
 ---------------------
-' );
+', 'buddypress' ) );
 
-	$emails['bp_activity_new_comment_notification-comments'] = array( 'subject' => '%s replied to one of your comments', 'message' => 
+	$emails['bp_activity_new_comment_notification-comments'] = array( 'subject' => '%s replied to one of your comments', 'message' => __( 
 '%s replied to one of your comments:
 
 "%s"
@@ -77,13 +77,13 @@ To view your original update and all comments, log in and visit: %s
 To view the original activity, your comment and all replies, log in and visit: %s
 
 ---------------------
-' );
+', 'buddypress' ) );
 
-	$emails['bp_core_activation_signup_blog_notification'] = array( 'subject' => 'Activate %s', 'message' => "Thanks for registering! To complete the activation of your account and blog, please click the following link:\n\n%s\n\n\n\nAfter you activate, you can visit your blog here:\n\n%s" );
+	$emails['bp_core_activation_signup_blog_notification'] = array( 'subject' => 'Activate %s', 'message' => __( "Thanks for registering! To complete the activation of your account and blog, please click the following link:\n\n%s\n\n\n\nAfter you activate, you can visit your blog here:\n\n%s", 'buddypress' ) );
 
-	$emails['bp_core_activation_signup_user_notification'] = array( 'subject' => 'Activate Your Account', 'message' => "Thanks for registering! To complete the activation of your account please click the following link:\n\n%s\n\n" );
+	$emails['bp_core_activation_signup_user_notification'] = array( 'subject' => 'Activate Your Account', 'message' => __( "Thanks for registering! To complete the activation of your account please click the following link:\n\n%s\n\n", 'buddypress' ) );
 
-	$emails['friends_notification_new_request'] = array( 'subject' => 'New friendship request from %s', 'message' => 
+	$emails['friends_notification_new_request'] = array( 'subject' => 'New friendship request from %s', 'message' => __( 
 "%s wants to add you as a friend.
 
 To view all of your pending friendship requests: %s
@@ -91,17 +91,17 @@ To view all of your pending friendship requests: %s
 To view %s's profile: %s
 
 ---------------------
-" );
+", 'buddypress' ) );
 
-	$emails['friends_notification_accepted_request'] = array( 'subject' => '%s accepted your friendship request', 'message' => 
+	$emails['friends_notification_accepted_request'] = array( 'subject' => '%s accepted your friendship request', 'message' => __( 
 '%s accepted your friend request.
 
 To view %s\'s profile: %s
 
 ---------------------
-' );
+', 'buddypress' ) );
 
-	$emails['messages_notification_new_message'] = array( 'subject' => 'New message from %s', 'message' => 
+	$emails['messages_notification_new_message'] = array( 'subject' => 'New message from %s', 'message' => __( 
 '%s sent you a new message:
 
 Subject: %s
@@ -111,17 +111,17 @@ Subject: %s
 To view and read your messages please log in and visit: %s
 
 ---------------------
-' );
+', 'buddypress' ) );
 
-	$emails['groups_notification_group_updated'] = array( 'subject' => 'Group Details Updated', 'message' => 
+	$emails['groups_notification_group_updated'] = array( 'subject' => 'Group Details Updated', 'message' => __( 
 'Group details for the group "%s" were updated:
 
 To view the group: %s
 
 ---------------------
-' );
+', 'buddypress' ) );
 
-	$emails['groups_notification_new_membership_request'] = array( 'subject' => 'Membership request for group: %s', 'message' => __(
+	$emails['groups_notification_new_membership_request'] = array( 'subject' => 'Membership request for group: %s', 'message' => __( 
 '%s wants to join the group "%s".
 
 Because you are the administrator of this group, you must either accept or reject the membership request.
@@ -134,31 +134,31 @@ To view %s\'s profile: %s
 ---------------------
 ', 'buddypress' ));
 
-	$emails['groups_notification_membership_request_completed-accepted'] = array( 'subject' => 'Membership request for group "%s" accepted', 'message' => 
+	$emails['groups_notification_membership_request_completed-accepted'] = array( 'subject' => 'Membership request for group "%s" accepted', 'message' => __( 
 'Your membership request for the group "%s" has been accepted.
 
 To view the group please login and visit: %s
 
 ---------------------
-' );
+', 'buddypress' ) );
 
-	$emails['groups_notification_membership_request_completed-rejected'] = array( 'subject' => 'Membership request for group "%s" rejected', 'message' => 
+	$emails['groups_notification_membership_request_completed-rejected'] = array( 'subject' => 'Membership request for group "%s" rejected', 'message' => __( 
 'Your membership request for the group "%s" has been rejected.
 
 To submit another request please log in and visit: %s
 
 ---------------------
-' );
+', 'buddypress' ) );
 
-	$emails['groups_notification_promoted_member'] = array( 'subject' => 'You have been promoted in the group: "%s"', 'message' => 
+	$emails['groups_notification_promoted_member'] = array( 'subject' => 'You have been promoted in the group: "%s"', 'message' => __( 
 'You have been promoted to %s for the group: "%s".
 
 To view the group please visit: %s
 
 ---------------------
-' );
+', 'buddypress' ) );
 
-	$emails['groups_notification_group_invites'] = array( 'subject' => 'You have an invitation to the group: "%s"', 'message' => 
+	$emails['groups_notification_group_invites'] = array( 'subject' => 'You have an invitation to the group: "%s"', 'message' => __( 
 'One of your friends %s has invited you to the group: "%s".
 
 To view your group invites visit: %s
@@ -168,9 +168,9 @@ To view the group visit: %s
 To view %s\'s profile visit: %s
 
 ---------------------
-' );
+', 'buddypress' ) );
 
-	$emails['groups_at_message_notification'] = array( 'subject' => '%s mentioned you in the group "%s"', 'message' => 
+	$emails['groups_at_message_notification'] = array( 'subject' => '%s mentioned you in the group "%s"', 'message' => __( 
 '%s mentioned you in the group "%s":
 
 "%s"
@@ -178,7 +178,7 @@ To view %s\'s profile visit: %s
 To view and respond to the message, log in and visit: %s
 
 ---------------------
-' );
+', 'buddypress' ) );
 	update_blog_option( BP_ROOT_BLOG, 'welcomepack_emails', serialize( $emails ) );
 }
 register_activation_hook( __FILE__, 'dpw_activation_hook' );

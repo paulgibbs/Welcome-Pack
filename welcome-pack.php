@@ -39,6 +39,8 @@ function dpw_buddypress_loaded() {
 		dpw_activation_hook();
 
 	add_action( 'user_register', 'dpw_new_user_registration_by_admin', 11 );
+	add_action( 'bp_core_account_activated', 'dpw_new_user_registration', 10, 2 );
+	add_filter( 'gettext', 'dpw_i18n_hook', 9, 3 );
 }
 
 function dpw_activation_hook() {
@@ -49,7 +51,7 @@ function dpw_activation_hook() {
 	update_blog_option( BP_ROOT_BLOG, 'welcomepack', serialize( $default_settings ) );
 
 	$emails = array();
-	$emails['bp_activity_at_message_notification'] = array( 'subject' => '%s mentioned you in an update', 'message' => __( 
+	$emails['bp_activity_at_message_notification_message'] = array( 'subject' => '%s mentioned you in an update', 'message' => __( 
 '%s mentioned you in an update:
 
 "%s"
@@ -79,11 +81,11 @@ To view the original activity, your comment and all replies, log in and visit: %
 ---------------------
 ', 'buddypress' ) );
 
-	$emails['bp_core_activation_signup_blog_notification'] = array( 'subject' => 'Activate %s', 'message' => __( "Thanks for registering! To complete the activation of your account and blog, please click the following link:\n\n%s\n\n\n\nAfter you activate, you can visit your blog here:\n\n%s", 'buddypress' ) );
+	$emails['bp_core_activation_signup_blog_notification_message'] = array( 'subject' => 'Activate %s', 'message' => __( "Thanks for registering! To complete the activation of your account and blog, please click the following link:\n\n%s\n\n\n\nAfter you activate, you can visit your blog here:\n\n%s", 'buddypress' ) );
 
-	$emails['bp_core_activation_signup_user_notification'] = array( 'subject' => 'Activate Your Account', 'message' => __( "Thanks for registering! To complete the activation of your account please click the following link:\n\n%s\n\n", 'buddypress' ) );
+	$emails['bp_core_activation_signup_user_notification_message'] = array( 'subject' => 'Activate Your Account', 'message' => __( "Thanks for registering! To complete the activation of your account please click the following link:\n\n%s\n\n", 'buddypress' ) );
 
-	$emails['friends_notification_new_request'] = array( 'subject' => 'New friendship request from %s', 'message' => __( 
+	$emails['friends_notification_new_request_message'] = array( 'subject' => 'New friendship request from %s', 'message' => __( 
 "%s wants to add you as a friend.
 
 To view all of your pending friendship requests: %s
@@ -93,7 +95,7 @@ To view %s's profile: %s
 ---------------------
 ", 'buddypress' ) );
 
-	$emails['friends_notification_accepted_request'] = array( 'subject' => '%s accepted your friendship request', 'message' => __( 
+	$emails['friends_notification_accepted_request_message'] = array( 'subject' => '%s accepted your friendship request', 'message' => __( 
 '%s accepted your friend request.
 
 To view %s\'s profile: %s
@@ -101,7 +103,7 @@ To view %s\'s profile: %s
 ---------------------
 ', 'buddypress' ) );
 
-	$emails['messages_notification_new_message'] = array( 'subject' => 'New message from %s', 'message' => __( 
+	$emails['messages_notification_new_message_message'] = array( 'subject' => 'New message from %s', 'message' => __( 
 '%s sent you a new message:
 
 Subject: %s
@@ -113,7 +115,7 @@ To view and read your messages please log in and visit: %s
 ---------------------
 ', 'buddypress' ) );
 
-	$emails['groups_notification_group_updated'] = array( 'subject' => 'Group Details Updated', 'message' => __( 
+	$emails['groups_notification_group_updated_message'] = array( 'subject' => 'Group Details Updated', 'message' => __( 
 'Group details for the group "%s" were updated:
 
 To view the group: %s
@@ -121,7 +123,7 @@ To view the group: %s
 ---------------------
 ', 'buddypress' ) );
 
-	$emails['groups_notification_new_membership_request'] = array( 'subject' => 'Membership request for group: %s', 'message' => __( 
+	$emails['groups_notification_new_membership_request_message'] = array( 'subject' => 'Membership request for group: %s', 'message' => __( 
 '%s wants to join the group "%s".
 
 Because you are the administrator of this group, you must either accept or reject the membership request.
@@ -150,7 +152,7 @@ To submit another request please log in and visit: %s
 ---------------------
 ', 'buddypress' ) );
 
-	$emails['groups_notification_promoted_member'] = array( 'subject' => 'You have been promoted in the group: "%s"', 'message' => __( 
+	$emails['groups_notification_promoted_member_message'] = array( 'subject' => 'You have been promoted in the group: "%s"', 'message' => __( 
 'You have been promoted to %s for the group: "%s".
 
 To view the group please visit: %s
@@ -158,7 +160,7 @@ To view the group please visit: %s
 ---------------------
 ', 'buddypress' ) );
 
-	$emails['groups_notification_group_invites'] = array( 'subject' => 'You have an invitation to the group: "%s"', 'message' => __( 
+	$emails['groups_notification_group_invites_message'] = array( 'subject' => 'You have an invitation to the group: "%s"', 'message' => __( 
 'One of your friends %s has invited you to the group: "%s".
 
 To view your group invites visit: %s
@@ -170,7 +172,7 @@ To view %s\'s profile visit: %s
 ---------------------
 ', 'buddypress' ) );
 
-	$emails['groups_at_message_notification'] = array( 'subject' => '%s mentioned you in the group "%s"', 'message' => __( 
+	$emails['groups_at_message_notification_message'] = array( 'subject' => '%s mentioned you in the group "%s"', 'message' => __( 
 '%s mentioned you in the group "%s":
 
 "%s"
@@ -211,7 +213,7 @@ function dpw_admin_menu() {
 	if ( !is_site_admin() )
 		return false;
 
-	add_options_page( __( 'Welcome Pack settings', 'dpw' ), __( 'Welcome Pack', 'dpw' ), 'administrator', 'welcome-pack', 'dpw_admin_settings' );
+	add_options_page( __( 'Welcome Pack settings', 'dpw' ), __( 'Welcome Pack', 'dpw' ), 'administrator', 'welcome-pack', 'dpw_admin_screen' );
 	add_action( 'admin_init', 'dpw_admin_register_settings' );
 }
 add_action( 'admin_menu', 'dpw_admin_menu' );
@@ -221,7 +223,7 @@ function dpw_admin_register_settings() {
 	register_setting( 'dpw-emails-group', 'welcomepack_emails', 'dpw_admin_validate_emails' );
 }
 
-function dpw_admin_settings() {
+function dpw_admin_screen() {
 	$settings = unserialize( get_blog_option( BP_ROOT_BLOG, 'welcomepack' ) );
 	$emails = unserialize( get_blog_option( BP_ROOT_BLOG, 'welcomepack_emails' ) );
 ?>
@@ -287,6 +289,7 @@ function dpw_admin_settings() {
 
 			<p class="submit"><input type="submit" class="button-primary" value="<?php _e( 'Save Welcome Pack Settings', 'dpw' ) ?>"/></p>
 		</forum>
+
 
 		<h3><?php _e( 'Email Customisation', 'dpw' ) ?></h3>
 		<a name="emails"></a>
@@ -357,32 +360,48 @@ function dpw_new_user_registration( $signup, $key = null ) {
 		messages_new_message( array( 'sender_id' => $settings['welcomemsgsender'], 'recipients' => $new_user_id, 'subject' => $settings['welcomemsgsubject'], 'content' => $settings['welcomemsg'] ) );
 	}
 }
-add_action( 'bp_core_account_activated', 'dpw_new_user_registration', 10, 2 );
 
 
 // *******************************************
 // Customised emails 
 // *******************************************
-function dpw_wp_mail( $email ) {  //'to', 'subject', 'message', 'headers', 'attachments'
-	$bp_mail_functions = array( 'bp_activity_at_message_notification', 'bp_activity_new_comment_notification-updates', 'bp_activity_new_comment_notification-comments', 'bp_core_activation_signup_blog_notification', 'bp_core_activation_signup_user_notification', 'friends_notification_new_request', 'friends_notification_accepted_request', 'messages_notification_new_message', 'groups_notification_group_updated', 'groups_notification_new_membership_request', 'groups_notification_membership_request_completed', 'groups_notification_promoted_member', 'groups_notification_group_invites', 'groups_at_message_notification' );
-	$caller_function = array_shift( debug_backtrace() );
-	$caller_function_name = $caller_function['function'];
-
-	if ( !in_array( $caller_function_name, $bp_mail_functions ) )
-		return $email;
-
-	if ( 'groups_notification_membership_request_completed' == $caller_function_name ) {  // Two calls to wp_mail in this function
-		if ( $caller_function['args'][2] )
-			$caller_function_name .= '-approved';
-		else
-			$caller_function_name .= '-rejected';
+function dpw_i18n_hook( $translation, $text, $domain ) {
+	if ( !$emails = wp_cache_get( 'dpw_customised_emails', 'dpw' ) ) {
+		$emails = unserialize( get_blog_option( BP_ROOT_BLOG, 'welcomepack_emails' ) );
+		$emails = array_keys( $emails );
+		wp_cache_set( 'dpw_customised_emails', $emails, 'dpw' );
 	}
 
-		$caller_function = debug_backtrace();
-	// /	$caller_function_name = $caller_function['function'];
-		die(print_r($caller_function[5])); /* Array ( [function] => groups_setup_globals [args] => Array ( [0] => ) ) 1 */
+	$backtrace = debug_backtrace();
+	if ( count( $backtrace ) < 6 )
+		return $translation;
+
+	$caller_function = $backtrace[5];  // The function which calls apply_filter( __( 'x' ) )
+	$caller_function_name = $caller_function['function'] . '_message';
+	if ( !in_array( $caller_function_name, $emails ) )
+		return $translation;
+
+	// Two calls to wp_mail in these functions
+	if ( 'groups_notification_membership_request_completed' == $caller_function_name ) {
+		if ( true === $caller_function['args'][2] )
+			$caller_function_name .= '-accepted';
+		else
+			$caller_function_name .= '-rejected';
+
+	} else if ( 'bp_activity_new_comment_notification' == $caller_function_name ) {
+		extract( $caller_function['args'][2] );
+		$commenter_id = $caller_function['args'][1];
+
+		$original_activity = new BP_Activity_Activity( $activity_id );
+		if ( $original_activity->user_id != $commenter_id && 'no' != get_usermeta( $original_activity->user_id, 'notification_activity_new_reply' ) )
+			$caller_function_name .= '-updates';
+		else
+			$caller_function_name .= '-comments';
+	}
+
+	$customised_emails = unserialize( get_blog_option( BP_ROOT_BLOG, 'welcomepack_emails' ) );
+	return $customised_emails[$caller_function_name]['message'] . PHP_EOL;
 }
-//add_filter( 'wp_mail', 'dpw_wp_mail', 9, 1 );
 
 
 // *******************************************
@@ -500,7 +519,7 @@ add_action( 'wp_ajax_dpw_admin_emails_ajax', 'dpw_admin_emails_ajax' );
 
 
 // *******************************************
-// Validation functiona for register_setting
+// Validation functions for register_setting
 // *******************************************
 function dpw_admin_validate_emails( $input ) {
 	$emails = unserialize( get_blog_option( BP_ROOT_BLOG, 'welcomepack_emails' ) );

@@ -291,9 +291,10 @@ function dpw_admin_settings() {
 
 		<h3><?php _e( 'Email Customisation', 'dpw' ) ?></h3>
 		<a name="emails"></a>
+		<p><?php _e( "Be careful not to add or remove any <em>%s</em> tags. These are replaced by customised pieces of data, such as a person's name or web link.  To find out what the tag replacements are, compare the contents of the email you are editing to the original.", 'dpw' ) ?></p>
 
 		<div class="settingname">
-			<p><?php _e( 'Pick an email, by its subject line, to customise.', 'dpw' ) ?></p>
+			<p><?php _e( 'Pick an email, by its subject line, to customise:', 'dpw' ) ?></p>
 			<form method="post" action="#"><?php wp_nonce_field( 'dpw_admin_settings', '_wpnonce-dpw-emails' ); ?></form>
 		</div>
 		<div class="settingvalue">
@@ -488,18 +489,15 @@ function dpw_admin_emails_ajax() {
 		echo '-1';
 		return false;
 	} ?>
-	<div class="settingname">
-		<p><?php _e( 'This is the body of the email.', 'dpw' ) ?></p>
-		<form method="post" action="#"><?php wp_nonce_field( 'dpw_admin_settings', '_wpnonce-dpw-emails' ); ?></form>
-	</div>
 	<div class="settingvalue">
+		<form method="post" action="#"><?php wp_nonce_field( 'dpw_admin_settings', '_wpnonce-dpw-emails' ); ?></form>
 		<?php dpw_admin_emails( $_POST['email_name'] ) ?>
 	</div>
 	<div style="clear: left"></div>
 	<p class="submit"><input type="submit" class="button-primary" value="<?php _e( 'Save Email Customisation Settings', 'dpw' ) ?>"/></p>
 <?php
 }
-add_action( 'wp_ajax_dpw_admin_emails_picker', 'dpw_admin_emails_ajax' );
+add_action( 'wp_ajax_dpw_admin_emails_ajax', 'dpw_admin_emails_ajax' );
 
 
 // *******************************************

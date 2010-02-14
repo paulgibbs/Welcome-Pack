@@ -1,4 +1,8 @@
 div.settingname { float: left; width: 21%; }
 div.settingvalue { float: left; width: 79%; }
+
 textarea, select, input[type="text"] { width: 75%; }
 textarea, select { height: auto; min-height: 100px; }
+
+div#welcomepack_emails_details div.settingvalue { margin-left: 21%; }
+div#welcomepack_emails_details div.settingvalue textarea { min-height: 150px; }

@@ -5,7 +5,7 @@ jQuery(document).ready( function() {
 			return;
 
 		jQuery.post( ajaxurl, {
-			action: 'dpw_admin_emails_picker',
+			action: 'dpw_admin_emails_ajax',
 			'cookie': encodeURIComponent(document.cookie),
 			'_wpnonce': jQuery("input#_wpnonce-dpw-emails").val(),
 			'email_name': email_name

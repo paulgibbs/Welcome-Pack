@@ -5,9 +5,9 @@ Tags: buddypress,friend,group,welcome,default,message
 License: General Public License version 3
 Requires at least: WP/MU 2.9, BuddyPress 1.2
 Tested up to: WP/MU 2.9, BuddyPress 1.2
-Stable tag: 2.0
+Stable tag: 1.6
 
-When a user registers on your site, you may want to automatically send them a friend or group invitation, or a welcome message. This plugin lets you do that. If you want to customise the default emails that your site sends, well, we do that too.
+When a user registers on your site, you may want to automatically send them a friend or group invitation, or a welcome message. This plugin lets you do that.
 
 
 == Description ==
@@ -21,7 +21,7 @@ Welcome Pack is a BuddyPress plugin that enhances the new user experience. When 
 1. Visit Settings > Welcome Pack to configure.
 
 == Change log ==
-* 2.0 - Rewritten for BuddyPress 1.2.
+* 1.6 - Rewritten for BuddyPress 1.2.
 * 1.5 - Fixes for BuddyPress 1.2.
 * 1.41 - Fix for BuddyPress 1.1.1.
 * 1.4 - Updated for BuddyPress 1.1.  Now requires BuddyPress 1.1+.  Added Hungarian translation courtesy of urband.

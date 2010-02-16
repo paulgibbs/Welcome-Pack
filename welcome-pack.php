@@ -4,8 +4,8 @@ Plugin Name: Welcome Pack
 Plugin URI: http://www.twitter.com/pgibbs
 Author: DJPaul
 Author URI: http://www.twitter.com/pgibbs
-Description: When a user registers on your site, you may want to automatically send them a friend or group invitation, or a welcome message. This plugin lets you do that. If you want to customise the default emails that your site sends, well, we do that too.
-Version: 2.0
+Description: When a user registers on your site, you may want to automatically send them a friend or group invitation, or a welcome message. This plugin lets you do that.
+Version: 1.6
 License: General Public License version 3 
 Requires at least: WP/MU 2.9, BuddyPress 1.2
 Tested up to: WP/MU 2.9, BuddyPress 1.2
@@ -40,7 +40,6 @@ function dpw_buddypress_loaded() {
 
 	add_action( 'user_register', 'dpw_new_user_registration_by_admin', 11 );
 	add_action( 'bp_core_account_activated', 'dpw_new_user_registration', 10, 2 );
-	add_filter( 'gettext', 'dpw_i18n_hook', 9, 3 );
 }
 
 function dpw_activation_hook() {
@@ -49,145 +48,11 @@ function dpw_activation_hook() {
 
 	$default_settings = array( 'friends' => array(), 'groups' => array(), 'welcomemsgsubject' => '', 'welcomemsg' => '', 'welcomemsgsender' => 0, 'welcomemsgtoggle' => false, 'friendstoggle' => false, 'groupstoggle' => false );
 	update_blog_option( BP_ROOT_BLOG, 'welcomepack', serialize( $default_settings ) );
-
-	$emails = array();
-	$emails['bp_activity_at_message_notification_message'] = array( 'subject' => '%s mentioned you in an update', 'message' => __( 
-'%s mentioned you in an update:
-
-"%s"
-
-To view and respond to the message, log in and visit: %s
-
----------------------
-', 'buddypress' ) );
-
-	$emails['bp_activity_new_comment_notification-updates'] = array( 'subject' => '%s replied to one of your updates', 'message' => __( 
-'%s replied to one of your updates:
-
-"%s"
-
-To view your original update and all comments, log in and visit: %s
-
----------------------
-', 'buddypress' ) );
-
-	$emails['bp_activity_new_comment_notification-comments'] = array( 'subject' => '%s replied to one of your comments', 'message' => __( 
-'%s replied to one of your comments:
-
-"%s"
-
-To view the original activity, your comment and all replies, log in and visit: %s
-
----------------------
-', 'buddypress' ) );
-
-	$emails['bp_core_activation_signup_blog_notification_message'] = array( 'subject' => 'Activate %s', 'message' => __( "Thanks for registering! To complete the activation of your account and blog, please click the following link:\n\n%s\n\n\n\nAfter you activate, you can visit your blog here:\n\n%s", 'buddypress' ) );
-
-	$emails['bp_core_activation_signup_user_notification_message'] = array( 'subject' => 'Activate Your Account', 'message' => __( "Thanks for registering! To complete the activation of your account please click the following link:\n\n%s\n\n", 'buddypress' ) );
-
-	$emails['friends_notification_new_request_message'] = array( 'subject' => 'New friendship request from %s', 'message' => __( 
-"%s wants to add you as a friend.
-
-To view all of your pending friendship requests: %s
-
-To view %s's profile: %s
-
----------------------
-", 'buddypress' ) );
-
-	$emails['friends_notification_accepted_request_message'] = array( 'subject' => '%s accepted your friendship request', 'message' => __( 
-'%s accepted your friend request.
-
-To view %s\'s profile: %s
-
----------------------
-', 'buddypress' ) );
-
-	$emails['messages_notification_new_message_message'] = array( 'subject' => 'New message from %s', 'message' => __( 
-'%s sent you a new message:
-
-Subject: %s
-
-"%s"
-
-To view and read your messages please log in and visit: %s
-
----------------------
-', 'buddypress' ) );
-
-	$emails['groups_notification_group_updated_message'] = array( 'subject' => 'Group Details Updated', 'message' => __( 
-'Group details for the group "%s" were updated:
-
-To view the group: %s
-
----------------------
-', 'buddypress' ) );
-
-	$emails['groups_notification_new_membership_request_message'] = array( 'subject' => 'Membership request for group: %s', 'message' => __( 
-'%s wants to join the group "%s".
-
-Because you are the administrator of this group, you must either accept or reject the membership request.
-
-To view all pending membership requests for this group, please visit:
-%s
-
-To view %s\'s profile: %s
-
----------------------
-', 'buddypress' ));
-
-	$emails['groups_notification_membership_request_completed-accepted'] = array( 'subject' => 'Membership request for group "%s" accepted', 'message' => __( 
-'Your membership request for the group "%s" has been accepted.
-
-To view the group please login and visit: %s
-
----------------------
-', 'buddypress' ) );
-
-	$emails['groups_notification_membership_request_completed-rejected'] = array( 'subject' => 'Membership request for group "%s" rejected', 'message' => __( 
-'Your membership request for the group "%s" has been rejected.
-
-To submit another request please log in and visit: %s
-
----------------------
-', 'buddypress' ) );
-
-	$emails['groups_notification_promoted_member_message'] = array( 'subject' => 'You have been promoted in the group: "%s"', 'message' => __( 
-'You have been promoted to %s for the group: "%s".
-
-To view the group please visit: %s
-
----------------------
-', 'buddypress' ) );
-
-	$emails['groups_notification_group_invites_message'] = array( 'subject' => 'You have an invitation to the group: "%s"', 'message' => __( 
-'One of your friends %s has invited you to the group: "%s".
-
-To view your group invites visit: %s
-
-To view the group visit: %s
-
-To view %s\'s profile visit: %s
-
----------------------
-', 'buddypress' ) );
-
-	$emails['groups_at_message_notification_message'] = array( 'subject' => '%s mentioned you in the group "%s"', 'message' => __( 
-'%s mentioned you in the group "%s":
-
-"%s"
-
-To view and respond to the message, log in and visit: %s
-
----------------------
-', 'buddypress' ) );
-	update_blog_option( BP_ROOT_BLOG, 'welcomepack_emails', serialize( $emails ) );
 }
 register_activation_hook( __FILE__, 'dpw_activation_hook' );
 
 function dpw_deactivation_hook() {
 	delete_blog_option( BP_ROOT_BLOG, 'welcomepack' );
-	delete_blog_option( BP_ROOT_BLOG, 'welcomepack_emails' );
 }
 register_deactivation_hook( __FILE__, 'dpw_deactivation_hook' );
 
@@ -205,7 +70,6 @@ function dpw_load_textdomain() {
 // *******************************************
 function dpw_admin_add_css_js() {
 	wp_enqueue_style( 'welcomepack', WP_PLUGIN_URL . '/welcome-pack/admin.css' );
- 	wp_enqueue_script( 'welcomepack', WP_PLUGIN_URL . '/welcome-pack/admin.js', array( 'jquery' ) );
 }
 add_action( 'admin_print_styles-settings_page_welcome-pack', 'dpw_admin_add_css_js' );
 
@@ -220,18 +84,15 @@ add_action( 'admin_menu', 'dpw_admin_menu' );
 
 function dpw_admin_register_settings() {
 	register_setting( 'dpw-settings-group', 'welcomepack', 'dpw_admin_validate' );
-	register_setting( 'dpw-emails-group', 'welcomepack_emails', 'dpw_admin_validate_emails' );
 }
 
 function dpw_admin_screen() {
 	$settings = unserialize( get_blog_option( BP_ROOT_BLOG, 'welcomepack' ) );
-	$emails = unserialize( get_blog_option( BP_ROOT_BLOG, 'welcomepack_emails' ) );
 ?>
 	<div class="wrap">
 		<div id="icon-options-general" class="icon32"><br /></div>
 		<h2><?php _e( 'Welcome Pack', 'dpw' ) ?></h2>
 		<p><?php _e( 'When a user registers on your site, you may want to automatically send them a friend or group invitation, or a welcome message. This plugin lets you do that.', 'dpw' ) ?></p>
-		<p><?php _e( 'If you want to customise the default emails that your site sends, jump to the <a href="#emails">email customisation</a> section.', 'dpw' ) ?></p>
 
 		<h3><?php _e( 'Your Welcome Pack', 'dpw' ) ?></h3>
 		<a name="welcomepack"></a>
@@ -289,27 +150,7 @@ function dpw_admin_screen() {
 
 			<p class="submit"><input type="submit" class="button-primary" value="<?php _e( 'Save Welcome Pack Settings', 'dpw' ) ?>"/></p>
 		</forum>
-
-
-		<h3><?php _e( 'Email Customisation', 'dpw' ) ?></h3>
-		<a name="emails"></a>
-		<p><?php _e( "Be careful not to add or remove any <em>%s</em> tags. These are replaced by customised pieces of data, such as a person's name or web link.  To find out what the tag replacements are, compare the contents of the email you are editing to the original.", 'dpw' ) ?></p>
-
-		<div class="settingname">
-			<p><?php _e( 'Pick an email, by its subject line, to customise:', 'dpw' ) ?></p>
-			<form method="post" action="#"><?php wp_nonce_field( 'dpw_admin_settings', '_wpnonce-dpw-emails' ); ?></form>
-		</div>
-		<div class="settingvalue">
-			<?php dpw_admin_emails_picker( $emails ) ?>
-		</div>
-		<div style="clear: left"></div>
-
-		<form method="post" action="options.php" id="welcomepack_emails">
-			<?php settings_fields( 'dpw-emails-group' ) ?>
-
-			<div id="welcomepack_emails_details"></div>
-		</form>
-	</div>
+	</div> <!-- .wrap -->
 <?php
 }
 
@@ -359,48 +200,6 @@ function dpw_new_user_registration( $signup, $key = null ) {
 
 		messages_new_message( array( 'sender_id' => $settings['welcomemsgsender'], 'recipients' => $new_user_id, 'subject' => $settings['welcomemsgsubject'], 'content' => $settings['welcomemsg'] ) );
 	}
-}
-
-
-// *******************************************
-// Customised emails 
-// *******************************************
-function dpw_i18n_hook( $translation, $text, $domain ) {
-	if ( !$emails = wp_cache_get( 'dpw_customised_emails', 'dpw' ) ) {
-		$emails = unserialize( get_blog_option( BP_ROOT_BLOG, 'welcomepack_emails' ) );
-		$emails = array_keys( $emails );
-		wp_cache_set( 'dpw_customised_emails', $emails, 'dpw' );
-	}
-
-	$backtrace = debug_backtrace();
-	if ( count( $backtrace ) < 6 )
-		return $translation;
-
-	$caller_function = $backtrace[5];  // The function which calls apply_filter( __( 'x' ) )
-	$caller_function_name = $caller_function['function'] . '_message';
-	if ( !in_array( $caller_function_name, $emails ) )
-		return $translation;
-
-	// Two calls to wp_mail in these functions
-	if ( 'groups_notification_membership_request_completed' == $caller_function_name ) {
-		if ( true === $caller_function['args'][2] )
-			$caller_function_name .= '-accepted';
-		else
-			$caller_function_name .= '-rejected';
-
-	} else if ( 'bp_activity_new_comment_notification' == $caller_function_name ) {
-		extract( $caller_function['args'][2] );
-		$commenter_id = $caller_function['args'][1];
-
-		$original_activity = new BP_Activity_Activity( $activity_id );
-		if ( $original_activity->user_id != $commenter_id && 'no' != get_usermeta( $original_activity->user_id, 'notification_activity_new_reply' ) )
-			$caller_function_name .= '-updates';
-		else
-			$caller_function_name .= '-comments';
-	}
-
-	$customised_emails = unserialize( get_blog_option( BP_ROOT_BLOG, 'welcomepack_emails' ) );
-	return $customised_emails[$caller_function_name]['message'] . PHP_EOL;
 }
 
 
@@ -461,77 +260,10 @@ function dpw_admin_settings_toggle( $name, $settings ) {
 <?php
 }
 
-function dpw_admin_emails_picker( $default_emails ) {
-?>
-	<p><select name="welcomepack_emails" id="welcomepack_emails_picker">
-		<option value="" selected="selected">-----</option>
-	<?php foreach ( $default_emails as $function_name => $details ) : ?>
-			<option value="<?php echo esc_attr( $details['subject'] ) ?>"><?php echo esc_html( $details['subject'] ) ?></option>
-	<?php endforeach; ?>
-	</select></p>
-<?php
-}
-
-function dpw_admin_emails( $subject ) {
-	$emails = unserialize( get_blog_option( BP_ROOT_BLOG, 'welcomepack_emails' ) );
-	$subject = stripslashes( $subject );
-
-	foreach ( $emails as $func_name => $email ) {
-		if ( $subject == $email['subject'] ) {
-			$content = esc_html( $email['message'] );
-			break;
-		}
-	}
-
-	if ( !isset( $content ) ) {
-		echo '-1';
-		return false;
-	} ?>
-	<textarea name="welcomepack_emails[<?php echo esc_attr( $func_name ) ?>]"><?php echo $content ?></textarea>
-<?php
-}
-
-// *******************************************
-// AJAX for admin screen
-// *******************************************
-function dpw_admin_emails_ajax() {
-	/* Check the nonce */
-	check_admin_referer( 'dpw_admin_settings' );
-
-	if ( !is_user_logged_in() ) {
-		echo '-1';
-		return false;
-	}
-
-	if ( empty( $_POST['email_name'] ) ) {
-		echo '-1';
-		return false;
-	} ?>
-	<div class="settingvalue">
-		<form method="post" action="#"><?php wp_nonce_field( 'dpw_admin_settings', '_wpnonce-dpw-emails' ); ?></form>
-		<?php dpw_admin_emails( $_POST['email_name'] ) ?>
-	</div>
-	<div style="clear: left"></div>
-	<p class="submit"><input type="submit" class="button-primary" value="<?php _e( 'Save Email Customisation Settings', 'dpw' ) ?>"/></p>
-<?php
-}
-add_action( 'wp_ajax_dpw_admin_emails_ajax', 'dpw_admin_emails_ajax' );
-
 
 // *******************************************
 // Validation functions for register_setting
 // *******************************************
-function dpw_admin_validate_emails( $input ) {
-	$emails = unserialize( get_blog_option( BP_ROOT_BLOG, 'welcomepack_emails' ) );
-
-	// Need to treat $input as an array otherwise no way of telling what email the new text belongs to.
-	foreach ( $input as $key => $value ) {
-		$emails[$key]['message'] = strip_tags( $value );
-	}
-
-	return serialize( $emails );
-}
-
 function dpw_admin_validate( $input ) {
 	if ( isset( $input['friends'] ) )
 		array_map( 'absint', &$input['friends'] );

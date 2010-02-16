@@ -2,7 +2,7 @@
 Contributors: DJPaul
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=P3K7Z7NHWZ5CL&lc=GB&item_name=DJPaul%20%2d%20wordpress%20plugins&currency_code=GBP&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted
 Tags: buddypress,friend,group,welcome,default,message
-License: General Public License version 3
+License: General Public License version 2
 Requires at least: WP/MU 2.9, BuddyPress 1.2
 Tested up to: WP/MU 2.9, BuddyPress 1.2
 Stable tag: 1.6
@@ -19,6 +19,10 @@ Welcome Pack is a BuddyPress plugin that enhances the new user experience. When 
 1. Install via WordPress Plugins administration page.
 1. Activate the plugin on the blog running BuddyPress.
 1. Visit Settings > Welcome Pack to configure.
+
+== Upgrade Notice == 
+= 1.6 = 
+Rewritten for BuddyPress 1.2.
 
 == Change log ==
 * 1.6 - Rewritten for BuddyPress 1.2.

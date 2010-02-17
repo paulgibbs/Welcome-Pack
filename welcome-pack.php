@@ -5,7 +5,7 @@ Plugin URI: http://www.twitter.com/pgibbs
 Author: DJPaul
 Author URI: http://www.twitter.com/pgibbs
 Description: When a user registers on your site, you may want to automatically send them a friend or group invitation, or a welcome message. This plugin lets you do that.
-Version: 1.6
+Version: 1.61
 License: General Public License version 3 
 Requires at least: WP/MU 2.9, BuddyPress 1.2
 Tested up to: WP/MU 2.9, BuddyPress 1.2
@@ -32,7 +32,7 @@ else
 	add_action( 'bp_init', 'dpw_buddypress_loaded' );
 
 function dpw_buddypress_loaded() {
-	if ( !function_exists( 'delete_blog_option' ) ) {  // http://trac.buddypress.org/ticket/1989
+	if ( !function_exists( 'delete_blog_option' ) ) {  // TODO: http://trac.buddypress.org/ticket/1989
 		function delete_blog_option( $blog_id, $option_name ) {
 			return delete_option( $option_name );
 		}
@@ -105,7 +105,7 @@ function dpw_admin_screen() {
 		<form method="post" action="options.php" id="welcomepack">
 			<?php settings_fields( 'dpw-settings-group' ) ?>
 
-			<?php if ( function_exists( 'friends_install' ) ) : ?>	
+			<?php if ( function_exists( 'friends_install' ) && bp_has_members( 'type=alphabetical&populate_extras=false&per_page=1000' ) ) : ?>	
 				<div class="settingname">
 					<p><?php _e( 'Invite the new user to become friends with these people:', 'dpw' ) ?></p>
 					<?php dpw_admin_settings_toggle( 'friends', $settings ) ?>
@@ -116,7 +116,7 @@ function dpw_admin_screen() {
 				<div style="clear: left"></div>
 			<?php endif ?>
 
-			<?php if ( function_exists( 'groups_install' ) && ( bp_has_groups( 'type=alphabetically' ) ) ) : ?>
+			<?php if ( function_exists( 'groups_install' ) && bp_has_groups( 'type=alphabetically&populate_extras=false&per_page=1000' ) ) : ?>
 				<div class="settingname">
 					<p><?php _e( 'Ask the new user if they\'d like to join these groups:', 'dpw' ) ?></p>
 					<?php dpw_admin_settings_toggle( 'groups', $settings ) ?>
@@ -212,13 +212,14 @@ function dpw_new_user_registration( $signup, $key = null ) {
 // *******************************************
 // Convenience functions for admin screen
 // *******************************************
+// TODO: per_page http://trac.buddypress.org/ticket/1991
 function dpw_admin_settings_friends( $settings ) {
 	$friend_ids = $settings['friends'];
 ?>
 	<p><select multiple="multiple" name="welcomepack[friends][]">
-	<?php if ( bp_has_members( 'type=alphabetical&populate_extras=false' ) ) : while ( bp_members() ) : bp_the_member(); ?>
+	<?php while ( bp_members() ) : bp_the_member(); ?>
 		<option value="<?php echo esc_attr( bp_get_member_user_id() ) ?>"<?php foreach ( $friend_ids as $id ) { if ( bp_get_member_user_id() == $id ) echo " selected='selected'"; } ?>><?php bp_member_name() ?></option>
-	<?php endwhile; endif; ?>
+	<?php endwhile; ?>
 	</select></p>
 <?php
 }

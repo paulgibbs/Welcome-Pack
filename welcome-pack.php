@@ -32,6 +32,12 @@ else
 	add_action( 'bp_init', 'dpw_buddypress_loaded' );
 
 function dpw_buddypress_loaded() {
+	if ( !function_exists( 'delete_blog_option' ) ) {  // http://trac.buddypress.org/ticket/1989
+		function delete_blog_option( $blog_id, $option_name ) {
+			return delete_option( $option_name );
+		}
+	}
+
 	add_action( 'plugins_loaded', 'dpw_load_textdomain' );
 
 	// register_activation_hook isn't fired in MU

@@ -44,8 +44,7 @@ function dpw_buddypress_loaded() {
 	if ( function_exists( 'wpmu_signup_blog' ) )
 		dpw_activation_hook();
 
-	add_action( 'user_register', 'dpw_new_user_registration_by_admin', 11 );
-	add_action( 'bp_core_account_activated', 'dpw_new_user_registration', 10, 2 );
+	add_action( 'user_register', 'dpw_new_user_registration', 11 );
 }
 
 function dpw_activation_hook() {
@@ -164,23 +163,9 @@ function dpw_admin_screen() {
 // *******************************************
 // User registration
 // *******************************************
-function dpw_new_user_registration_by_admin( $user_id ) {
-	/* Only map data when the site admin is adding users, not on registration. */
-	if ( !is_admin() )
-		return false;
-
-	dpw_new_user_registration( $user_id );
-}
-
-function dpw_new_user_registration( $signup, $key = null ) {
+function dpw_new_user_registration( $new_user_id) {
 	$settings = unserialize( get_blog_option( BP_ROOT_BLOG, 'welcomepack' ) );
 
-	if ( is_int( $signup ) )
-		$new_user_id = $signup;
-	else
-		$new_user_id = $signup['user_id'];
-
-	$test = $new_user_id;
 	if ( $settings['friendstoggle'] && function_exists( 'friends_install' ) ) {
 
 		$default_friends = $settings['friends'];

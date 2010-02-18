@@ -163,7 +163,7 @@ function dpw_admin_screen() {
 // *******************************************
 // User registration
 // *******************************************
-function dpw_new_user_registration( $new_user_id) {
+function dpw_new_user_registration( $new_user_id ) {
 	$settings = unserialize( get_blog_option( BP_ROOT_BLOG, 'welcomepack' ) );
 
 	if ( $settings['friendstoggle'] && function_exists( 'friends_install' ) ) {
@@ -189,7 +189,7 @@ function dpw_new_user_registration( $new_user_id) {
 		if ( empty( $settings['welcomemsgsender'] ) || empty( $settings['welcomemsgsubject'] ) || empty( $settings['welcomemsg'] ) )
 			return;
 
-		messages_new_message( array( 'sender_id' => $settings['welcomemsgsender'], 'recipients' => $new_user_id, 'subject' => $settings['welcomemsgsubject'], 'content' => $settings['welcomemsg'] ) );
+		messages_new_message( array( 'sender_id' => $settings['welcomemsgsender'], 'recipients' => array( $settings['welcomemsgsender'], $new_user_id ), 'subject' => $settings['welcomemsgsubject'], 'content' => $settings['welcomemsg'] ) );
 	}
 }
 

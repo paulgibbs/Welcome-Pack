@@ -5,10 +5,10 @@ Plugin URI: http://www.twitter.com/pgibbs
 Author: DJPaul
 Author URI: http://www.twitter.com/pgibbs
 Description: When a user registers on your site, you may want to automatically send them a friend or group invitation, or a welcome message. This plugin lets you do that.
-Version: 1.63
+Version: 1.64
 License: General Public License version 3 
 Requires at least: WP/MU 2.9, BuddyPress 1.2
-Tested up to: WP/MU 2.9, BuddyPress 1.2
+Tested up to: WP/MU 2.9, BuddyPress 1.2.1
 
 
 "Welcome Pack" for BuddyPress
@@ -79,7 +79,9 @@ function dpw_admin_add_css_js() {
 add_action( 'admin_print_styles-settings_page_welcome-pack', 'dpw_admin_add_css_js' );
 
 function dpw_admin_menu() {
-	if ( !is_site_admin() )
+	global $bp;
+
+	if ( !$bp->loggedin_user->is_site_admin )
 		return false;
 
 	add_options_page( __( 'Welcome Pack settings', 'dpw' ), __( 'Welcome Pack', 'dpw' ), 'administrator', 'welcome-pack', 'dpw_admin_screen' );
@@ -126,7 +128,7 @@ function dpw_admin_screen() {
 				<div style="clear: left"></div>
 			<?php endif ?>
 
-			<?php if ( function_exists( 'messages_install' ) ) : ?>
+			<?php if ( function_exists( 'messages_install' ) && bp_has_members( 'type=alphabetical&populate_extras=false&per_page=1000' ) ) : ?>
 				<div class="settingname">
 					<p><?php _e( 'Send the new user a welcome message&hellip;', 'dpw' ) ?></p>
 					<?php dpw_admin_settings_toggle( 'welcomemsg', $settings ) ?>
@@ -238,9 +240,9 @@ function dpw_admin_settings_welcomemsg_sender( $settings ) {
 	$sender_id = $settings['welcomemsgsender'];
 ?>
 	<p><select name="welcomepack[welcomemsgsender]">
-	<?php if ( bp_has_members( 'type=alphabetical&populate_extras=false' ) ) : while ( bp_members() ) : bp_the_member(); ?>
+	<?php while ( bp_members() ) : bp_the_member(); ?>
 		<option value="<?php echo esc_attr( bp_get_member_user_id() ) ?>"<?php if ( bp_get_member_user_id() == $sender_id ) echo " selected='selected'"; ?>><?php bp_member_name() ?></option>
-	<?php endwhile; endif; ?>
+	<?php endwhile; ?>
 	</select></p>
 <?php
 }

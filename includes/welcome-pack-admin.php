@@ -1,6 +1,6 @@
 <?php
 function dpw_admin_add_css_js() {
-	wp_enqueue_style( 'welcomepack', dirname( __FILE__ ) . '/css/admin.css' );
+	wp_enqueue_style( 'welcomepack', plugins_url( $path = '/css/admin.css', __FILE__ ) );
 }
 add_action( 'admin_print_styles-settings_page_welcome-pack', 'dpw_admin_add_css_js' );
 
@@ -105,7 +105,11 @@ function dpw_admin_validate( $input ) {
  */
 
 function dpw_admin_screen() {
-	$settings = unserialize( (array)get_site_option( 'welcomepack' ) );
+	$settings = get_site_option( 'welcomepack' );
+	if ( !$settings )
+		$settings = array( 'friends' => array(), 'groups' => array(), 'welcomemsgsubject' => '', 'welcomemsg' => '', 'welcomemsgsender' => 0, 'welcomemsgtoggle' => false, 'friendstoggle' => false, 'groupstoggle' => false );
+
+	$settings = maybe_unserialize( $settings );
 ?>
 	<div class="wrap">
 		<div id="icon-options-general" class="icon32"><br /></div>

@@ -123,7 +123,6 @@ function dpw_admin_screen() {
 
 			<?php if ( function_exists( 'friends_install' ) && bp_has_members( 'type=alphabetical&populate_extras=false&per_page=10000' ) ) : ?>	
 				<div class="settingname">
-					<p>todo: see if we need to set user_id=0</p>
 					<p><?php _e( 'Invite the new user to become friends with these people:', 'dpw' ) ?></p>
 					<?php dpw_admin_settings_toggle( 'friends', $settings ) ?>
 				</div>

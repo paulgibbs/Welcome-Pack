@@ -58,7 +58,6 @@ function dpw_admin_settings_toggle( $name, $settings ) {
 <?php
 }
 
-//TODO: add filters
 function dpw_admin_validate( $input ) {
 	if ( is_string( $input ) )  // wpmu-edit.php
 		return get_site_option( 'welcomepack' );

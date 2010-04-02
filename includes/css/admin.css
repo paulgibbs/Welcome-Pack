@@ -1,8 +1,14 @@
 div#dpw-admin-metaboxes-general div.settingname { float: left; text-align: right; width: 30%; margin-right: 20px; }
 div#dpw-admin-metaboxes-general div.settingvalue { float: left; width: 65%; }
-div#dpw-admin-metaboxes-general div.setting { margin-top: 20px; }
+div#dpw-admin-metaboxes-general div.setting { margin-top: 20px; margin-bottom: 20px; }
 div#dpw-admin-metaboxes-general div.setting p { margin-top: 0px; }
-div#dpw-admin-metaboxes-general div.setting:last-child { margin-bottom: 20px; }
 
 div#dpw-admin-metaboxes-general textarea, div#dpw-admin-metaboxes-general select, div#dpw-admin-metaboxes-general input[type="text"] { width: 100%; }
 div#dpw-admin-metaboxes-general textarea, div#dpw-admin-metaboxes-general select { height: auto; min-height: 100px; }
+
+div#dpw-admin-metaboxes-sidebox-1 div.inside { margin-top: 20px; }
+div#dpw-admin-metaboxes-general div.inside ul { margin-left: 20px; }
+div#dpw-admin-metaboxes-general div.inside ul li { list-style: square; }
+
+div#dpw-admin-metaboxes-general ul.menu:after { content: "."; display: block; height: 0; clear: both; visibility: hidden; }
+div#dpw-admin-metaboxes-general ul.menu li { float: left; list-style: none !important; margin-bottom: 0; padding-right: 20px; }

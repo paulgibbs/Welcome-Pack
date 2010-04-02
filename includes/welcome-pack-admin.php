@@ -1,6 +1,6 @@
 <?php
 function dpw_admin_screen_on_load() {
-	add_meta_box('dpw-admin-metaboxes-sidebox-1', __( 'Like this plugin?', 'dpw' ), 'on_sidebox_1_content', 'settings_page_welcome-pack', 'side', 'core');
+	add_meta_box('dpw-admin-metaboxes-sidebox-1', __( 'Like this plugin?', 'dpw' ), 'dpw_admin_screen_socialmedia', 'settings_page_welcome-pack', 'side', 'core');
 	add_meta_box('dpw-admin-metaboxes-sidebox-2', __( 'Need support?', 'dpw' ), 'on_sidebox_1_content', 'settings_page_welcome-pack', 'side', 'core');
 	add_meta_box('dpw-admin-metaboxes-sidebox-3', __( 'Latest news from BYOTOS', 'dpw' ), 'on_sidebox_1_content', 'settings_page_welcome-pack', 'side', 'core');
 	add_meta_box('dpw-admin-metaboxes-settingsbox', __( 'Settings', 'dpw' ), 'dpw_admin_screen_settingsbox', 'settings_page_welcome-pack', 'normal', 'core');
@@ -37,6 +37,24 @@ add_filter( 'plugin_action_links', 'dpw_admin_add_action_link', 10, 2 );
 
 function dpw_admin_register_settings() {
 	register_setting( 'dpw-settings-group', 'welcomepack', 'dpw_admin_validate' );
+}
+
+function dpw_admin_screen_socialmedia( $settings ) {
+?>
+<p><?php _e( 'Why not do any or all of the following:', 'dpw' ) ?></p>
+<ul>
+	<li><?php _e( 'Tell your friends!', 'dpw' ) ?></a></li>
+	<li><a href="http://wordpress.org/extend/plugins/welcome-pack/"><?php _e( 'Give it a good rating on WordPress.org.', 'dpw' ) ?></a></li>
+	<li><a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&amp;business=P3K7Z7NHWZ5CL&amp;lc=GB&amp;item_name=B%2eY%2eO%2eT%2eO%2eS%20%2d%20BuddyPress%20plugins&amp;currency_code=GBP&amp;bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted"><?php _e( 'Thank me by donating towards future development', 'dpw' ) ?></a>.</li>
+</ul>
+<p><?php _e( 'Or share on one of these social networks:', 'dpw' ) ?></p>
+<ul class="menu">
+	<li><a target="_new" href="http://twitter.com/home?status=Check%20out%20Welcome%20Pack%20for%20http://wordpress.org/extend/plugins/welcome-pack/"><img src="<?php echo plugins_url( '/images/twitter_32.png', __FILE__ ) ?>" alt="Twitter" /></a></li>
+	<li><a target="_new" href="http://www.facebook.com/sharer.php?u=http://wordpress.org/extend/plugins/welcome-pack/"><img src="<?php echo plugins_url( '/images/facebook_32.png', __FILE__ ) ?>" alt="Facebook" /></a></li>
+	<li><a target="_new" href="http://del.icio.us/post?url=http://wordpress.org/extend/plugins/welcome-pack/&amp;title=When%20a%20user%20registers%20on%20your%20BuddyPress-powered%20site,%20you%20may%20want%20to%20automatically%20send%20them%20a%20friend%20or%20group%20invitation,%20or%20a%20welcome%20message.%20Welcome%20Pack%20lets%20you%20do%20that."><img src="<?php echo plugins_url( '/images/delicious_32.png', __FILE__ ) ?>" alt="Delicious - social bookmarking" /></a></li>
+	<li><a target="_new" href="http://www.stumbleupon.com/submit?url=http://wordpress.org/extend/plugins/welcome-pack/&amp;title=When%20a%20user%20registers%20on%20your%20BuddyPress-powered%20site,%20you%20may%20want%20to%20automatically%20send%20them%20a%20friend%20or%20group%20invitation,%20or%20a%20welcome%20message.%20Welcome%20Pack%20lets%20you%20do%20that."><img src="<?php echo plugins_url( '/images/stumbleupon_32.png', __FILE__ ) ?>" alt="Stumble Upon" /></a></li>
+</ul>
+<?php
 }
 
 function on_sidebox_1_content( $settings ) {

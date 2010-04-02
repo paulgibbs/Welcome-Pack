@@ -8,7 +8,7 @@ Big thanks to both!
 
 function dpw_admin_screen_on_load() {
 	add_meta_box( 'dpw-admin-metaboxes-sidebox-1', __( 'Like this plugin?', 'dpw' ), 'dpw_admin_screen_socialmedia', 'buddypress_page_welcome-pack', 'side', 'core' );
-	add_meta_box( 'dpw-admin-metaboxes-sidebox-2', __( 'Need support?', 'dpw' ), 'on_sidebox_1_content', 'buddypress_page_welcome-pack', 'side', 'core' );
+	add_meta_box( 'dpw-admin-metaboxes-sidebox-2', __( 'Need support?', 'dpw' ), 'dpw_admin_screen_support', 'buddypress_page_welcome-pack', 'side', 'core' );
 	add_meta_box( 'dpw-admin-metaboxes-sidebox-3', __( 'Latest news from the author', 'dpw' ), 'dpw_admin_screen_news', 'buddypress_page_welcome-pack', 'side', 'core' );
 	add_meta_box( 'dpw-admin-metaboxes-settingsbox', __( 'Settings', 'dpw' ), 'dpw_admin_screen_settingsbox', 'buddypress_page_welcome-pack', 'normal', 'core' );
 }
@@ -50,9 +50,9 @@ function dpw_admin_screen_socialmedia( $settings ) {
 ?>
 <p><?php _e( 'Why not do any or all of the following:', 'dpw' ) ?></p>
 <ul>
-	<li><?php _e( 'Tell your friends!', 'dpw' ) ?></a></li>
-	<li><a href="http://wordpress.org/extend/plugins/welcome-pack/"><?php _e( 'Give it a good rating on WordPress.org', 'dpw' ) ?></a>.</li>
-	<li><a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&amp;business=P3K7Z7NHWZ5CL&amp;lc=GB&amp;item_name=B%2eY%2eO%2eT%2eO%2eS%20%2d%20BuddyPress%20plugins&amp;currency_code=GBP&amp;bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted"><?php _e( 'Thank me by donating towards future development', 'dpw' ) ?></a>.</li>
+	<li><p><?php _e( 'Tell your friends!', 'dpw' ) ?></a></p></li>
+	<li><p><a href="http://wordpress.org/extend/plugins/welcome-pack/"><?php _e( 'Give it a good rating on WordPress.org', 'dpw' ) ?></a>.</p></li>
+	<li><p><a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&amp;business=P3K7Z7NHWZ5CL&amp;lc=GB&amp;item_name=B%2eY%2eO%2eT%2eO%2eS%20%2d%20BuddyPress%20plugins&amp;currency_code=GBP&amp;bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted"><?php _e( 'Thank me by donating towards future development', 'dpw' ) ?></a>.</p></li>
 </ul>
 <p><?php _e( 'Or share on one of these social networks:', 'dpw' ) ?></p>
 <ul class="menu">
@@ -71,24 +71,19 @@ function dpw_admin_screen_news( $settings ) {
 		$content = '<ul>';
 		$rss->items = array_slice( $rss->items, 0, 3 );
 
-		foreach ( (array)$rss->items as $item ) {
-			$content .= '<li>';
-			$content .= '<a href="' . clean_url( $item['link'], null, 'display' ) . '">' . apply_filters( 'dpw_admin_rss_feed', $item['title'] ) . '</a>';
-			$content .= '</li>';
-		}
+		foreach ( (array)$rss->items as $item )
+			$content .= '<li><p><a href="' . clean_url( $item['link'], null, 'display' ) . '">' . apply_filters( 'dpw_admin_rss_feed', $item['title'] ) . '</a></p></li>';
 
-		$content .= '<li class="rss"><a href="http://feeds.feedburner.com/BYOTOS">Subscribe with RSS</a></li>';
+		$content .= '<li class="rss"><a href="http://feeds.feedburner.com/BYOTOS">Subscribe with RSS</a></li></ul>';
 		echo $content;
 	} else {
-		echo '<li>No news!</li>';
+		echo '<ul><li>No news!</li></ul>';
 	}
 }
 
-function on_sidebox_1_content( $settings ) {
+function dpw_admin_screen_support( $settings ) {
 ?>
-<ul style="list-style-type:disc;margin-left:20px;">
-<li>hi</li>
-</ul>
+<p><?php _e( "If you need help and support using this plugin, or ideas for new features, please visit the ", 'dpw' ) ?><a href="#"><?php _e( 'support forums', 'dpw' ) ?></a>.</p>
 <?php
 }
 

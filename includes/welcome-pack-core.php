@@ -22,8 +22,8 @@ function dpw_add_admin_menu() {
 
 	require ( dirname( __FILE__ ) . '/welcome-pack-admin.php' );
 
-	add_options_page( __( 'Welcome Pack settings', 'dpw' ), __( 'Welcome Pack', 'dpw' ), 'administrator', 'welcome-pack', 'dpw_admin_screen' );
-	add_action( 'load-settings_page_welcome-pack', 'dpw_admin_screen_on_load' );
+	add_submenu_page( 'bp-general-settings',__( 'Welcome Pack settings', 'dpw' ), __( 'Welcome Pack', 'dpw' ), 'manage_options', 'welcome-pack', 'dpw_admin_screen' );
+	add_action( 'load-buddypress_page_welcome-pack', 'dpw_admin_screen_on_load' );
 	add_action( 'admin_init', 'dpw_admin_register_settings' );
 }
 add_action( 'admin_menu', 'dpw_add_admin_menu' );

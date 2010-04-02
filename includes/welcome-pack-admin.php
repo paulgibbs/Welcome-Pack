@@ -1,9 +1,16 @@
 <?php
+/*
+The idea of using the meta boxes came from Joost de Valk (http://yoast.com), your one stop-shop for a wide range of WordPress plugins and SEO advice.
+The implementation of the above is credited to http://www.code-styling.de/english/how-to-use-wordpress-metaboxes-at-own-plugins.
+
+Big thanks to both!
+*/
+
 function dpw_admin_screen_on_load() {
-	add_meta_box('dpw-admin-metaboxes-sidebox-1', __( 'Like this plugin?', 'dpw' ), 'dpw_admin_screen_socialmedia', 'settings_page_welcome-pack', 'side', 'core');
-	add_meta_box('dpw-admin-metaboxes-sidebox-2', __( 'Need support?', 'dpw' ), 'on_sidebox_1_content', 'settings_page_welcome-pack', 'side', 'core');
-	add_meta_box('dpw-admin-metaboxes-sidebox-3', __( 'Latest news from BYOTOS', 'dpw' ), 'on_sidebox_1_content', 'settings_page_welcome-pack', 'side', 'core');
-	add_meta_box('dpw-admin-metaboxes-settingsbox', __( 'Settings', 'dpw' ), 'dpw_admin_screen_settingsbox', 'settings_page_welcome-pack', 'normal', 'core');
+	add_meta_box('dpw-admin-metaboxes-sidebox-1', __( 'Like this plugin?', 'dpw' ), 'dpw_admin_screen_socialmedia', 'buddypress_page_welcome-pack', 'side', 'core');
+	add_meta_box('dpw-admin-metaboxes-sidebox-2', __( 'Need support?', 'dpw' ), 'on_sidebox_1_content', 'buddypress_page_welcome-pack', 'side', 'core');
+	add_meta_box('dpw-admin-metaboxes-sidebox-3', __( 'Latest news from BYOTOS', 'dpw' ), 'on_sidebox_1_content', 'buddypress_page_welcome-pack', 'side', 'core');
+	add_meta_box('dpw-admin-metaboxes-settingsbox', __( 'Settings', 'dpw' ), 'dpw_admin_screen_settingsbox', 'buddypress_page_welcome-pack', 'normal', 'core');
 }
 
 function dpw_admin_add_css_js() {
@@ -12,12 +19,12 @@ function dpw_admin_add_css_js() {
 	wp_enqueue_script( 'postbox' );
 	wp_enqueue_style( 'welcomepack', plugins_url( '/css/admin.css', __FILE__ ) );
 }
-add_action( 'admin_print_styles-settings_page_welcome-pack', 'dpw_admin_add_css_js' );
+add_action( 'admin_print_styles-buddypress_page_welcome-pack', 'dpw_admin_add_css_js' );
 
 // Tells WP that we support two columns
 function dpw_admin_screen_layout_columns( $columns, $screen ) {
-	if ( 'settings_page_welcome-pack' == $screen )
-		$columns['settings_page_welcome-pack'] = 2;
+	if ( 'buddypress_page_welcome-pack' == $screen )
+		$columns['buddypress_page_welcome-pack'] = 2;
 
 	return $columns;
 }
@@ -44,15 +51,15 @@ function dpw_admin_screen_socialmedia( $settings ) {
 <p><?php _e( 'Why not do any or all of the following:', 'dpw' ) ?></p>
 <ul>
 	<li><?php _e( 'Tell your friends!', 'dpw' ) ?></a></li>
-	<li><a href="http://wordpress.org/extend/plugins/welcome-pack/"><?php _e( 'Give it a good rating on WordPress.org.', 'dpw' ) ?></a></li>
+	<li><a href="http://wordpress.org/extend/plugins/welcome-pack/"><?php _e( 'Give it a good rating on WordPress.org', 'dpw' ) ?></a>.</li>
 	<li><a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&amp;business=P3K7Z7NHWZ5CL&amp;lc=GB&amp;item_name=B%2eY%2eO%2eT%2eO%2eS%20%2d%20BuddyPress%20plugins&amp;currency_code=GBP&amp;bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted"><?php _e( 'Thank me by donating towards future development', 'dpw' ) ?></a>.</li>
 </ul>
 <p><?php _e( 'Or share on one of these social networks:', 'dpw' ) ?></p>
 <ul class="menu">
-	<li><a target="_new" href="http://twitter.com/home?status=Check%20out%20Welcome%20Pack%20for%20http://wordpress.org/extend/plugins/welcome-pack/"><img src="<?php echo plugins_url( '/images/twitter_32.png', __FILE__ ) ?>" alt="Twitter" /></a></li>
-	<li><a target="_new" href="http://www.facebook.com/sharer.php?u=http://wordpress.org/extend/plugins/welcome-pack/"><img src="<?php echo plugins_url( '/images/facebook_32.png', __FILE__ ) ?>" alt="Facebook" /></a></li>
-	<li><a target="_new" href="http://del.icio.us/post?url=http://wordpress.org/extend/plugins/welcome-pack/&amp;title=When%20a%20user%20registers%20on%20your%20BuddyPress-powered%20site,%20you%20may%20want%20to%20automatically%20send%20them%20a%20friend%20or%20group%20invitation,%20or%20a%20welcome%20message.%20Welcome%20Pack%20lets%20you%20do%20that."><img src="<?php echo plugins_url( '/images/delicious_32.png', __FILE__ ) ?>" alt="Delicious - social bookmarking" /></a></li>
-	<li><a target="_new" href="http://www.stumbleupon.com/submit?url=http://wordpress.org/extend/plugins/welcome-pack/&amp;title=When%20a%20user%20registers%20on%20your%20BuddyPress-powered%20site,%20you%20may%20want%20to%20automatically%20send%20them%20a%20friend%20or%20group%20invitation,%20or%20a%20welcome%20message.%20Welcome%20Pack%20lets%20you%20do%20that."><img src="<?php echo plugins_url( '/images/stumbleupon_32.png', __FILE__ ) ?>" alt="Stumble Upon" /></a></li>
+	<li><a target="_new" href="http://twitter.com/home?status=Check%20out%20Welcome%20Pack%20for%20http://wordpress.org/extend/plugins/welcome-pack/"><img src="<?php echo plugins_url( '/images/twitter_32.png', __FILE__ ) ?>" alt="<?php _e( 'Twitter', 'dpw' ) ?>" /></a></li>
+	<li><a target="_new" href="http://www.facebook.com/sharer.php?u=http://wordpress.org/extend/plugins/welcome-pack/"><img src="<?php echo plugins_url( '/images/facebook_32.png', __FILE__ ) ?>" alt="<?php _e( 'Facebook', 'dpw' ) ?>" /></a></li>
+	<li><a target="_new" href="http://del.icio.us/post?url=http://wordpress.org/extend/plugins/welcome-pack/&amp;title=When%20a%20user%20registers%20on%20your%20BuddyPress-powered%20site,%20you%20may%20want%20to%20automatically%20send%20them%20a%20friend%20or%20group%20invitation,%20or%20a%20welcome%20message.%20Welcome%20Pack%20lets%20you%20do%20that."><img src="<?php echo plugins_url( '/images/delicious_32.png', __FILE__ ) ?>" alt="<?php _e( 'Delicious - social bookmarking', 'dpw' ) ?>" /></a></li>
+	<li><a target="_new" href="http://www.stumbleupon.com/submit?url=http://wordpress.org/extend/plugins/welcome-pack/&amp;title=When%20a%20user%20registers%20on%20your%20BuddyPress-powered%20site,%20you%20may%20want%20to%20automatically%20send%20them%20a%20friend%20or%20group%20invitation,%20or%20a%20welcome%20message.%20Welcome%20Pack%20lets%20you%20do%20that."><img src="<?php echo plugins_url( '/images/stumbleupon_32.png', __FILE__ ) ?>" alt="<?php _e( 'Stumble Upon', 'dpw' ) ?>" /></a></li>
 </ul>
 <?php
 }
@@ -237,7 +244,7 @@ function dpw_admin_screen() {
 <script type="text/javascript">
 	jQuery(document).ready( function($) {
 		$('.if-js-closed').removeClass('if-js-closed').addClass('closed');
-		postboxes.add_postbox_toggles('settings_page_welcome-pack');
+		postboxes.add_postbox_toggles('buddypress_page_welcome-pack');
 	});
 </script>
 
@@ -254,11 +261,11 @@ function dpw_admin_screen() {
 
 		<div id="poststuff" class="metabox-holder<?php echo 2 == $screen_layout_columns ? ' has-right-sidebar' : ''; ?>">
 			<div id="side-info-column" class="inner-sidebar">
-				<?php do_meta_boxes( 'settings_page_welcome-pack', 'side', $settings ) ?>
+				<?php do_meta_boxes( 'buddypress_page_welcome-pack', 'side', $settings ) ?>
 			</div>
 			<div id="post-body" class="has-sidebar">
 				<div id="post-body-content" class="has-sidebar-content">
-					<?php do_meta_boxes( 'settings_page_welcome-pack', 'normal', $settings ) ?>
+					<?php do_meta_boxes( 'buddypress_page_welcome-pack', 'normal', $settings ) ?>
 				</div>
 
 				<input type="submit" class="button-primary" value="<?php _e( 'Save Welcome Pack Settings', 'dpw' ) ?>"/>

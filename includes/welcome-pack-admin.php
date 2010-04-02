@@ -283,7 +283,7 @@ function dpw_admin_screen() {
 					<?php do_meta_boxes( 'buddypress_page_welcome-pack', 'normal', $settings ) ?>
 				</div>
 
-				<input type="submit" class="button-primary" value="<?php _e( 'Save Welcome Pack Settings', 'dpw' ) ?>"/>
+				<p><input type="submit" class="button-primary" value="<?php _e( 'Save Welcome Pack Settings', 'dpw' ) ?>" /></p>
 			</div>
 			<br class="clear"/>
 		</div>

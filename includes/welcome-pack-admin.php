@@ -7,10 +7,10 @@ Big thanks to both!
 */
 
 function dpw_admin_screen_on_load() {
-	add_meta_box('dpw-admin-metaboxes-sidebox-1', __( 'Like this plugin?', 'dpw' ), 'dpw_admin_screen_socialmedia', 'buddypress_page_welcome-pack', 'side', 'core');
-	add_meta_box('dpw-admin-metaboxes-sidebox-2', __( 'Need support?', 'dpw' ), 'on_sidebox_1_content', 'buddypress_page_welcome-pack', 'side', 'core');
-	add_meta_box('dpw-admin-metaboxes-sidebox-3', __( 'Latest news from BYOTOS', 'dpw' ), 'on_sidebox_1_content', 'buddypress_page_welcome-pack', 'side', 'core');
-	add_meta_box('dpw-admin-metaboxes-settingsbox', __( 'Settings', 'dpw' ), 'dpw_admin_screen_settingsbox', 'buddypress_page_welcome-pack', 'normal', 'core');
+	add_meta_box( 'dpw-admin-metaboxes-sidebox-1', __( 'Like this plugin?', 'dpw' ), 'dpw_admin_screen_socialmedia', 'buddypress_page_welcome-pack', 'side', 'core' );
+	add_meta_box( 'dpw-admin-metaboxes-sidebox-2', __( 'Need support?', 'dpw' ), 'on_sidebox_1_content', 'buddypress_page_welcome-pack', 'side', 'core' );
+	add_meta_box( 'dpw-admin-metaboxes-sidebox-3', __( 'Latest news from the author', 'dpw' ), 'dpw_admin_screen_news', 'buddypress_page_welcome-pack', 'side', 'core' );
+	add_meta_box( 'dpw-admin-metaboxes-settingsbox', __( 'Settings', 'dpw' ), 'dpw_admin_screen_settingsbox', 'buddypress_page_welcome-pack', 'normal', 'core' );
 }
 
 function dpw_admin_add_css_js() {
@@ -62,6 +62,26 @@ function dpw_admin_screen_socialmedia( $settings ) {
 	<li><a target="_new" href="http://www.stumbleupon.com/submit?url=http://wordpress.org/extend/plugins/welcome-pack/&amp;title=When%20a%20user%20registers%20on%20your%20BuddyPress-powered%20site,%20you%20may%20want%20to%20automatically%20send%20them%20a%20friend%20or%20group%20invitation,%20or%20a%20welcome%20message.%20Welcome%20Pack%20lets%20you%20do%20that."><img src="<?php echo plugins_url( '/images/stumbleupon_32.png', __FILE__ ) ?>" alt="<?php _e( 'Stumble Upon', 'dpw' ) ?>" /></a></li>
 </ul>
 <?php
+}
+
+function dpw_admin_screen_news( $settings ) {
+	require_once( ABSPATH . WPINC . '/rss.php' );
+
+	if ( $rss = fetch_rss( 'http://feeds.feedburner.com/BYOTOS' ) ) {
+		$content = '<ul>';
+		$rss->items = array_slice( $rss->items, 0, 3 );
+
+		foreach ( (array)$rss->items as $item ) {
+			$content .= '<li>';
+			$content .= '<a href="' . clean_url( $item['link'], null, 'display' ) . '">' . apply_filters( 'dpw_admin_rss_feed', $item['title'] ) . '</a>';
+			$content .= '</li>';
+		}
+
+		$content .= '<li class="rss"><a href="http://feeds.feedburner.com/BYOTOS">Subscribe with RSS</a></li>';
+		echo $content;
+	} else {
+		echo '<li>No news!</li>';
+	}
 }
 
 function on_sidebox_1_content( $settings ) {

@@ -1,5 +1,8 @@
-div.settingname { float: left; width: 21%; }
-div.settingvalue { float: left; width: 79%; }
+div#dpw-admin-metaboxes-general div.settingname { float: left; text-align: right; width: 30%; margin-right: 20px; }
+div#dpw-admin-metaboxes-general div.settingvalue { float: left; width: 65%; }
+div#dpw-admin-metaboxes-general div.setting { margin-top: 20px; }
+div#dpw-admin-metaboxes-general div.setting p { margin-top: 0px; }
+div#dpw-admin-metaboxes-general div.setting:last-child { margin-bottom: 20px; }
 
-textarea, select, input[type="text"] { width: 75%; }
-textarea, select { height: auto; min-height: 100px; }
+div#dpw-admin-metaboxes-general textarea, div#dpw-admin-metaboxes-general select, div#dpw-admin-metaboxes-general input[type="text"] { width: 100%; }
+div#dpw-admin-metaboxes-general textarea, div#dpw-admin-metaboxes-general select { height: auto; min-height: 100px; }

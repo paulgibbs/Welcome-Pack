@@ -10,7 +10,7 @@ function dpw_admin_screen_on_load() {
 	add_meta_box( 'dpw-admin-metaboxes-sidebox-1', __( 'Like this plugin?', 'dpw' ), 'dpw_admin_screen_socialmedia', 'buddypress_page_welcome-pack', 'side', 'core' );
 	add_meta_box( 'dpw-admin-metaboxes-sidebox-2', __( 'Need support?', 'dpw' ), 'dpw_admin_screen_support', 'buddypress_page_welcome-pack', 'side', 'core' );
 	add_meta_box( 'dpw-admin-metaboxes-sidebox-3', __( 'Latest news from the author', 'dpw' ), 'dpw_admin_screen_news', 'buddypress_page_welcome-pack', 'side', 'core' );
-	add_meta_box( 'dpw-admin-metaboxes-settingsbox', __( 'Settings', 'dpw' ), 'dpw_admin_screen_settingsbox', 'buddypress_page_welcome-pack', 'normal', 'core' );
+	add_meta_box( 'dpw-admin-metaboxes-settingsbox', __( 'Friends, Groups <span class="ampersand">&amp;</span> Welcome Message', 'dpw' ), 'dpw_admin_screen_settingsbox', 'buddypress_page_welcome-pack', 'normal', 'core' );
 }
 
 function dpw_admin_add_css_js() {
@@ -120,6 +120,7 @@ function dpw_admin_screen_settingsbox( $settings ) {
 		<div class="settingname">
 			<p><?php _e( 'Send the new user a welcome message&hellip;', 'dpw' ) ?></p>
 			<?php dpw_admin_settings_toggle( 'welcomemsg', $settings ) ?>
+			<p>Here is some info</p>
 		</div>
 		<div class="settingvalue">
 			<?php dpw_admin_settings_welcomemsg( $settings ) ?>

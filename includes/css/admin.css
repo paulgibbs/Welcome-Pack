@@ -13,3 +13,5 @@ div#dpw-admin-metaboxes-general div.inside ul li.rss { list-style-image: url(/wp
 
 div#dpw-admin-metaboxes-general ul.menu:after { content: "."; display: block; height: 0; clear: both; visibility: hidden; }
 div#dpw-admin-metaboxes-general ul.menu li { float: left; list-style: none !important; margin-bottom: 0; padding-right: 20px; }
+
+div#dpw-admin-metaboxes-general span.ampersand { font-family: Baskerville, Palatino, "Palatino Linotype", Constantia, "Book Antiqua", serif; font-style: italic; font-size: 1.1em; }

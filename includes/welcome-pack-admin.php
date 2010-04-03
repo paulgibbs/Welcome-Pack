@@ -10,7 +10,7 @@ function dpw_admin_screen_on_load() {
 	add_meta_box( 'dpw-admin-metaboxes-sidebox-1', __( 'Like this plugin?', 'dpw' ), 'dpw_admin_screen_socialmedia', 'buddypress_page_welcome-pack', 'side', 'core' );
 	add_meta_box( 'dpw-admin-metaboxes-sidebox-2', __( 'Need support?', 'dpw' ), 'dpw_admin_screen_support', 'buddypress_page_welcome-pack', 'side', 'core' );
 	add_meta_box( 'dpw-admin-metaboxes-sidebox-3', __( 'Latest news from the author', 'dpw' ), 'dpw_admin_screen_news', 'buddypress_page_welcome-pack', 'side', 'core' );
-	add_meta_box( 'dpw-admin-metaboxes-settingsbox', __( 'Friends, Groups <span class="ampersand">&amp;</span> Welcome Message', 'dpw' ), 'dpw_admin_screen_settingsbox', 'buddypress_page_welcome-pack', 'normal', 'core' );
+	add_meta_box( 'dpw-admin-metaboxes-settingsbox', __( 'Configuration', 'dpw' ), 'dpw_admin_screen_settingsbox', 'buddypress_page_welcome-pack', 'normal', 'core' );
 }
 
 function dpw_admin_add_css_js() {
@@ -18,6 +18,7 @@ function dpw_admin_add_css_js() {
 	wp_enqueue_script( 'wp-lists' );
 	wp_enqueue_script( 'postbox' );
 	wp_enqueue_style( 'welcomepack', plugins_url( '/css/admin.css', __FILE__ ) );
+	wp_enqueue_style( 'welcomepack-bpstyles', plugins_url( '/css/bpstyles.css', __FILE__ ) );
 }
 add_action( 'admin_print_styles-buddypress_page_welcome-pack', 'dpw_admin_add_css_js' );
 
@@ -74,7 +75,7 @@ function dpw_admin_screen_news( $settings ) {
 		foreach ( (array)$rss->items as $item )
 			$content .= '<li><p><a href="' . clean_url( $item['link'], null, 'display' ) . '">' . apply_filters( 'dpw_admin_rss_feed', $item['title'] ) . '</a></p></li>';
 
-		$content .= '<li class="rss"><a href="http://feeds.feedburner.com/BYOTOS">Subscribe with RSS</a></li></ul>';
+		$content .= '<li class="rss"><p><a href="http://feeds.feedburner.com/BYOTOS">Subscribe with RSS</a></p></li></ul>';
 		echo $content;
 	} else {
 		echo '<ul><li>No news!</li></ul>';
@@ -120,7 +121,6 @@ function dpw_admin_screen_settingsbox( $settings ) {
 		<div class="settingname">
 			<p><?php _e( 'Send the new user a welcome message&hellip;', 'dpw' ) ?></p>
 			<?php dpw_admin_settings_toggle( 'welcomemsg', $settings ) ?>
-			<p>Here is some info</p>
 		</div>
 		<div class="settingvalue">
 			<?php dpw_admin_settings_welcomemsg( $settings ) ?>
@@ -264,10 +264,22 @@ function dpw_admin_screen() {
 	});
 </script>
 
+<div id="bp-admin">
 <div id="dpw-admin-metaboxes-general" class="wrap">
 
-<div id="icon-options-general" class="icon32"><br /></div>
-<h2><?php _e( 'Welcome Pack', 'dpw' ) ?></h2>
+<div id="bp-admin-header">
+	<h3><?php _e( 'BuddyPress', 'dpw' ) ?></h3>
+	<h4><?php _e( 'Welcome Pack', 'dpw' ) ?></h4>
+</div>
+
+<div id="bp-admin-nav">
+	<ol>
+		<li class="current"><?php _e( 'Friends, Groups <span class="ampersand">&amp;</span> Welcome Message', 'dpw' )?></li>
+		<li><?php _e( 'Emails', 'dpw' ) ?></li>
+	</ol>
+</div>
+
+
 <p><?php _e( 'When a user registers on your site, you may want to automatically send them a friend or group invitation, or a welcome message. This plugin lets you do that.', 'dpw' ) ?></p>
 
 	<form method="post" action="options.php" id="welcomepack">
@@ -275,6 +287,7 @@ function dpw_admin_screen() {
 		<?php wp_nonce_field( 'meta-box-order', 'meta-box-order-nonce', false ) ?>
 		<?php settings_fields( 'dpw-settings-group' ) ?>
 
+		<!-- poststuff lives here -->
 		<div id="poststuff" class="metabox-holder<?php echo 2 == $screen_layout_columns ? ' has-right-sidebar' : ''; ?>">
 			<div id="side-info-column" class="inner-sidebar">
 				<?php do_meta_boxes( 'buddypress_page_welcome-pack', 'side', $settings ) ?>
@@ -290,7 +303,8 @@ function dpw_admin_screen() {
 		</div>
 	</form>
 
-</div><!-- .wrap -->
+</div><!-- #dpw-admin-metaboxes-general -->
+</div><!-- #bp-admin -->
 <?php
 }
 ?>

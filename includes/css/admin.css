@@ -6,7 +6,7 @@ div#dpw-admin-metaboxes-general div.setting p { margin-top: 0px; }
 div#dpw-admin-metaboxes-general textarea, div#dpw-admin-metaboxes-general select, div#dpw-admin-metaboxes-general input[type="text"] { width: 100%; }
 div#dpw-admin-metaboxes-general textarea, div#dpw-admin-metaboxes-general select { height: auto; min-height: 100px; }
 
-div#dpw-admin-metaboxes-sidebox-1 div.inside { margin-top: 20px; }
+div#side-sortables:first-child div.inside { margin-top: 20px; }
 div#dpw-admin-metaboxes-general div.inside ul { margin-left: 20px; }
 div#dpw-admin-metaboxes-general div.inside ul li { list-style: square; }
 div#dpw-admin-metaboxes-general div.inside ul li.rss { list-style-image: url(/wp-includes/images/rss.png); }

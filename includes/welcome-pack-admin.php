@@ -66,14 +66,12 @@ function dpw_admin_screen_socialmedia( $settings ) {
 }
 
 function dpw_admin_screen_news( $settings ) {
-	require_once( ABSPATH . WPINC . '/rss.php' );
-
-	if ( $rss = fetch_rss( 'http://feeds.feedburner.com/BYOTOS' ) ) {
+	if ( $rss = fetch_feed( 'http://feeds.feedburner.com/BYOTOS' ) ) {
 		$content = '<ul>';
-		$rss->items = array_slice( $rss->items, 0, 3 );
+		$items = $rss->get_items( 0, $rss->get_item_quantity( 3 ) );
 
-		foreach ( (array)$rss->items as $item )
-			$content .= '<li><p><a href="' . clean_url( $item['link'], null, 'display' ) . '">' . apply_filters( 'dpw_admin_rss_feed', $item['title'] ) . '</a></p></li>';
+		foreach ( $items as $item )
+			$content .= '<li><p><a href="' . clean_url( $item->get_permalink(), null, 'display' ) . '">' . apply_filters( 'dpw_admin_rss_feed', $item->get_title() ) . '</a></p></li>';
 
 		$content .= '<li class="rss"><p><a href="http://feeds.feedburner.com/BYOTOS">Subscribe with RSS</a></p></li></ul>';
 		echo $content;
@@ -267,20 +265,21 @@ function dpw_admin_screen() {
 <div id="bp-admin">
 <div id="dpw-admin-metaboxes-general" class="wrap">
 
-<div id="bp-admin-header">
-	<h3><?php _e( 'BuddyPress', 'dpw' ) ?></h3>
-	<h4><?php _e( 'Welcome Pack', 'dpw' ) ?></h4>
-</div>
+	<div id="bp-admin-header">
+		<h3><?php _e( 'BuddyPress', 'dpw' ) ?></h3>
+		<h4><?php _e( 'Welcome Pack', 'dpw' ) ?></h4>
+	</div>
 
-<div id="bp-admin-nav">
-	<ol>
-		<li class="current"><?php _e( 'Friends, Groups <span class="ampersand">&amp;</span> Welcome Message', 'dpw' )?></li>
-		<li><?php _e( 'Emails', 'dpw' ) ?></li>
-	</ol>
-</div>
+	<div id="bp-admin-nav">
+		<ol>
+			<li class="current"><a href=""><?php _e( 'Friends, Groups <span class="ampersand">&amp;</span> Welcome Message', 'dpw' ) ?></a></li>
+			<li><a href=""><?php _e( 'Emails', 'dpw' ) ?></a></li>
+		</ol>
+	</div>
 
-
-<p><?php _e( 'When a user registers on your site, you may want to automatically send them a friend or group invitation, or a welcome message. This plugin lets you do that.', 'dpw' ) ?></p>
+	<div class="dpw-spacer">
+		<p><?php _e( 'When a user registers on your site, you may want to automatically send them a friend or group invitation, or a welcome message. This plugin lets you do that.', 'dpw' ) ?></p>
+	</div>
 
 	<form method="post" action="options.php" id="welcomepack">
 		<?php wp_nonce_field( 'closedpostboxes', 'closedpostboxesnonce', false ) ?>

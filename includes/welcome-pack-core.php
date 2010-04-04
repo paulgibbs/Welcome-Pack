@@ -8,6 +8,9 @@ if ( !defined( 'WELCOME_PACK_AUTOACCEPT_INVITATIONS' ) )
 /* The notifications file should contain functions to send email notifications on specific user actions */
 require( dirname( __FILE__ ) . '/welcome-pack-notifications.php' );
 
+/* The cssjs file should set up and enqueue all CSS and JS files used by the component */
+require ( dirname( __FILE__ ) . '/welcome-pack-cssjs.php' );
+
 /* The filters file should create and apply filters to component output functions. */
 require( dirname( __FILE__ ) . '/welcome-pack-filters.php' );
 

@@ -10,17 +10,9 @@ function dpw_admin_screen_on_load() {
 	add_meta_box( 'dpw-admin-metaboxes-sidebox-1', __( 'Like this plugin?', 'dpw' ), 'dpw_admin_screen_socialmedia', 'buddypress_page_welcome-pack', 'side', 'core' );
 	add_meta_box( 'dpw-admin-metaboxes-sidebox-2', __( 'Need support?', 'dpw' ), 'dpw_admin_screen_support', 'buddypress_page_welcome-pack', 'side', 'core' );
 	add_meta_box( 'dpw-admin-metaboxes-sidebox-3', __( 'Latest news from the author', 'dpw' ), 'dpw_admin_screen_news', 'buddypress_page_welcome-pack', 'side', 'core' );
-	add_meta_box( 'dpw-admin-metaboxes-settingsbox', __( 'Configuration', 'dpw' ), 'dpw_admin_screen_settingsbox', 'buddypress_page_welcome-pack', 'normal', 'core' );
+	add_meta_box( 'dpw-admin-metaboxes-configurationbox', __( 'Configuration', 'dpw' ), 'dpw_admin_screen_configurationbox', 'buddypress_page_welcome-pack', 'normal', 'core' );
+	add_meta_box( 'dpw-admin-metaboxes-settingsbox', __( 'Settings', 'dpw' ), 'dpw_admin_screen_settingsbox', 'buddypress_page_welcome-pack', 'normal', 'core' );
 }
-
-function dpw_admin_add_css_js() {
-	wp_enqueue_script( 'common' );
-	wp_enqueue_script( 'wp-lists' );
-	wp_enqueue_script( 'postbox' );
-	wp_enqueue_style( 'welcomepack', plugins_url( '/css/admin.css', __FILE__ ) );
-	wp_enqueue_style( 'welcomepack-bpstyles', plugins_url( '/css/bpstyles.css', __FILE__ ) );
-}
-add_action( 'admin_print_styles-buddypress_page_welcome-pack', 'dpw_admin_add_css_js' );
 
 // Tells WP that we support two columns
 function dpw_admin_screen_layout_columns( $columns, $screen ) {
@@ -86,13 +78,12 @@ function dpw_admin_screen_support( $settings ) {
 <?php
 }
 
-function dpw_admin_screen_settingsbox( $settings ) {
+function dpw_admin_screen_configurationbox( $settings ) {
 ?>
 <?php if ( function_exists( 'friends_install' ) && bp_has_members( 'type=alphabetical&populate_extras=false&per_page=10000' ) ) : ?>	
-	<div class="setting">
+	<div class="setting setting-friends">
 		<div class="settingname">
 			<p><?php _e( 'Invite the new user to become friends with these people:', 'dpw' ) ?></p>
-			<?php dpw_admin_settings_toggle( 'friends', $settings ) ?>
 		</div>
 		<div class="settingvalue">
 			<?php dpw_admin_settings_friends( $settings ) ?>
@@ -102,10 +93,9 @@ function dpw_admin_screen_settingsbox( $settings ) {
 <?php endif ?>
 
 <?php if ( function_exists( 'groups_install' ) && bp_has_groups( 'type=alphabetically&populate_extras=false&per_page=10000' ) ) : ?>
-	<div class="setting">
+	<div class="setting setting-groups">
 		<div class="settingname">
 			<p><?php _e( 'Ask the new user if they\'d like to join these groups:', 'dpw' ) ?></p>
-			<?php dpw_admin_settings_toggle( 'groups', $settings ) ?>
 		</div>
 		<div class="settingvalue">
 			<?php dpw_admin_settings_groups( $settings ) ?>
@@ -115,39 +105,67 @@ function dpw_admin_screen_settingsbox( $settings ) {
 <?php endif ?>
 
 <?php if ( function_exists( 'messages_install' ) && bp_has_members( 'type=alphabetical&populate_extras=false&per_page=10000' ) ) : ?>
-	<div class="setting">
-		<div class="settingname">
-			<p><?php _e( 'Send the new user a welcome message&hellip;', 'dpw' ) ?></p>
-			<?php dpw_admin_settings_toggle( 'welcomemsg', $settings ) ?>
+	<div class="setting-welcomesg">
+		<div class="setting">
+			<div class="settingname">
+				<p><?php _e( 'Send the new user a welcome message&hellip;', 'dpw' ) ?></p>
+			</div>
+			<div class="settingvalue">
+				<?php dpw_admin_settings_welcomemsg( $settings ) ?>
+			</div>
+			<div style="clear: left"></div>
 		</div>
-		<div class="settingvalue">
-			<?php dpw_admin_settings_welcomemsg( $settings ) ?>
-		</div>
-		<div style="clear: left"></div>
-	</div>
 
-	<div class="setting">
-		<div class="settingname">
-			<p><?php _e( '&hellip;with this subject:', 'dpw' ) ?></p>
+		<div class="setting">
+			<div class="settingname">
+				<p><?php _e( '&hellip;with this subject:', 'dpw' ) ?></p>
+			</div>
+			<div class="settingvalue">
+				<?php dpw_admin_settings_welcomemsg_subject( $settings ) ?>
+			</div>
+			<div style="clear: left"></div>
 		</div>
-		<div class="settingvalue">
-			<?php dpw_admin_settings_welcomemsg_subject( $settings ) ?>
-		</div>
-		<div style="clear: left"></div>
-	</div>
 
-	<div class="setting">
-		<div class="settingname">
-			<p><?php _e( '&hellip;from this user:', 'dpw' ) ?></p>
+		<div class="setting">
+			<div class="settingname">
+				<p><?php _e( '&hellip;from this user:', 'dpw' ) ?></p>
+			</div>
+			<div class="settingvalue">
+				<?php dpw_admin_settings_welcomemsg_sender( $settings ) ?>
+			</div>
+			<div style="clear: left"></div>
 		</div>
-		<div class="settingvalue">
-			<?php dpw_admin_settings_welcomemsg_sender( $settings ) ?>
-		</div>
-		<div style="clear: left"></div>
 	</div>
 <?php endif;
 }
 
+function dpw_admin_screen_settingsbox( $settings ) {
+?>
+<div class="component">
+	<h5><?php _e( "Friends", 'dpw' ) ?></h5>
+	<div class="radio">
+		<?php dpw_admin_settings_toggle( 'friends', $settings ) ?>
+	</div>
+	<p><?php _e( "Invite the new user to become friends with the selected members. It's a great way of teaching people how the friend approval process works on your website, and how they can use friendships to filter activity streams.", 'dpw' ) ?></p>
+</div>
+
+<div class="component">
+	<h5><?php _e( "Groups", 'dpw' ) ?></h5>
+	<div class="radio">
+		<?php dpw_admin_settings_toggle( 'groups', $settings ) ?>
+	</div>
+	<p><?php _e( "Ask the new user if they'd like to join a group. You could use this to invite all new users on your site to join a support group, so that all of your frequently asked questions are kept in the same place.", 'dpw' ) ?></p>
+</div>
+
+<div class="component">
+	<h5><?php _e( "Welcome Message", 'dpw' ) ?></h5>
+	<div class="radio">
+		<?php dpw_admin_settings_toggle( 'welcomemsg', $settings ) ?>
+	</div>
+	<p><?php _e( "Send the newly-registered user a private message; use this to welcome people to your site and help them get started.", 'dpw' ) ?></p>
+</div>
+<?php
+}
 // TODO: per_page http://trac.buddypress.org/ticket/1991
 function dpw_admin_settings_friends( $settings ) {
 ?>
@@ -194,7 +212,8 @@ function dpw_admin_settings_welcomemsg_sender( $settings ) {
 function dpw_admin_settings_toggle( $name, $settings ) {
 	$checked = $settings["{$name}toggle"];
 ?>
-	<label for="<?php echo $name ?>"><?php _e( 'Enable', 'dpw' ) ?>&nbsp;<input type="checkbox" name=welcomepack[<?php echo $name ?>toggle] <?php if ( $checked ) echo 'checked="checked" ' ?>/></label>
+	<input type="radio" name="welcomepack[<?php echo $name ?>toggle]" value="1" <?php if ( $checked ) echo 'checked="checked" ' ?>/> <?php _e( 'Enabled', 'buddypress' ) ?> &nbsp;
+	<input type="radio" name="welcomepack[<?php echo $name ?>toggle]" value="0" <?php if ( !$checked ) echo 'checked="checked" ' ?>/> <?php _e( 'Disabled', 'buddypress' ) ?>
 <?php
 }
 
@@ -226,13 +245,13 @@ function dpw_admin_validate( $input ) {
 		$input['welcomemsgsender'] = apply_filters( 'dpw_admin_validate_friend_id', $input['welcomemsgsender'] );
  
 	if ( isset( $input['groupstoggle'] ) )
-		$input['groupstoggle'] = ( 'on' == $input['groupstoggle'] ) ? true : false;
+		$input['groupstoggle'] = ( $input['groupstoggle'] ) ? true : false;
 
 	if ( isset( $input['friendstoggle'] ) )
-		$input['friendstoggle'] = ( 'on' == $input['friendstoggle'] ) ? true : false;
+		$input['friendstoggle'] = ( $input['friendstoggle'] ) ? true : false;
 
 	if ( isset( $input['welcomemsgtoggle'] ) )
-		$input['welcomemsgtoggle'] = ( 'on' == $input['welcomemsgtoggle'] ) ? true : false;
+		$input['welcomemsgtoggle'] = ( $input['welcomemsgtoggle'] ) ? true : false;
 
 	return serialize( $input );
 }
@@ -255,13 +274,6 @@ function dpw_admin_screen() {
 
 	$settings = maybe_unserialize( $settings );
 ?>
-<script type="text/javascript">
-	jQuery(document).ready( function($) {
-		$('.if-js-closed').removeClass('if-js-closed').addClass('closed');
-		postboxes.add_postbox_toggles('buddypress_page_welcome-pack');
-	});
-</script>
-
 <div id="bp-admin">
 <div id="dpw-admin-metaboxes-general" class="wrap">
 
@@ -286,7 +298,6 @@ function dpw_admin_screen() {
 		<?php wp_nonce_field( 'meta-box-order', 'meta-box-order-nonce', false ) ?>
 		<?php settings_fields( 'dpw-settings-group' ) ?>
 
-		<!-- poststuff lives here -->
 		<div id="poststuff" class="metabox-holder<?php echo 2 == $screen_layout_columns ? ' has-right-sidebar' : ''; ?>">
 			<div id="side-info-column" class="inner-sidebar">
 				<?php do_meta_boxes( 'buddypress_page_welcome-pack', 'side', $settings ) ?>

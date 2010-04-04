@@ -62,7 +62,6 @@ function dpw_on_user_registration( $user_id ) {
 	}
 }
 add_action( 'bp_core_activated_user', 'dpw_on_user_registration' );
-//add_action( 'user_register', 'dpw_on_user_registration', 20 );
 
 function dpw_do_keyword_replacement( $text, $user_id ) {
 	$text = str_replace( "USERNAME", bp_core_get_username( $user_id ), $text );

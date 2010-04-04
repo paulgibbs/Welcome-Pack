@@ -6,7 +6,10 @@ if ( !defined( 'WELCOME_PACK_AUTOACCEPT_INVITATIONS' ) )
 
 
 /* The notifications file should contain functions to send email notifications on specific user actions */
-require( dirname( __FILE__ ) . '/welcome-pack-notifications.php' );
+//require( dirname( __FILE__ ) . '/welcome-pack-notifications.php' );
+
+/* The ajax file should hold all functions used in AJAX queries */
+require ( dirname( __FILE__ ) . '/welcome-pack-ajax.php' );
 
 /* The cssjs file should set up and enqueue all CSS and JS files used by the component */
 require ( dirname( __FILE__ ) . '/welcome-pack-cssjs.php' );
@@ -55,8 +58,18 @@ function dpw_on_user_registration( $user_id ) {
 		if ( !$settings['welcomemsgsender'] || !$settings['welcomemsgsubject'] || !$settings['welcomemsg'] )
 			return;
 
-		messages_new_message( array( 'sender_id' => $settings['welcomemsgsender'], 'recipients' => array( $settings['welcomemsgsender'], $user_id ), 'subject' => $settings['welcomemsgsubject'], 'content' => $settings['welcomemsg'] ) );
+		messages_new_message( array( 'sender_id' => $settings['welcomemsgsender'], 'recipients' => array( $settings['welcomemsgsender'], $user_id ), 'subject' => apply_filters( 'dpw_keyword_replacement', $settings['welcomemsgsubject'], $user_id ), 'content' => apply_filters( 'dpw_keyword_replacement', $settings['welcomemsg'], $user_id ) ) );
 	}
 }
-add_action( 'user_register', 'dpw_on_user_registration', 11 );
+add_action( 'bp_core_activated_user', 'dpw_on_user_registration' );
+//add_action( 'user_register', 'dpw_on_user_registration', 20 );
+
+function dpw_do_keyword_replacement( $text, $user_id ) {
+	$text = str_replace( "USERNAME", bp_core_get_username( $user_id ), $text );
+	$text = str_replace( "NICKNAME", bp_core_get_user_displayname( $user_id ), $text );
+	$text = str_replace( "USER_LINK", bp_core_get_user_domain( $user_id ), $text );
+
+	return $text;
+}
+add_filter( 'dpw_keyword_replacement', 'dpw_do_keyword_replacement', 10, 2 );
 ?>

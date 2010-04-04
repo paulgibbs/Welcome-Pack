@@ -6,6 +6,7 @@ License: General Public License version 2
 Requires at least: WP/MU 2.9, BuddyPress 1.2
 Tested up to: WP/MU 2.9, BuddyPress 1.2.3
 Stable tag: 1.64
+Site Wide Only: true
 
 When a user registers on your site, you may want to automatically send them a friend or group invitation, or a welcome message. This plugin lets you do that.
 

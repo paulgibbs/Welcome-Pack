@@ -1,3 +1,4 @@
+div#dpw-admin-metaboxes-general div.setting-group:last-child { margin-bottom: 0 };
 div#dpw-admin-metaboxes-general div.settingname { float: left; width: 48%; }
 div#dpw-admin-metaboxes-general div.settingvalue { float: right; width: 50%; margin-right: 6px; }
 div#dpw-admin-metaboxes-general div.setting-friends, div#dpw-admin-metaboxes-general div.setting-groups, div#dpw-admin-metaboxes-general div.setting-welcomemsg { margin-top: 8px; margin-bottom: 30px; }

@@ -78,10 +78,11 @@ function dpw_admin_screen_support( $settings ) {
 <?php
 }
 
+/* TODO: need to figure out how to dynamically set bottom-margin = 0 of the last div.setting-group */
 function dpw_admin_screen_configurationbox( $settings ) {
 ?>
 <?php if ( function_exists( 'friends_install' ) && bp_has_members( 'type=alphabetical&populate_extras=false&per_page=10000' ) ) : ?>	
-	<div class="setting setting-friends">
+	<div class="setting setting-group setting-friends <?php if ( !$settings["friendstoggle"] ) echo 'initially-hidden' ?>">
 		<div class="settingname">
 			<p><?php _e( 'Invite the new user to become friends with these people:', 'dpw' ) ?></p>
 		</div>
@@ -93,7 +94,7 @@ function dpw_admin_screen_configurationbox( $settings ) {
 <?php endif ?>
 
 <?php if ( function_exists( 'groups_install' ) && bp_has_groups( 'type=alphabetically&populate_extras=false&per_page=10000' ) ) : ?>
-	<div class="setting setting-groups">
+	<div class="setting setting-group setting-groups <?php if ( !$settings["groupstoggle"] ) echo 'initially-hidden' ?>">
 		<div class="settingname">
 			<p><?php _e( 'Ask the new user if they\'d like to join these groups:', 'dpw' ) ?></p>
 		</div>
@@ -105,7 +106,7 @@ function dpw_admin_screen_configurationbox( $settings ) {
 <?php endif ?>
 
 <?php if ( function_exists( 'messages_install' ) && bp_has_members( 'type=alphabetical&populate_extras=false&per_page=10000' ) ) : ?>
-	<div class="setting-welcomesg">
+	<div class="setting-welcomemsg setting-group <?php if ( !$settings["welcomemsgtoggle"] ) echo 'initially-hidden' ?>">
 		<div class="setting">
 			<div class="settingname">
 				<p><?php _e( 'Send the new user a welcome message&hellip;', 'dpw' ) ?></p>
@@ -212,8 +213,8 @@ function dpw_admin_settings_welcomemsg_sender( $settings ) {
 function dpw_admin_settings_toggle( $name, $settings ) {
 	$checked = $settings["{$name}toggle"];
 ?>
-	<input type="radio" name="welcomepack[<?php echo $name ?>toggle]" value="1" <?php if ( $checked ) echo 'checked="checked" ' ?>/> <?php _e( 'Enabled', 'buddypress' ) ?> &nbsp;
-	<input type="radio" name="welcomepack[<?php echo $name ?>toggle]" value="0" <?php if ( !$checked ) echo 'checked="checked" ' ?>/> <?php _e( 'Disabled', 'buddypress' ) ?>
+	<input type="radio" class="<?php echo $name ?>" name="welcomepack[<?php echo $name ?>toggle]" value="1" <?php if ( $checked ) echo 'checked="checked" ' ?>/> <?php _e( 'Enabled', 'buddypress' ) ?> &nbsp;
+	<input type="radio" class="<?php echo $name ?>" name="welcomepack[<?php echo $name ?>toggle]" value="0" <?php if ( !$checked ) echo 'checked="checked" ' ?>/> <?php _e( 'Disabled', 'buddypress' ) ?>
 <?php
 }
 

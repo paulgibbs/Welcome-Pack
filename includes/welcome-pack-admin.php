@@ -28,7 +28,7 @@ function dpw_admin_add_action_link( $links, $file ) {
 	if ( 'welcome-pack/loader.php' != $file )
 		return $links;
 
-	$settings_link = '<a href="' . admin_url( 'options-general.php?page=welcome-pack' ) . '">' . __('Settings') . '</a>';
+	$settings_link = '<a href="' . admin_url( 'admin.php?page=welcome-pack' ) . '">' . __('Settings') . '</a>';
 	array_unshift( $links, $settings_link );
 
 	return $links;

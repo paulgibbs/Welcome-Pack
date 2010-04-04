@@ -1,24 +1,21 @@
 div#dpw-admin-metaboxes-general div.setting-group:last-child { margin-bottom: 0 };
-div#dpw-admin-metaboxes-general div.settingname { float: left; width: 48%; }
-div#dpw-admin-metaboxes-general div.settingvalue { float: right; width: 50%; margin-right: 6px; }
-div#dpw-admin-metaboxes-general div.setting-friends, div#dpw-admin-metaboxes-general div.setting-groups, div#dpw-admin-metaboxes-general div.setting-welcomemsg { margin-top: 8px; margin-bottom: 30px; }
 div#dpw-admin-metaboxes-general div.setting:after { content: "."; display: block; height: 0; clear: both; visibility: hidden; }
 div#dpw-admin-metaboxes-general div.setting p { margin-top: 0px; }
+div#dpw-admin-metaboxes-general div.settingname { float: left; width: 50%; margin-right: 6px; }
+div#dpw-admin-metaboxes-general div.settingvalue { float: left; width: 48%; }
+div#dpw-admin-metaboxes-general div.setting-friends, div#dpw-admin-metaboxes-general div.setting-groups, div#dpw-admin-metaboxes-general div.setting-welcomemsg { margin-top: 8px; margin-bottom: 30px; }
 
 div#dpw-admin-metaboxes-general textarea, div#dpw-admin-metaboxes-general select, div#dpw-admin-metaboxes-general input[type="text"] { width: 100%; }
 div#dpw-admin-metaboxes-general textarea, div#dpw-admin-metaboxes-general select { height: auto; min-height: 100px; }
-
 div#poststuff .inside, div#poststuff .inside p { font-size: 12px; }
 div#dpw-admin-metaboxes-general div.inside ul { margin-left: 2em; }
 div#dpw-admin-metaboxes-general div.inside ul li { list-style: square; }
 div#dpw-admin-metaboxes-general div.inside ul li.rss { list-style-image: url(/wp-includes/images/rss.png); }
 div.metabox-holder { padding-top: 0 !important; }
-
 div#dpw-admin-metaboxes-general ul.menu:after { content: "."; display: block; height: 0; clear: both; visibility: hidden; }
 div#dpw-admin-metaboxes-general ul.menu li { float: left; list-style: none !important; margin-bottom: 0; padding-right: 6px; }
 div#dpw-admin-metaboxes-general ul.menu { margin-left: 6px !important; }
 
 div#dpw-admin-metaboxes-general span.ampersand { font-family: Baskerville, Palatino, "Palatino Linotype", Constantia, "Book Antiqua", serif; font-style: italic; font-size: 1.1em; }
-
 div.dpw-spacer { border-top: 1px solid #f0f0f0; padding-bottom: 12px; }
 div#bp-admin-nav li.current a { color: #888; text-decoration: none; }

@@ -66,7 +66,7 @@ add_action( 'bp_core_activated_user', 'dpw_on_user_registration' );
 function dpw_do_keyword_replacement( $text, $user_id ) {
 	$text = str_replace( "USERNAME", bp_core_get_username( $user_id ), $text );
 	$text = str_replace( "NICKNAME", bp_core_get_user_displayname( $user_id ), $text );
-	$text = str_replace( "USER_LINK", bp_core_get_user_domain( $user_id ), $text );
+	$text = str_replace( "USER_URL", bp_core_get_user_domain( $user_id ), $text );
 
 	return $text;
 }

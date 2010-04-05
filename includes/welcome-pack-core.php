@@ -44,12 +44,12 @@ function dpw_on_user_registration( $user_id ) {
 
 	if ( $settings['friendstoggle'] && function_exists( 'friends_install' ) )
 		foreach ( $settings['friends'] as $friend_id )
-			friends_add_friend( $friend_id, $user_id, WELCOME_PACK_AUTOACCEPT_INVITATIONS );
+			friends_add_friend( $friend_id, $user_id, constant( 'WELCOME_PACK_AUTOACCEPT_INVITATIONS' ) );
 
 	if ( $settings['groupstoggle'] && function_exists( 'groups_install' ) ) {
 		foreach ( $settings['groups'] as $group_id ) {
 			$group = new BP_Groups_Group( $group_id );
-			groups_invite_user( array( 'user_id' => $user_id, 'group_id' => $group_id, 'inviter_id' => $group->creator_id, 'is_confirmed' => WELCOME_PACK_AUTOACCEPT_INVITATIONS ) );
+			groups_invite_user( array( 'user_id' => $user_id, 'group_id' => $group_id, 'inviter_id' => $group->creator_id, 'is_confirmed' => constant( 'WELCOME_PACK_AUTOACCEPT_INVITATIONS' ) ) );
 			groups_send_invites( $group->creator_id, $group_id );
 		}
 	}

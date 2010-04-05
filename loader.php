@@ -10,6 +10,7 @@ License: General Public License version 3
 Requires at least: WP/MU 2.9, BuddyPress 1.2
 Tested up to: WP/MU 2.9.2, BuddyPress 1.2.3
 Site Wide Only: true
+Network: true
 
 
 "Welcome Pack" for BuddyPress

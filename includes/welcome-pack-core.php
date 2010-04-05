@@ -6,7 +6,7 @@ if ( !defined( 'WELCOME_PACK_AUTOACCEPT_INVITATIONS' ) )
 
 
 /* The notifications file should contain functions to send email notifications on specific user actions */
-//require( dirname( __FILE__ ) . '/welcome-pack-notifications.php' );
+require( dirname( __FILE__ ) . '/welcome-pack-notifications.php' );
 
 /* The ajax file should hold all functions used in AJAX queries */
 require ( dirname( __FILE__ ) . '/welcome-pack-ajax.php' );

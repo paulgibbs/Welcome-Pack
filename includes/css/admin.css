@@ -22,3 +22,4 @@ div#dpw-admin-metaboxes-general ul.menu { margin-left: 6px !important; }
 div#dpw-admin-metaboxes-general span.ampersand { font-family: Baskerville, Palatino, "Palatino Linotype", Constantia, "Book Antiqua", serif; font-style: italic; font-size: 1.1em; }
 div.dpw-spacer { border-top: 1px solid #f0f0f0; padding-bottom: 12px; }
 div#bp-admin-nav li.current a { color: #888; text-decoration: none; }
+div.metabox-prefs dt { font-style: italic; }

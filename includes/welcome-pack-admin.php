@@ -6,12 +6,36 @@ The implementation of the above is credited to http://www.code-styling.de/englis
 Big thanks to both!
 */
 
+//TODO: go through and pass URLs within i18n function calls by using sprintf?
 function dpw_admin_screen_on_load() {
 	add_meta_box( 'dpw-admin-metaboxes-sidebox-1', __( 'Like this plugin?', 'dpw' ), 'dpw_admin_screen_socialmedia', 'buddypress_page_welcome-pack', 'side', 'core' );
 	add_meta_box( 'dpw-admin-metaboxes-sidebox-2', __( 'Need support?', 'dpw' ), 'dpw_admin_screen_support', 'buddypress_page_welcome-pack', 'side', 'core' );
 	add_meta_box( 'dpw-admin-metaboxes-sidebox-3', __( 'Latest news from the author', 'dpw' ), 'dpw_admin_screen_news', 'buddypress_page_welcome-pack', 'side', 'core' );
 	add_meta_box( 'dpw-admin-metaboxes-configurationbox', __( 'Configuration', 'dpw' ), 'dpw_admin_screen_configurationbox', 'buddypress_page_welcome-pack', 'normal', 'core' );
 	add_meta_box( 'dpw-admin-metaboxes-settingsbox', __( 'Settings', 'dpw' ), 'dpw_admin_screen_settingsbox', 'buddypress_page_welcome-pack', 'normal', 'core' );
+
+	/* Emails tab */
+	add_meta_box( 'dpw-admin-metaboxes-sidebox-1', __( 'Like this plugin?', 'dpw' ), 'dpw_admin_screen_socialmedia', 'buddypress_page_welcome-pack-emails', 'side', 'core' );
+	add_meta_box( 'dpw-admin-metaboxes-sidebox-2', __( 'Need support?', 'dpw' ), 'dpw_admin_screen_support', 'buddypress_page_welcome-pack-emails', 'side', 'core' );
+	add_meta_box( 'dpw-admin-metaboxes-sidebox-3', __( 'Latest news from the author', 'dpw' ), 'dpw_admin_screen_news', 'buddypress_page_welcome-pack-emails', 'side', 'core' );
+	add_meta_box( 'dpw-admin-metaboxes-emailsbox', __( 'Emails', 'dpw' ), 'dpw_admin_screen_emailsbox', 'buddypress_page_welcome-pack-emails', 'normal', 'core' );
+
+	/* Help panel */
+	$help = '<p>' . __( 'If you are changing a setting that allows text entry, you can use the following placeholder tags which will be automatically replaced when a private message or an email is being sent:', 'dpw' ) . '</p>';
+	$help .= '<dl>';
+	$help .= "<dt>USERNAME</dt><dd>" . __( "Replaced with the person's username.", 'dpw' ) . "</dd>";
+	$help .= "<dt>NICKNAME</dt><dd>" . __( "Replaced with the person's name from their user profile.", 'dpw' ) . "</dd>";
+	$help .= "<dt>USER_URL</dt><dd>" . __( "Replaced with the URL of their user profile.", 'dpw' ) . "</dd>";
+	$help .= '</dl><br />';
+	$help .= '<p>' . __( "The default behaviour for Friends and Groups is for invitations to be sent. If you would prefer to suppress those invitations and have them automatically accepted on the user's behalf, set <code>define( 'WELCOME_PACK_AUTOACCEPT_INVITATIONS', true );</code> in wp-config.php.", 'dpw' ) .'</p><br />';
+
+	add_contextual_help( 'buddypress_page_welcome-pack', $help );
+	add_filter( 'default_contextual_help', 'dpw_admin_screen_contextual_help' );
+}
+
+/* WP Help panel (the "Help" dropdown in the top-right of the page) */
+function dpw_admin_screen_contextual_help( $default_text ) {
+	return '<a href="http://wordpress.org/tags/welcome-pack" target="_blank">' . __( 'Support Forums', 'dpw' ) . '</a>';
 }
 
 // Tells WP that we support two columns
@@ -28,7 +52,7 @@ function dpw_admin_add_action_link( $links, $file ) {
 	if ( 'welcome-pack/loader.php' != $file )
 		return $links;
 
-	$settings_link = '<a href="' . admin_url( 'admin.php?page=welcome-pack' ) . '">' . __('Settings') . '</a>';
+	$settings_link = '<a href="' . admin_url( 'admin.php?page=welcome-pack' ) . '">' . __( 'Settings', 'dpw' ) . '</a>';
 	array_unshift( $links, $settings_link );
 
 	return $links;
@@ -63,18 +87,35 @@ function dpw_admin_screen_news( $settings ) {
 		$items = $rss->get_items( 0, $rss->get_item_quantity( 3 ) );
 
 		foreach ( $items as $item )
-			$content .= '<li><p><a href="' . clean_url( $item->get_permalink(), null, 'display' ) . '">' . apply_filters( 'dpw_admin_rss_feed', $item->get_title() ) . '</a></p></li>';
+			$content .= '<li><p><a target="_new" href="' . clean_url( $item->get_permalink(), null, 'display' ) . '">' . apply_filters( 'dpw_admin_rss_feed', $item->get_title() ) . '</a></p></li>';
 
-		$content .= '<li class="rss"><p><a href="http://feeds.feedburner.com/BYOTOS">Subscribe with RSS</a></p></li></ul>';
+		$content .= '<li class="rss"><p><a target="_new" href="http://feeds.feedburner.com/BYOTOS">' . __( 'Subscribe with RSS', 'dpw' ) . '</a></p></li></ul>';
 		echo $content;
 	} else {
-		echo '<ul><li>No news!</li></ul>';
+		echo '<ul><li>' . __( 'No news!', 'dpw' ) . '</li></ul>';
 	}
 }
 
 function dpw_admin_screen_support( $settings ) {
 ?>
-<p><?php _e( "If you need help and support using this plugin, or ideas for new features, please visit the ", 'dpw' ) ?><a href="#"><?php _e( 'support forums', 'dpw' ) ?></a>.</p>
+<p><?php _e( "If you need help and support using this plugin, or ideas for new features, please visit the ", 'dpw' ) ?><a href="http://wordpress.org/tags/welcome-pack" target="_new"><?php _e( 'Support Forums', 'dpw' ) ?></a>.</p>
+<?php
+}
+
+//bp_core_signup_send_validation_email
+function dpw_admin_screen_emailsbox( $settings ) {
+	$emails = array( '----', __( 'Signup validation email', 'dpw' ) );
+
+	wp_nonce_field( 'dpw-emails', '_ajax_nonce_dpw_emails' );
+?>
+	<select id="emailpicker">
+		<?php for ( $emails as $id => $value ) : ?>
+		<option value="<?php echo $id ?>"><?php echo $value ?></option>
+		<?php endfor; ?>
+	</select>
+
+	<div id="email">
+ 	</div>
 <?php
 }
 
@@ -107,7 +148,7 @@ function dpw_admin_screen_configurationbox( $settings ) {
 
 <?php if ( function_exists( 'messages_install' ) && bp_has_members( 'type=alphabetical&populate_extras=false&per_page=10000' ) ) : ?>
 	<div class="setting-welcomemsg setting-group <?php if ( !$settings["welcomemsgtoggle"] ) echo 'initially-hidden' ?>">
-		<div class="setting">
+		<div class="setting wide">
 			<div class="settingname">
 				<p><?php _e( 'Send the new user a welcome message&hellip;', 'dpw' ) ?></p>
 			</div>
@@ -143,30 +184,36 @@ function dpw_admin_screen_configurationbox( $settings ) {
 function dpw_admin_screen_settingsbox( $settings ) {
 ?>
 <div class="component">
-	<h5><?php _e( "Friends", 'dpw' ) ?></h5>
-	<div class="radio">
-		<?php dpw_admin_settings_toggle( 'friends', $settings ) ?>
-	</div>
-	<p><?php _e( "Invite the new user to become friends with the selected members. It's a great way of teaching people how the friend approval process works on your website, and how they can use friendships to filter activity streams.", 'dpw' ) ?></p>
+	<h5><?php _e( "Friends", 'dpw' ) ?>
+		<div class="radio">
+			<?php dpw_admin_settings_toggle( 'friends', $settings ) ?>
+		</div>
+	</h5>
+
+	<p><?php _e( "Invite the new user to become friends with the selected members. It's a great way of teaching people how the friend acceptance process works on your website, and how they can use friendships to filter activity streams.", 'dpw' ) ?></p>
 </div>
 
 <div class="component">
-	<h5><?php _e( "Groups", 'dpw' ) ?></h5>
-	<div class="radio">
-		<?php dpw_admin_settings_toggle( 'groups', $settings ) ?>
-	</div>
+	<h5><?php _e( "Groups", 'dpw' ) ?>
+		<div class="radio">
+			<?php dpw_admin_settings_toggle( 'groups', $settings ) ?>
+		</div>
+	</h5>
+
 	<p><?php _e( "Ask the new user if they'd like to join a group. You could use this to invite all new users on your site to join a support group, so that all of your frequently asked questions are kept in the same place.", 'dpw' ) ?></p>
 </div>
 
 <div class="component">
-	<h5><?php _e( "Welcome Message", 'dpw' ) ?></h5>
-	<div class="radio">
-		<?php dpw_admin_settings_toggle( 'welcomemsg', $settings ) ?>
-	</div>
+	<h5><?php _e( "Welcome Message", 'dpw' ) ?>
+		<div class="radio">
+			<?php dpw_admin_settings_toggle( 'welcomemsg', $settings ) ?>
+		</div>
+	</h5>
 	<p><?php _e( "Send the newly-registered user a private message; use this to welcome people to your site and help them get started.", 'dpw' ) ?></p>
 </div>
 <?php
 }
+
 // TODO: per_page http://trac.buddypress.org/ticket/1991
 function dpw_admin_settings_friends( $settings ) {
 ?>
@@ -219,22 +266,23 @@ function dpw_admin_settings_toggle( $name, $settings ) {
 }
 
 function dpw_admin_validate( $input ) {
+	$current_settings = get_site_option( 'welcomepack' );
+	if ( !$current_settings )
+		$current_settings = array( 'friends' => array(), 'groups' => array(), 'welcomemsgsubject' => '', 'welcomemsg' => '', 'welcomemsgsender' => 0, 'welcomemsgtoggle' => false, 'friendstoggle' => false, 'groupstoggle' => false, 'emails' => '' );
+
+	$current_settings = maybe_unserialize( $current_settings );
+
+
 	if ( is_string( $input ) )  // wpmu-edit.php
 		return get_site_option( 'welcomepack' );
 
-	if ( isset( $input['friends'] ) ) {
+	if ( isset( $input['friends'] ) )
 		foreach ( $input['friends'] as $friend_id )
 			$friend_id = apply_filters( 'dpw_admin_validate_friend_id', $friend_id );
-	} else {
-		$input['friends'] = array();
-	}
 
-	if ( isset( $input['groups'] ) ) {
+	if ( isset( $input['groups'] ) )
 		foreach ( $input['groups'] as $group_id )
 			$group_id = apply_filters( 'dpw_admin_validate_group_id', $group_id );
-	} else {
-		$input['groups'] = array();
-	}
 
 	if ( isset( $input['welcomemsg'] ) )
 		$input['welcomemsg'] = apply_filters( 'dpw_admin_settings_welcomemsg', $input['welcomemsg'] );
@@ -254,7 +302,7 @@ function dpw_admin_validate( $input ) {
 	if ( isset( $input['welcomemsgtoggle'] ) )
 		$input['welcomemsgtoggle'] = ( $input['welcomemsgtoggle'] ) ? true : false;
 
-	return serialize( $input );
+	return serialize( wp_parse_args( $input, $current_settings ) );
 }
 
 
@@ -271,9 +319,13 @@ function dpw_admin_screen() {
 
 	$settings = get_site_option( 'welcomepack' );
 	if ( !$settings )
-		$settings = array( 'friends' => array(), 'groups' => array(), 'welcomemsgsubject' => '', 'welcomemsg' => '', 'welcomemsgsender' => 0, 'welcomemsgtoggle' => false, 'friendstoggle' => false, 'groupstoggle' => false );
+		$settings = array( 'friends' => array(), 'groups' => array(), 'welcomemsgsubject' => '', 'welcomemsg' => '', 'welcomemsgsender' => 0, 'welcomemsgtoggle' => false, 'friendstoggle' => false, 'groupstoggle' => false, 'emails' => '' );
 
 	$settings = maybe_unserialize( $settings );
+
+	$is_email_tab = false;
+	if ( isset( $_GET['tab'] ) && 'emails' == $_GET['tab'] )
+		$is_email_tab = true;
 ?>
 <div id="bp-admin">
 <div id="dpw-admin-metaboxes-general" class="wrap">
@@ -285,13 +337,13 @@ function dpw_admin_screen() {
 
 	<div id="bp-admin-nav">
 		<ol>
-			<li class="current"><a href=""><?php _e( 'Friends, Groups <span class="ampersand">&amp;</span> Welcome Message', 'dpw' ) ?></a></li>
-			<li><a href=""><?php _e( 'Emails', 'dpw' ) ?></a></li>
+			<li <?php if ( !$is_email_tab ) echo 'class="current"' ?>><a href="<?php echo site_url('wp-admin/admin.php?page=welcome-pack', 'admin') ?>"><?php _e( 'Friends, Groups <span class="ampersand">&amp;</span> Welcome Message', 'dpw' ) ?></a></li>
+			<li <?php if ( $is_email_tab ) echo 'class="current"' ?>><a href="<?php echo site_url('wp-admin/admin.php?page=welcome-pack&amp;tab=emails', 'admin') ?>"><?php _e( 'Emails', 'dpw' ) ?></a></li>
 		</ol>
 	</div>
 
 	<div class="dpw-spacer">
-		<p><?php _e( 'When a user registers on your site, you may want to automatically send them a friend or group invitation, or a welcome message. This plugin lets you do that.', 'dpw' ) ?></p>
+		<p><?php _e( 'When a user registers on your site, you may want to automatically send them a friend or group invitation, or a welcome message. This plugin lets you do that.', 'dpw' ); //TODO: update this to include emails + copy into readme ?></p>
 	</div>
 
 	<form method="post" action="options.php" id="welcomepack">
@@ -301,11 +353,21 @@ function dpw_admin_screen() {
 
 		<div id="poststuff" class="metabox-holder<?php echo 2 == $screen_layout_columns ? ' has-right-sidebar' : ''; ?>">
 			<div id="side-info-column" class="inner-sidebar">
-				<?php do_meta_boxes( 'buddypress_page_welcome-pack', 'side', $settings ) ?>
+				<?php
+				if ( $is_email_tab )
+					do_meta_boxes( 'buddypress_page_welcome-pack-emails', 'side', $settings );
+				else
+					do_meta_boxes( 'buddypress_page_welcome-pack', 'side', $settings );
+				?>
 			</div>
 			<div id="post-body" class="has-sidebar">
 				<div id="post-body-content" class="has-sidebar-content">
-					<?php do_meta_boxes( 'buddypress_page_welcome-pack', 'normal', $settings ) ?>
+					<?php
+					if ( $is_email_tab )
+						do_meta_boxes( 'buddypress_page_welcome-pack-emails', 'normal', $settings );
+					else
+						do_meta_boxes( 'buddypress_page_welcome-pack', 'normal', $settings );
+					?>
 				</div>
 
 				<p><input type="submit" class="button-primary" value="<?php _e( 'Save Welcome Pack Settings', 'dpw' ) ?>" /></p>

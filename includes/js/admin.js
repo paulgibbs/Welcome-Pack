@@ -17,4 +17,21 @@ jQuery(document).ready( function() {
 			config.stop(true).slideUp();
 	});
 
+	jq('select#emailpicker').change( function() {
+		var index = this.selectedIndex;
+		if ( 0 == index )
+			return;
+
+		jQuery.post( ajaxurl, {
+			action: 'dpw_fetch_email',
+			'cookie': encodeURIComponent(document.cookie),
+			'_wpnonce': jQuery("input#_ajax_nonce_dpw_emails").val(),
+			'id': this.selectedIndex
+		},
+		function(response)
+		{
+			jq('div#email').html(response);
+		});
+	});
+
 });

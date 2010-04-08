@@ -12,7 +12,6 @@ Tested up to: WP/MU 2.9.2, BuddyPress 1.2.3
 Site Wide Only: true
 Network: true
 
-
 "Welcome Pack" for BuddyPress
 Copyright (C) 2009-10 Paul Gibbs
 

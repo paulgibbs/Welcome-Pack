@@ -334,7 +334,7 @@ function dpw_admin_screen() {
 		<?php if ( !$is_email_tab ) : ?>
 			<p><?php _e( 'When a user registers on your site, you may want to automatically send them a friend or group invitation, or a welcome message.', 'dpw' ) ?></p>
 		<?php else : ?>
-			<p><?php _e( "Fed up with bland, generic BuddyPress emails? Customising the emails sent ensures that they match the brand and tone of your site.", 'dpw' ) ?></p>
+			<p><?php _e( "Fed up with bland, generic BuddyPress emails? Customising the emails ensures that they match the brand and tone of your site.", 'dpw' ) ?></p>
 		<?php endif; ?>
 	</div>
 

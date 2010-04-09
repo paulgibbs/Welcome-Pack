@@ -33,8 +33,9 @@ jQuery(document).ready( function() {
 			if ( response[0] + response[1] == '-1' )
 				return;
 
-			response = response.substr(0, response.length-1);
-			jq('div#email').html(response);
+			var email = jq('div#email');
+			email.html(response.substr(0, response.length-1));
+			email.show();
 		});
 	});
 

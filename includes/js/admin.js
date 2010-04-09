@@ -30,6 +30,10 @@ jQuery(document).ready( function() {
 		},
 		function(response)
 		{
+			if ( response[0] + response[1] == '-1' )
+				return;
+
+			response = response.substr(0, response.length-1);
 			jq('div#email').html(response);
 		});
 	});

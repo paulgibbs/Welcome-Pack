@@ -17,6 +17,7 @@ function dpw_admin_screen_on_load() {
 	add_meta_box( 'dpw-admin-metaboxes-sidebox-1', __( 'Like this plugin?', 'dpw' ), 'dpw_admin_screen_socialmedia', 'buddypress_page_welcome-pack-emails', 'side', 'core' );
 	add_meta_box( 'dpw-admin-metaboxes-sidebox-2', __( 'Need support?', 'dpw' ), 'dpw_admin_screen_support', 'buddypress_page_welcome-pack-emails', 'side', 'core' );
 	add_meta_box( 'dpw-admin-metaboxes-sidebox-3', __( 'Latest news from the author', 'dpw' ), 'dpw_admin_screen_news', 'buddypress_page_welcome-pack-emails', 'side', 'core' );
+	add_meta_box( 'dpw-admin-metaboxes-emailsettingsbox', __( 'Settings', 'dpw' ), 'dpw_admin_screen_emailsettingsbox', 'buddypress_page_welcome-pack-emails', 'normal', 'core' );
 	add_meta_box( 'dpw-admin-metaboxes-emailsbox', __( 'Emails', 'dpw' ), 'dpw_admin_screen_emailsbox', 'buddypress_page_welcome-pack-emails', 'normal', 'core' );
 
 	/* Help panel */
@@ -105,6 +106,7 @@ function dpw_admin_screen_emailsbox( $settings ) {
 	$emails = dpw_get_default_email_data();
 	wp_nonce_field( 'dpw-emails', '_ajax_nonce_dpw_emails' );
 ?>
+	<div class="setting-emails <?php if ( !$settings["emailstoggle"] ) echo 'initially-hidden' ?>">
 	<select id="emailpicker">
 		<?php for ( $i=0; $i<count( $emails ); $i++ ) : ?>
 		<option value="<?php echo $i ?>"><?php echo $emails[$i]['name'] ?></option>
@@ -211,6 +213,19 @@ function dpw_admin_screen_settingsbox( $settings ) {
 <?php
 }
 
+function dpw_admin_screen_emailsettingsbox( $settings ) {
+?>
+<div class="component">
+	<h5><?php _e( "Email Customisation", 'dpw' ) ?>
+		<div class="radio">
+			<?php dpw_admin_settings_toggle( 'emails', $settings ) ?>
+		</div>
+	</h5>
+	<p><?php _e( "Customising emails sent by BuddyPress (e.g. group invitation and friendship request emails) lets you make sure that they match the brand and tone of your site.", 'dpw' ) ?></p>
+</div>
+<?php
+}
+
 // TODO: per_page http://trac.buddypress.org/ticket/1991
 function dpw_admin_settings_friends( $settings ) {
 ?>
@@ -293,6 +308,9 @@ function dpw_admin_validate( $input ) {
 
 	if ( isset( $input['welcomemsgtoggle'] ) )
 		$input['welcomemsgtoggle'] = ( $input['welcomemsgtoggle'] ) ? true : false;
+
+	if ( isset( $input['emailstoggle'] ) )
+		$input['emailstoggle'] = ( $input['emailstoggle'] ) ? true : false;
 
 	return serialize( wp_parse_args( $input, $current_settings ) );
 }

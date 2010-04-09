@@ -26,4 +26,9 @@ add_filter( 'dpw_admin_rss_feed', 'wp_filter_kses', 1 );
 add_filter( 'dpw_admin_rss_feed', 'wptexturize' );
 add_filter( 'dpw_admin_rss_feed', 'convert_chars' );
 add_filter( 'dpw_admin_rss_feed', 'stripslashes_deep' );
+
+add_filter( 'dpw_admin_settings_email', 'wp_filter_kses', 1 );
+add_filter( 'dpw_admin_settings_email', 'wptexturize' );
+add_filter( 'dpw_admin_settings_email', 'convert_chars' );
+add_filter( 'dpw_admin_settings_email', 'stripslashes_deep' );
 ?>

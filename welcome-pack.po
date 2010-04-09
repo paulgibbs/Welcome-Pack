@@ -7,7 +7,7 @@
 msgid   ""
 msgstr  "Project-Id-Version: PACKAGE VERSION\n"
         "Report-Msgid-Bugs-To: \n"
-        "POT-Creation-Date: 2010-04-05 18:01+0100\n"
+        "POT-Creation-Date: 2010-04-09 07:28+0100\n"
         "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
         "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
         "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -15,35 +15,26 @@ msgstr  "Project-Id-Version: PACKAGE VERSION\n"
         "Content-Type: text/plain; charset=CHARSET\n"
         "Content-Transfer-Encoding: 8bit\n"
 
-#: includes/welcome-pack-admin.php:169
+#: includes/welcome-pack-admin.php:173
 msgid   "&hellip;from this user:"
 msgstr  ""
 
-#: includes/welcome-pack-admin.php:159
+#: includes/welcome-pack-admin.php:163
 msgid   "&hellip;with this subject:"
 msgstr  ""
 
-#: includes/welcome-pack-notifications.php:73
-#, php-format
-msgid   "Activate %s"
-msgstr  ""
-
-#: includes/welcome-pack-notifications.php:107
-msgid   "Activate Your Account"
-msgstr  ""
-
-#: includes/welcome-pack-admin.php:199
+#: includes/welcome-pack-admin.php:203
 msgid   "Ask the new user if they'd like to join a group. You could use this "
         "to invite all new users on your site to join a support group, so "
         "that all of your frequently asked questions are kept in the same "
         "place."
 msgstr  ""
 
-#: includes/welcome-pack-admin.php:136
+#: includes/welcome-pack-admin.php:140
 msgid   "Ask the new user if they'd like to join these groups:"
 msgstr  ""
 
-#: includes/welcome-pack-admin.php:330
+#: includes/welcome-pack-admin.php:334
 msgid   "BuddyPress"
 msgstr  ""
 
@@ -55,15 +46,15 @@ msgstr  ""
 msgid   "Delicious - social bookmarking"
 msgstr  ""
 
-#: includes/welcome-pack-admin.php:260
+#: includes/welcome-pack-admin.php:264
 msgid   "Disabled"
 msgstr  ""
 
-#: includes/welcome-pack-admin.php:21 includes/welcome-pack-admin.php:337
+#: includes/welcome-pack-admin.php:21 includes/welcome-pack-admin.php:341
 msgid   "Emails"
 msgstr  ""
 
-#: includes/welcome-pack-admin.php:259
+#: includes/welcome-pack-admin.php:263
 msgid   "Enabled"
 msgstr  ""
 
@@ -71,11 +62,11 @@ msgstr  ""
 msgid   "Facebook"
 msgstr  ""
 
-#: includes/welcome-pack-admin.php:183
+#: includes/welcome-pack-admin.php:187
 msgid   "Friends"
 msgstr  ""
 
-#: includes/welcome-pack-admin.php:336
+#: includes/welcome-pack-admin.php:340
 msgid   "Friends, Groups <span class=\"ampersand\">&amp;</span> Welcome "
         "Message"
 msgstr  ""
@@ -84,7 +75,7 @@ msgstr  ""
 msgid   "Give it a good rating on WordPress.org"
 msgstr  ""
 
-#: includes/welcome-pack-admin.php:193
+#: includes/welcome-pack-admin.php:197
 msgid   "Groups"
 msgstr  ""
 
@@ -99,14 +90,14 @@ msgid   "If you need help and support using this plugin, or ideas for new "
         "features, please visit the "
 msgstr  ""
 
-#: includes/welcome-pack-admin.php:189
+#: includes/welcome-pack-admin.php:193
 msgid   "Invite the new user to become friends with the selected members. "
         "It's a great way of teaching people how the friend acceptance "
         "process works on your website, and how they can use friendships to "
         "filter activity streams."
 msgstr  ""
 
-#: includes/welcome-pack-admin.php:124
+#: includes/welcome-pack-admin.php:128
 msgid   "Invite the new user to become friends with these people:"
 msgstr  ""
 
@@ -142,21 +133,25 @@ msgstr  ""
 msgid   "Replaced with the person's username."
 msgstr  ""
 
-#: includes/welcome-pack-admin.php:369
+#: includes/welcome-pack-admin.php:373
 msgid   "Save Welcome Pack Settings"
 msgstr  ""
 
-#: includes/welcome-pack-admin.php:149
+#: includes/welcome-pack-admin.php:153
 msgid   "Send the new user a welcome message&hellip;"
 msgstr  ""
 
-#: includes/welcome-pack-admin.php:208
+#: includes/welcome-pack-admin.php:212
 msgid   "Send the newly-registered user a private message; use this to "
         "welcome people to your site and help them get started."
 msgstr  ""
 
 #: includes/welcome-pack-admin.php:15 includes/welcome-pack-admin.php:55
 msgid   "Settings"
+msgstr  ""
+
+#: includes/welcome-pack-admin.php:107
+msgid   "Signup validation email"
 msgstr  ""
 
 #: includes/welcome-pack-admin.php:79
@@ -179,29 +174,6 @@ msgstr  ""
 msgid   "Thank me by donating towards future development"
 msgstr  ""
 
-#: includes/welcome-pack-notifications.php:72
-#, php-format
-msgid   "Thanks for registering! To complete the activation of your account "
-        "and blog, please click the following link:\n"
-        "\n"
-        "%s\n"
-        "\n"
-        "\n"
-        "\n"
-        "After you activate, you can visit your blog here:\n"
-        "\n"
-        "%s"
-msgstr  ""
-
-#: includes/welcome-pack-notifications.php:106
-#, php-format
-msgid   "Thanks for registering! To complete the activation of your account "
-        "please click the following link:\n"
-        "\n"
-        "%s\n"
-        "\n"
-msgstr  ""
-
 #: includes/welcome-pack-admin.php:30
 msgid   "The default behaviour for Friends and Groups is for invitations to "
         "be sent. If you would prefer to suppress those invitations and have "
@@ -214,15 +186,15 @@ msgstr  ""
 msgid   "Twitter"
 msgstr  ""
 
-#: includes/welcome-pack-admin.php:203
+#: includes/welcome-pack-admin.php:207
 msgid   "Welcome Message"
 msgstr  ""
 
-#: includes/welcome-pack-admin.php:331 includes/welcome-pack-core.php:31
+#: includes/welcome-pack-admin.php:335 includes/welcome-pack-core.php:31
 msgid   "Welcome Pack"
 msgstr  ""
 
-#: includes/welcome-pack-admin.php:342
+#: includes/welcome-pack-admin.php:346
 msgid   "When a user registers on your site, you may want to automatically "
         "send them a friend or group invitation, or a welcome message. This "
         "plugin lets you do that."

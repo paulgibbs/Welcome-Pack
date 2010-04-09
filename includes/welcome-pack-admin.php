@@ -6,7 +6,6 @@ The implementation of the above is credited to http://www.code-styling.de/englis
 Big thanks to both!
 */
 
-//TODO: go through and pass URLs within i18n function calls by using sprintf?
 function dpw_admin_screen_on_load() {
 	add_meta_box( 'dpw-admin-metaboxes-sidebox-1', __( 'Like this plugin?', 'dpw' ), 'dpw_admin_screen_socialmedia', 'buddypress_page_welcome-pack', 'side', 'core' );
 	add_meta_box( 'dpw-admin-metaboxes-sidebox-2', __( 'Need support?', 'dpw' ), 'dpw_admin_screen_support', 'buddypress_page_welcome-pack', 'side', 'core' );
@@ -107,7 +106,7 @@ function dpw_admin_screen_emailsbox( $settings ) {
 	wp_nonce_field( 'dpw-emails', '_ajax_nonce_dpw_emails' );
 ?>
 	<select id="emailpicker">
-		<?php for ( $i=0; $i<count($emails); $i++ ) : ?>
+		<?php for ( $i=0; $i<count( $emails ); $i++ ) : ?>
 		<option value="<?php echo $i ?>"><?php echo $emails[$i]['name'] ?></option>
 		<?php endfor; ?>
 	</select>
@@ -332,7 +331,11 @@ function dpw_admin_screen() {
 	</div>
 
 	<div class="dpw-spacer">
-		<p><?php _e( 'When a user registers on your site, you may want to automatically send them a friend or group invitation, or a welcome message. This plugin lets you do that.', 'dpw' ); //TODO: update this to include emails + copy into readme ?></p>
+		<?php if ( !$is_email_tab ) : ?>
+			<p><?php _e( 'When a user registers on your site, you may want to automatically send them a friend or group invitation, or a welcome message.', 'dpw' ) ?></p>
+		<?php else : ?>
+			<p><?php _e( "Fed up with bland, generic BuddyPress emails? Customising the emails sent ensures that they match the brand and tone of your site.", 'dpw' ) ?></p>
+		<?php endif; ?>
 	</div>
 
 	<form method="post" action="options.php" id="welcomepack">

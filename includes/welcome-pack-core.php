@@ -35,12 +35,7 @@ function dpw_add_admin_menu() {
 add_action( 'admin_menu', 'dpw_add_admin_menu' );
 
 function dpw_on_user_registration( $user_id ) {
-	if ( !$settings = get_site_option( 'welcomepack' ) )
-		return;
-
-	$settings = maybe_unserialize( $settings );
-	if ( !$settings || !is_array( $settings ) )
-		return;
+	$settings = maybe_unserialize( get_site_option( 'welcomepack' ) );
 
 	if ( $settings['friendstoggle'] && function_exists( 'friends_install' ) )
 		foreach ( $settings['friends'] as $friend_id )
@@ -88,4 +83,16 @@ function dpw_load_dynamic_i18n() {
 	}
 }
 add_action( 'wp', 'dpw_load_dynamic_i18n', 20 );
+
+function dpw_get_default_email_data() {
+	$emails = maybe_unserialize( get_site_option( 'welcomepack' ) );
+	$emails = $emails['emails'];
+
+	$emails = array( 
+		array( 'name' => '----', 'values' => array() ),
+		array( 'name' => __( 'Signup validation email', 'dpw' ), 'values' => array( 'This is box one', 'This ought to be box two' ) )
+	);
+
+	return $emails;
+}
 ?>

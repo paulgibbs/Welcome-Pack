@@ -104,13 +104,12 @@ function dpw_admin_screen_support( $settings ) {
 
 //bp_core_signup_send_validation_email
 function dpw_admin_screen_emailsbox( $settings ) {
-	$emails = array( '----', __( 'Signup validation email', 'dpw' ) );
-
+	$emails = dpw_get_default_email_data();
 	wp_nonce_field( 'dpw-emails', '_ajax_nonce_dpw_emails' );
 ?>
 	<select id="emailpicker">
-		<?php for ( $emails as $id => $value ) : ?>
-		<option value="<?php echo $id ?>"><?php echo $value ?></option>
+		<?php for ( $i=0; $i<count($emails); $i++ ) : ?>
+		<option value="<?php echo $i ?>"><?php echo $emails[$i]['name'] ?></option>
 		<?php endfor; ?>
 	</select>
 
@@ -266,12 +265,7 @@ function dpw_admin_settings_toggle( $name, $settings ) {
 }
 
 function dpw_admin_validate( $input ) {
-	$current_settings = get_site_option( 'welcomepack' );
-	if ( !$current_settings )
-		$current_settings = array( 'friends' => array(), 'groups' => array(), 'welcomemsgsubject' => '', 'welcomemsg' => '', 'welcomemsgsender' => 0, 'welcomemsgtoggle' => false, 'friendstoggle' => false, 'groupstoggle' => false, 'emails' => '' );
-
-	$current_settings = maybe_unserialize( $current_settings );
-
+	$current_settings = maybe_unserialize( get_site_option( 'welcomepack' ) );
 
 	if ( is_string( $input ) )  // wpmu-edit.php
 		return get_site_option( 'welcomepack' );
@@ -317,11 +311,7 @@ function dpw_admin_validate( $input ) {
 function dpw_admin_screen() {
 	global $screen_layout_columns;
 
-	$settings = get_site_option( 'welcomepack' );
-	if ( !$settings )
-		$settings = array( 'friends' => array(), 'groups' => array(), 'welcomemsgsubject' => '', 'welcomemsg' => '', 'welcomemsgsender' => 0, 'welcomemsgtoggle' => false, 'friendstoggle' => false, 'groupstoggle' => false, 'emails' => '' );
-
-	$settings = maybe_unserialize( $settings );
+	$settings = maybe_unserialize( get_site_option( 'welcomepack' ) );
 
 	$is_email_tab = false;
 	if ( isset( $_GET['tab'] ) && 'emails' == $_GET['tab'] )

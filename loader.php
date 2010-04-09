@@ -31,6 +31,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 function dpw_init() {
 	require( dirname( __FILE__ ) . '/includes/welcome-pack-core.php' );
+
+	if ( !get_site_option( 'welcomepack' ) )
+		update_site_option( 'welcomepack', serialize( array( 'friends' => array(), 'groups' => array(), 'welcomemsgsubject' => '', 'welcomemsg' => '', 'welcomemsgsender' => 0, 'welcomemsgtoggle' => false, 'friendstoggle' => false, 'groupstoggle' => false, 'emails' => $emails ) ) );
 }
 add_action( 'bp_init', 'dpw_init' );
 ?>

@@ -90,7 +90,7 @@ function dpw_get_default_email_data() {
 
 	$emails = array( 
 		array( 'name' => '----', 'values' => array() ),
-		array( 'name' => __( 'Signup validation email', 'dpw' ), 'values' => array( 'This is box one', 'This ought to be box two' ) )
+		array( 'name' => __( 'Signup validation email', 'dpw' ), 'values' => array( __( 'Activate Your Account', 'buddypress' ), __( "Thanks for registering! To complete the activation of your account please click the following link:\n\n%s\n\n", 'buddypress' ) ) )
 	);
 
 	return $emails;

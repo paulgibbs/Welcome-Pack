@@ -17,8 +17,8 @@ require ( dirname( __FILE__ ) . '/welcome-pack-cssjs.php' );
 /* The filters file should create and apply filters to component output functions. */
 require( dirname( __FILE__ ) . '/welcome-pack-filters.php' );
 
-if ( file_exists( dirname( __FILE__ ) . '/languages/' . get_locale() . '.mo' ) )
-	load_textdomain( 'dpw', dirname( __FILE__ ) . '/languages/' . get_locale() . '.mo' );
+
+load_plugin_textdomain( 'dpw', false, 'includes/languages/' );
 
 function dpw_add_admin_menu() {
 	global $bp;

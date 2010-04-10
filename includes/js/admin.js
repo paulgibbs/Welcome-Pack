@@ -19,23 +19,23 @@ jQuery(document).ready( function() {
 
 	jq('select#emailpicker').change( function() {
 		var index = this.selectedIndex;
-		if ( 0 == index )
+		if ( 0 == index ) {
+			jq('div#email').hide().empty();
 			return;
+		}
 
 		jQuery.post( ajaxurl, {
 			action: 'dpw_fetch_email',
 			'cookie': encodeURIComponent(document.cookie),
 			'_wpnonce': jQuery("input#_ajax_nonce_dpw_emails").val(),
-			'id': this.selectedIndex
+			'id': index
 		},
 		function(response)
 		{
 			if ( response[0] + response[1] == '-1' )
 				return;
 
-			var email = jq('div#email');
-			email.html(response.substr(0, response.length-1));
-			email.show();
+			jq('div#email').html(response.substr(0, response.length-1)).show();
 		});
 	});
 

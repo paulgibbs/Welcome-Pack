@@ -1,16 +1,18 @@
 <?php
 /*
 Plugin Name: Welcome Pack
-Plugin URI: http://www.twitter.com/pgibbs
-Author: DJPaul
-Author URI: http://www.twitter.com/pgibbs
-Description: When a user registers on your site, you may want to automatically send them a friend or group invitation, or a welcome message. This plugin lets you do that. Are you fed up with bland, generic BuddyPress emails? You can also customise the emails sent to ensure that they match the brand and tone of your site.
+Plugin URI: http://byotos.com/plugins/welcome-pack/
+Author: Paul Gibbs
+Author URI: http://byotos.com/
+Description: When a user registers on your site, Welcome Pack lets you automatically send them a friend or group invitation, or a welcome message. You can also customise the default emails sent by BuddyPress to ensure that they match the brand and tone of your site.
 Version: 2.0
-License: General Public License version 3 
+License: General Public License version 2
 Requires at least: WP/MU 2.9, BuddyPress 1.2
 Tested up to: WP/MU 2.9.2, BuddyPress 1.2.3
 Site Wide Only: true
 Network: true
+Domain Path: /includes/languages/
+Text Domain: dpw
 
 "Welcome Pack" for BuddyPress
 Copyright (C) 2009-10 Paul Gibbs

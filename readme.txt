@@ -1,15 +1,13 @@
 === Welcome Pack ===
-Contributors: DJPaul
+Contributors: Paul Gibbs
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=P3K7Z7NHWZ5CL&lc=GB&item_name=B%2eY%2eO%2eT%2eO%2eS%20%2d%20BuddyPress%20plugins&currency_code=GBP&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted
-Tags: buddypress,friend,group,welcome,default,message
+Tags: buddypress,friend,group,welcome,default,message,email
 License: General Public License version 2
 Requires at least: WP/MU 2.9, BuddyPress 1.2
 Tested up to: WP/MU 2.9, BuddyPress 1.2.3
-Stable tag: 1.64
-Site Wide Only: true
-Network: true
+Stable tag: 2.0
 
-When a user registers on your site, you may want to automatically send them a friend or group invitation, or a welcome message. This plugin lets you do that. Are you fed up with bland, generic BuddyPress emails? You can customise the emails to ensure that they match the brand and tone of your site.
+When a user registers on your site, Welcome Pack lets you automatically send them a friend or group invitation, or a welcome message. You can also customise the default emails sent by BuddyPress to ensure that they match the brand and tone of your site.
 
 
 == Description ==

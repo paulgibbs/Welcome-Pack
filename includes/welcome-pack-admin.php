@@ -18,7 +18,7 @@ function dpw_admin_screen_on_load() {
 	add_meta_box( 'dpw-admin-metaboxes-sidebox-2', __( 'Need support?', 'dpw' ), 'dpw_admin_screen_support', 'buddypress_page_welcome-pack-emails', 'side', 'core' );
 	add_meta_box( 'dpw-admin-metaboxes-sidebox-3', __( 'Latest news from the author', 'dpw' ), 'dpw_admin_screen_news', 'buddypress_page_welcome-pack-emails', 'side', 'core' );
 	add_meta_box( 'dpw-admin-metaboxes-emailsettingsbox', __( 'Settings', 'dpw' ), 'dpw_admin_screen_emailsettingsbox', 'buddypress_page_welcome-pack-emails', 'normal', 'core' );
-	add_meta_box( 'dpw-admin-metaboxes-emailsbox', __( 'Emails', 'dpw' ), 'dpw_admin_screen_emailsbox', 'buddypress_page_welcome-pack-emails', 'normal', 'core' );
+	add_meta_box( 'dpw-admin-metaboxes-emailsbox', __( 'Configuration', 'dpw' ), 'dpw_admin_screen_emailsconfigurationbox', 'buddypress_page_welcome-pack-emails', 'normal', 'core' );
 
 	/* Help panel */
 	$help = '<p>' . __( 'If you are changing a setting that allows text entry, you can use the following placeholder tags which will be automatically replaced when a private message or an email is being sent:', 'dpw' ) . '</p>';
@@ -102,19 +102,20 @@ function dpw_admin_screen_support( $settings ) {
 <?php
 }
 
-function dpw_admin_screen_emailsbox( $settings ) {
-	$emails = dpw_get_default_email_data();
+function dpw_admin_screen_emailsconfigurationbox( $settings ) {
 	wp_nonce_field( 'dpw-emails', '_ajax_nonce_dpw_emails' );
 ?>
-	<div class="setting-emails <?php if ( !$settings["emailstoggle"] ) echo 'initially-hidden' ?>">
-	<select id="emailpicker">
-		<?php for ( $i=0; $i<count( $emails ); $i++ ) : ?>
-		<option value="<?php echo $i ?>"><?php echo $emails[$i]['name'] ?></option>
-		<?php endfor; ?>
-	</select>
+	<div class="setting wide setting-emails <?php if ( !$settings["emailstoggle"] ) echo 'initially-hidden' ?>">
+		<div class="settingname">
+			<p><?php _e( 'Choose an email:', 'dpw' ) ?></p>
+		</div>
+		<div class="settingvalue">
+			<?php dpw_admin_settings_email_chooser( $settings ) ?>
+		</div>
+		<div style="clear: left"></div>
 
-	<div id="email">
- 	</div>
+		<div id="email"></div>
+	</div>
 <?php
 }
 
@@ -136,7 +137,7 @@ function dpw_admin_screen_configurationbox( $settings ) {
 <?php if ( function_exists( 'groups_install' ) && bp_has_groups( 'type=alphabetically&populate_extras=false&per_page=10000' ) ) : ?>
 	<div class="setting setting-group setting-groups <?php if ( !$settings["groupstoggle"] ) echo 'initially-hidden' ?>">
 		<div class="settingname">
-			<p><?php _e( 'Ask the new user if they\'d like to join these groups:', 'dpw' ) ?></p>
+			<p><?php _e( "Ask the new user if they'd like to join these groups:", 'dpw' ) ?></p>
 		</div>
 		<div class="settingvalue">
 			<?php dpw_admin_settings_groups( $settings ) ?>
@@ -221,8 +222,19 @@ function dpw_admin_screen_emailsettingsbox( $settings ) {
 			<?php dpw_admin_settings_toggle( 'emails', $settings ) ?>
 		</div>
 	</h5>
-	<p><?php _e( "Customising emails sent by BuddyPress (e.g. group invitation and friendship request emails) lets you make sure that they match the brand and tone of your site.", 'dpw' ) ?></p>
+	<p><?php _e( "Easily change emails which are sent by your website.", 'dpw' ) ?></p>
 </div>
+<?php
+}
+
+function dpw_admin_settings_email_chooser( $settings ) {
+	$emails = dpw_get_default_email_data();
+?>
+	<select id="emailpicker">
+		<?php for ( $i=0; $i<count( $emails ); $i++ ) : ?>
+		<option value="<?php echo $i ?>"><?php echo $emails[$i]['name'] ?></option>
+		<?php endfor; ?>
+	</select>
 <?php
 }
 
@@ -312,6 +324,18 @@ function dpw_admin_validate( $input ) {
 	if ( isset( $input['emailstoggle'] ) )
 		$input['emailstoggle'] = ( $input['emailstoggle'] ) ? true : false;
 
+	if ( isset( $input['email'] ) && isset( $input['email_id'] ) ) {
+		foreach ( $input['email'] as $email_data )
+			$email_data = apply_filters( 'dpw_admin_settings_email', $email_data );
+
+		$email_id = apply_filters( 'dpw_admin_validate_email_id', $input['email_id'] );
+		$current_settings['emails'][$email_id]['values'] = $input['email'];
+		$input['emails'] = $current_settings['emails'];
+
+		unset( $input['email_id'] );
+		unset( $input['email'] );
+	}
+
 	return serialize( wp_parse_args( $input, $current_settings ) );
 }
 
@@ -348,12 +372,18 @@ function dpw_admin_screen() {
 		</ol>
 	</div>
 
+	<?php if ( isset( $_GET['updated'] ) ) : ?>
+	<div id="message" class="updated">
+		<p><?php _e( 'Your Welcome Pack settings have been saved.', 'dpw' ) ?></p>
+	</div>
+	<?php endif; ?>
+
 	<div class="dpw-spacer">
-		<?php if ( !$is_email_tab ) : ?>
-			<p><?php _e( 'When a user registers on your site, you may want to automatically send them a friend or group invitation, or a welcome message.', 'dpw' ) ?></p>
-		<?php else : ?>
-			<p><?php _e( "Fed up with bland, generic BuddyPress emails? Customising the emails ensures that they match the brand and tone of your site.", 'dpw' ) ?></p>
-		<?php endif; ?>
+	<?php if ( !$is_email_tab ) : ?>
+		<p><?php _e( 'When a user registers on your site, Welcome Pack lets you automatically send them a friend or group invitation, or a welcome message.', 'dpw' ) ?></p>
+	<?php else : ?>
+		<p><?php _e( "You can customise the default emails sent by BuddyPress to ensure that they match the brand and tone of your site.", 'dpw' ) ?></p>
+	<?php endif; ?>
 	</div>
 
 	<form method="post" action="options.php" id="welcomepack">
@@ -382,8 +412,8 @@ function dpw_admin_screen() {
 
 				<p><input type="submit" class="button-primary" value="<?php _e( 'Save Welcome Pack Settings', 'dpw' ) ?>" /></p>
 			</div>
-			<br class="clear"/>
 		</div>
+
 	</form>
 
 </div><!-- #dpw-admin-metaboxes-general -->

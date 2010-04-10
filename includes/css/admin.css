@@ -15,7 +15,6 @@ div#poststuff .inside, div#poststuff .inside p { font-size: 12px; }
 div#dpw-admin-metaboxes-general div.inside ul { margin-left: 2em; }
 div#dpw-admin-metaboxes-general div.inside ul li { list-style: square; }
 div#dpw-admin-metaboxes-general div.inside ul li.rss { list-style-image: url(/wp-includes/images/rss.png); }
-div.metabox-holder { padding-top: 0 !important; }
 div#dpw-admin-metaboxes-general ul.menu:after { content: "."; display: block; height: 0; clear: both; visibility: hidden; }
 div#dpw-admin-metaboxes-general ul.menu li { float: left; list-style: none !important; margin-bottom: 0; padding-right: 6px; }
 div#dpw-admin-metaboxes-general ul.menu { margin-left: 6px !important; }
@@ -24,3 +23,9 @@ div#dpw-admin-metaboxes-general span.ampersand { font-family: Baskerville, Palat
 div.dpw-spacer { border-top: 1px solid #f0f0f0; padding-bottom: 12px; }
 div#bp-admin-nav li.current a { color: #888; text-decoration: none; }
 div.metabox-prefs dt { font-style: italic; }
+div.metabox-holder { padding-top: 0 !important; }
+
+div#email { display: none; }
+div#email div.setting { margin-top: 6px; }
+div#email div.setting h5 { font-size: 15px; margin: 30px 0 0 6px; }
+div#email div.wide div.settingname { width: 98%; margin-left: 6px; }

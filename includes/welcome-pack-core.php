@@ -4,7 +4,6 @@ define( 'WELCOME_PACK_IS_INSTALLED', 1 );
 if ( !defined( 'WELCOME_PACK_AUTOACCEPT_INVITATIONS' ) )
 	define( 'WELCOME_PACK_AUTOACCEPT_INVITATIONS', false );
 
-
 /* The notifications file should contain functions to send email notifications on specific user actions */
 require( dirname( __FILE__ ) . '/welcome-pack-notifications.php' );
 
@@ -18,7 +17,7 @@ require ( dirname( __FILE__ ) . '/welcome-pack-cssjs.php' );
 require( dirname( __FILE__ ) . '/welcome-pack-filters.php' );
 
 
-load_plugin_textdomain( 'dpw', false, 'includes/languages/' );
+load_plugin_textdomain( 'dpw', false, '/welcome-pack/includes/languages/' );
 
 function dpw_add_admin_menu() {
 	global $bp;
@@ -89,7 +88,7 @@ function dpw_get_default_email_data() {
 	$emails = $emails['emails'];
 
 	/* Translators: some of these strings below intentionally use the BuddyPress textdomain. */
-	$emails = array( 
+	$emails = array(
 		array( 'name' => '----', 'values' => array() ),
 		array( 'name' => __( 'Signup validation email', 'dpw' ), 'values' => array( __( 'Activate Your Account', 'buddypress' ), __( "Thanks for registering! To complete the activation of your account please click the following link:\n\n%s\n\n", 'buddypress' ) ) )
 	);

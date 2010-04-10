@@ -228,7 +228,8 @@ function dpw_admin_screen_emailsettingsbox( $settings ) {
 }
 
 function dpw_admin_settings_email_chooser( $settings ) {
-	$emails = dpw_get_default_email_data();
+	$emails = maybe_unserialize( get_site_option( 'welcomepack' ) );
+	$emails = $emails['emails'];
 ?>
 	<select id="emailpicker">
 		<?php for ( $i=0; $i<count( $emails ); $i++ ) : ?>

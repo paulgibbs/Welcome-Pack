@@ -69,24 +69,35 @@ add_filter( 'dpw_keyword_replacement', 'dpw_do_keyword_replacement', 10, 2 );
 function dpw_load_dynamic_i18n() {
 	global $l10n;
 
-	if ( isset( $l10n['buddypress'] ) && isset( $l10n['buddypress']->entries['%s posted an update:'] ) ) {
-		$l10n['buddypress']->entries['%s posted an update:']->translations[0] = '%s posted a monkey:';
-
-	} else {
-		$mo = new MO();
-		$mo->add_entry( array( 'singular' => 'Spongebob', 'translations' => array( 'Squarepants' ) ) );
-		if ( isset( $l10n['buddypress'] ) )
-			$mo->merge_with( $l10n['buddypress'] );
-
-		$l10n['buddypress'] = &$mo;
-	}
-}
-add_action( 'wp', 'dpw_load_dynamic_i18n', 20 );
-
-function dpw_get_default_email_data() {
+	$defaults = dpw_get_default_email_data();
 	$emails = maybe_unserialize( get_site_option( 'welcomepack' ) );
 	$emails = $emails['emails'];
 
+	for ( $i=1; $i<count( $emails ); $i++ ) {
+		for ( $j=0; $j<count( $defaults[$i]['values'] ); $j++ ) {
+			if ( $defaults[$i]['values'][$j] != $emails[$i]['values'][$j] ) {
+
+				if ( isset( $l10n['buddypress']->entries[$defaults[$i]['values'][$j]] ) ) {
+					$l10n['buddypress']->entries[$defaults[$i]['values'][$j]]->translations[0] = $emails[$i]['values'][$j];
+
+				} else {
+					$mo = new MO();
+					$mo->add_entry( array( 'singular' => $defaults[$i]['values'][$j], 'translations' => array( $emails[$i]['values'][$j] ) ) );
+
+					if ( isset( $l10n['buddypress'] ) )
+						$mo->merge_with( $l10n['buddypress'] );
+
+					$l10n['buddypress'] = &$mo;
+					unset( $mo );
+				}
+
+			}
+		}
+	}
+}
+add_action( 'wp', 'dpw_load_dynamic_i18n', 1 );
+
+function dpw_get_default_email_data() {
 	/* Translators: some of these strings below intentionally use the BuddyPress textdomain. */
 	$emails = array(
 		array( 'name' => '----', 'values' => array() ),

@@ -12,19 +12,20 @@ When a user registers on your site, Welcome Pack lets you automatically send the
 
 == Description ==
 
-Welcome Pack is a BuddyPress plugin that enhances the new user experience. When a user registers on your site, you may want to automatically send them a friend or group invitation, and send them a welcome message. This plugin lets you do that.
+Welcome Pack is a BuddyPress plugin that enhances the new user experience. When a user registers on your site, Welcome Pack lets you automatically send them a friend or group invitation, or a welcome message. You can also customise the default emails sent by BuddyPress to ensure that they match the brand and tone of your site.
 
 == Installation ==
 
 1. Install via WordPress Plugins administration page.
 1. Activate the plugin on the blog running BuddyPress.
-1. Visit Settings > Welcome Pack to configure.
+1. Visit the BuddyPress > Welcome Pack menu to configure.
 
 == Upgrade Notice == 
-= 1.6 = 
-Rewritten for BuddyPress 1.2.
+= 2.0 =
+Added email customisation options and revamped the admin UI. Configuration page moved to underneath the "BuddyPress" menu. You will need to re-enter all of your settings.
 
 == Change log ==
+* 2.00 - Added email customisation and revamped admin page. You will need to re-enter all of your configuration settings, sorry.
 * 1.64 - Welcome Message sender dropdown now shows >20 users, and minor tweaks to attempt to resolve error messages that some installs are experiencing.
 * 1.63 - User registration being ignored in most cases on WP installs, and the Welcome Message sender name not appearing on the message, are both fixed. Error on updating the wpmu-edit.php page on MU is fixed, too.
 * 1.61 - Fixes error disabling the plugin on WP and now shows >20 users and groups in the settings.

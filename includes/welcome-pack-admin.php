@@ -21,6 +21,10 @@ function dpw_admin_screen_on_load() {
 	add_meta_box( 'dpw-admin-metaboxes-emailsbox', __( 'Configuration', 'dpw' ), 'dpw_admin_screen_emailsconfigurationbox', 'buddypress_page_welcome-pack-emails', 'normal', 'core' );
 
 	/* Help panel */
+	add_filter( 'default_contextual_help', 'dpw_admin_screen_contextual_help' );
+	if ( isset( $_GET['tab'] ) && 'emails' == $_GET['tab'] )
+		return;
+
 	$help = '<p>' . __( 'If you are changing a setting that allows text entry, you can use the following placeholder tags which will be automatically replaced when a private message or an email is being sent:', 'dpw' ) . '</p>';
 	$help .= '<dl>';
 	$help .= "<dt>USERNAME</dt><dd>" . __( "Replaced with the person's username.", 'dpw' ) . "</dd>";
@@ -30,7 +34,6 @@ function dpw_admin_screen_on_load() {
 	$help .= '<p>' . __( "The default behaviour for Friends and Groups is for invitations to be sent. If you would prefer to suppress those invitations and have them automatically accepted on the user's behalf, set <code>define( 'WELCOME_PACK_AUTOACCEPT_INVITATIONS', true );</code> in wp-config.php.", 'dpw' ) .'</p><br />';
 
 	add_contextual_help( 'buddypress_page_welcome-pack', $help );
-	add_filter( 'default_contextual_help', 'dpw_admin_screen_contextual_help' );
 }
 
 /* WP Help panel (the "Help" dropdown in the top-right of the page) */

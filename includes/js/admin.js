@@ -1,7 +1,11 @@
 jQuery(document).ready( function() {
 
 	jq('.if-js-closed').removeClass('if-js-closed').addClass('closed');
-	postboxes.add_postbox_toggles('buddypress_page_welcome-pack');
+
+	if (-1 === window.location.search.indexOf('tab=emails'))
+		postboxes.add_postbox_toggles('buddypress_page_welcome-pack');
+	else
+		postboxes.add_postbox_toggles('buddypress_page_welcome-pack-emails');
 
 	jq('div.initially-hidden').each( function() { 
 		jq(this).hide();

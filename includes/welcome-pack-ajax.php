@@ -41,7 +41,7 @@ function dpw_fetch_email() {
 		<div class="settingname">
 			<h5><?php _e( "For your information", 'dpw' ) ?></h5>
 			<p><?php _e( "In the email text, there are often special placeholders. Typically, these are either %s or %d. The placeholders are replaced with another value when an email is about to be sent, such as person's name or a link to a web page.", 'dpw' ) ?></p>
-			<p><?php _e( "To learn what these values are replaced with, refer to an email which you've already been sent.", 'dpw' ) ?></p>
+			<p><?php _e( "To learn what these placeholders are replaced with, refer to an email which you've already been sent.", 'dpw' ) ?></p>
 		</div>
 		<div style="clear: left"></div>
 	</div>

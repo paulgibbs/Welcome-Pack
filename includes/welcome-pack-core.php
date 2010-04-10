@@ -69,9 +69,12 @@ add_filter( 'dpw_keyword_replacement', 'dpw_do_keyword_replacement', 10, 2 );
 function dpw_load_dynamic_i18n() {
 	global $l10n;
 
-	$defaults = dpw_get_default_email_data();
 	$emails = maybe_unserialize( get_site_option( 'welcomepack' ) );
+	if ( !$emails['emailstoggle'] )
+		return;
+
 	$emails = $emails['emails'];
+	$defaults = dpw_get_default_email_data();
 
 	for ( $i=1; $i<count( $emails ); $i++ ) {
 		for ( $j=0; $j<count( $defaults[$i]['values'] ); $j++ ) {

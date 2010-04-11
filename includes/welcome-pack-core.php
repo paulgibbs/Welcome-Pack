@@ -98,6 +98,7 @@ function dpw_load_dynamic_i18n() {
 		}
 	}
 }
+add_action( 'init', 'dpw_load_dynamic_i18n', 9 );
 add_action( 'wp', 'dpw_load_dynamic_i18n', 1 );
 
 function dpw_get_default_email_data() {

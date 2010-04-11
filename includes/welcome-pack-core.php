@@ -104,7 +104,108 @@ function dpw_get_default_email_data() {
 	/* Translators: some of these strings below intentionally use the BuddyPress textdomain. */
 	$emails = array(
 		array( 'name' => '----', 'values' => array() ),
-		array( 'name' => __( 'Signup validation email', 'dpw' ), 'values' => array( 'Activate Your Account', "Thanks for registering! To complete the activation of your account please click the following link:\n\n%s\n\n" ) )
+		array( 'name' => __( 'Signup validation', 'dpw' ), 'values' => array( 'Activate Your Account', "Thanks for registering! To complete the activation of your account please click the following link:\n\n%s\n\n" ) ),
+		array( 'name' => __( 'New message notification', 'dpw' ), 'values' => array( 'New message from %s', '%s sent you a new message:
+
+Subject: %s
+
+"%s"
+
+To view and read your messages please log in and visit: %s
+
+---------------------
+', 'To disable these notifications please log in and go to: %s' ) ),
+		array( 'name' => __( 'Group details updated', 'dpw' ), 'values' => array( 'Group details for the group "%s" were updated:
+
+To view the group: %s
+
+---------------------
+', 'To disable these notifications please log in and go to: %s' ) ),
+		array( 'name' => __( 'New membership request', 'dpw' ), 'values' => array( 'Membership request for group: %s', '%s wants to join the group "%s".
+
+Because you are the administrator of this group, you must either accept or reject the membership request.
+
+To view all pending membership requests for this group, please visit:
+%s
+
+To view %s\'s profile: %s
+
+---------------------
+', 'To disable these notifications please log in and go to: %s' ) ),
+		array( 'name' => __( 'Membership request accepted', 'dpw' ), 'values' => array( 'Membership request for group "%s" accepted', 'Your membership request for the group "%s" has been accepted.
+
+To view the group please login and visit: %s
+
+---------------------
+', 'To disable these notifications please log in and go to: %s' ) ),
+		array( 'name' => __( 'Membership request rejected', 'dpw' ), 'values' => array( 'Membership request for group "%s" rejected', 'Your membership request for the group "%s" has been rejected.
+
+To submit another request please log in and visit: %s
+
+---------------------
+', 'To disable these notifications please log in and go to: %s' ) ),
+		array( 'name' => __( 'Group promotion', 'dpw' ), 'values' => array( 'You have been promoted in the group: "%s"', 'You have been promoted to %s for the group: "%s".
+
+To view the group please visit: %s
+
+---------------------
+', 'To disable these notifications please log in and go to: %s', 'an administrator', 'a moderator' ) ),
+		array( 'name' => __( 'Group invitation received', 'dpw' ), 'values' => array( 'You have an invitation to the group: "%s"', 'One of your friends %s has invited you to the group: "%s".
+
+To view your group invites visit: %s
+
+To view the group visit: %s
+
+To view %s\'s profile visit: %s
+
+---------------------
+', 'To disable these notifications please log in and go to: %s' ) ),
+		array( 'name' => __( 'Mentioned in a group', 'dpw' ), 'values' => array( '%s mentioned you in the group "%s"', '%s mentioned you in the group "%s":
+
+"%s"
+
+To view and respond to the message, log in and visit: %s
+
+---------------------
+', 'To disable these notifications please log in and go to: %s' ) ),
+		array( 'name' => __( 'Friendship accepted notification', 'dpw' ), 'values' => array( '%s accepted your friendship request', '%s accepted your friend request.
+
+To view %s\'s profile: %s
+
+---------------------
+', 'To disable these notifications please log in and go to: %s' ) ),
+		array( 'name' => __( 'New friendship request', 'dpw' ), 'values' => array( 'New friendship request from %s', "%s wants to add you as a friend.
+
+To view all of your pending friendship requests: %s
+
+To view %s's profile: %s
+
+---------------------
+", 'To disable these notifications please log in and go to: %s' ) ),
+		array( 'name' => __( 'Mentioned in an update', 'dpw' ), 'values' => array( '%s mentioned you in an update', '%s mentioned you in an update:
+
+"%s"
+
+To view and respond to the message, log in and visit: %s
+
+---------------------
+', 'To disable these notifications please log in and go to: %s' ) ),
+		array( 'name' => __( 'Replied to one of your updates', 'dpw' ), 'values' => array( '%s replied to one of your updates', '%s replied to one of your updates:
+
+"%s"
+
+To view your original update and all comments, log in and visit: %s
+
+---------------------
+', 'To disable these notifications please log in and go to: %s' ) ),
+		array( 'name' => __( 'Replied to one of your comments', 'dpw' ), 'values' => array( '%s replied to one of your comments', '%s replied to one of your comments:
+
+"%s"
+
+To view the original activity, your comment and all replies, log in and visit: %s
+
+---------------------
+', 'To disable these notifications please log in and go to: %s' ) )
 	);
 
 	for ( $j=1; $j<count( $emails ); $j++ ) {

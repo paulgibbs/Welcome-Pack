@@ -7,7 +7,7 @@
 msgid   ""
 msgstr  "Project-Id-Version: PACKAGE VERSION\n"
         "Report-Msgid-Bugs-To: \n"
-        "POT-Creation-Date: 2010-04-11 16:43+0100\n"
+        "POT-Creation-Date: 2010-04-11 17:06+0100\n"
         "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
         "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
         "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -23,7 +23,7 @@ msgstr  ""
 msgid   "&hellip;with this subject:"
 msgstr  ""
 
-#: includes/welcome-pack-admin.php:207
+#: includes/welcome-pack-admin.php:206
 msgid   "Ask the new user if they'd like to join a group. You could use this "
         "to invite all new users on your site to join a support group, so "
         "that all of your frequently asked questions are kept in the same "
@@ -34,7 +34,7 @@ msgstr  ""
 msgid   "Ask the new user if they'd like to join these groups:"
 msgstr  ""
 
-#: includes/welcome-pack-admin.php:369
+#: includes/welcome-pack-admin.php:368
 msgid   "BuddyPress"
 msgstr  ""
 
@@ -50,23 +50,23 @@ msgstr  ""
 msgid   "Delicious - social bookmarking"
 msgstr  ""
 
-#: includes/welcome-pack-admin.php:293
+#: includes/welcome-pack-admin.php:292
 msgid   "Disabled"
 msgstr  ""
 
-#: includes/welcome-pack-admin.php:229
+#: includes/welcome-pack-admin.php:228
 msgid   "Easily change emails which are sent by your website."
 msgstr  ""
 
-#: includes/welcome-pack-admin.php:224
+#: includes/welcome-pack-admin.php:223
 msgid   "Email Customisation"
 msgstr  ""
 
-#: includes/welcome-pack-admin.php:376
+#: includes/welcome-pack-admin.php:375
 msgid   "Emails"
 msgstr  ""
 
-#: includes/welcome-pack-admin.php:292
+#: includes/welcome-pack-admin.php:291
 msgid   "Enabled"
 msgstr  ""
 
@@ -78,11 +78,11 @@ msgstr  ""
 msgid   "For your information"
 msgstr  ""
 
-#: includes/welcome-pack-admin.php:191
+#: includes/welcome-pack-admin.php:190
 msgid   "Friends"
 msgstr  ""
 
-#: includes/welcome-pack-admin.php:375
+#: includes/welcome-pack-admin.php:374
 msgid   "Friends, Groups <span class=\"ampersand\">&amp;</span> Welcome "
         "Message"
 msgstr  ""
@@ -115,7 +115,7 @@ msgstr  ""
 msgid   "Group promotion"
 msgstr  ""
 
-#: includes/welcome-pack-admin.php:201
+#: includes/welcome-pack-admin.php:200
 msgid   "Groups"
 msgstr  ""
 
@@ -138,7 +138,7 @@ msgid   "In the email text, there are often special placeholders. Typically, "
         "name or a link to a web page."
 msgstr  ""
 
-#: includes/welcome-pack-admin.php:197
+#: includes/welcome-pack-admin.php:196
 msgid   "Invite the new user to become friends with the selected members. "
         "It's a great way of teaching people how the friend acceptance "
         "process works on your website, and how they can use friendships to "
@@ -209,7 +209,7 @@ msgstr  ""
 msgid   "Replied to one of your updates"
 msgstr  ""
 
-#: includes/welcome-pack-admin.php:418
+#: includes/welcome-pack-admin.php:417
 msgid   "Save Welcome Pack Settings"
 msgstr  ""
 
@@ -217,7 +217,7 @@ msgstr  ""
 msgid   "Send the new user a welcome message&hellip;"
 msgstr  ""
 
-#: includes/welcome-pack-admin.php:216
+#: includes/welcome-pack-admin.php:215
 msgid   "Send the newly-registered user a private message; use this to "
         "welcome people to your site and help them get started."
 msgstr  ""
@@ -276,15 +276,15 @@ msgstr  ""
 msgid   "Twitter"
 msgstr  ""
 
-#: includes/welcome-pack-admin.php:211
+#: includes/welcome-pack-admin.php:210
 msgid   "Welcome Message"
 msgstr  ""
 
-#: includes/welcome-pack-admin.php:370 includes/welcome-pack-core.php:30
+#: includes/welcome-pack-admin.php:369 includes/welcome-pack-core.php:30
 msgid   "Welcome Pack"
 msgstr  ""
 
-#: includes/welcome-pack-admin.php:388
+#: includes/welcome-pack-admin.php:387
 msgid   "When a user registers on your site, Welcome Pack lets you "
         "automatically send them a friend or group invitation, or a welcome "
         "message."
@@ -301,11 +301,11 @@ msgstr  ""
 msgid   "Why not do any or all of the following:"
 msgstr  ""
 
-#: includes/welcome-pack-admin.php:390
+#: includes/welcome-pack-admin.php:389
 msgid   "You can customise the default emails sent by BuddyPress to ensure "
         "that they match the brand and tone of your site."
 msgstr  ""
 
-#: includes/welcome-pack-admin.php:382
+#: includes/welcome-pack-admin.php:381
 msgid   "Your Welcome Pack settings have been saved."
 msgstr  ""

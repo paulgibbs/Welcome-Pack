@@ -34,7 +34,7 @@ function dpw_add_admin_menu() {
 add_action( 'admin_menu', 'dpw_add_admin_menu' );
 
 function dpw_on_user_registration( $user_id ) {
-	$settings = maybe_unserialize( get_site_option( 'welcomepack' ) );
+	$settings = maybe_unserialize( get_blog_option( BP_ROOT_BLOG, 'welcomepack' ) );
 
 	if ( $settings['friendstoggle'] && function_exists( 'friends_install' ) )
 		foreach ( $settings['friends'] as $friend_id )
@@ -69,7 +69,7 @@ add_filter( 'dpw_keyword_replacement', 'dpw_do_keyword_replacement', 10, 2 );
 function dpw_load_dynamic_i18n() {
 	global $l10n;
 
-	$emails = maybe_unserialize( get_site_option( 'welcomepack' ) );
+	$emails = maybe_unserialize( get_blog_option( BP_ROOT_BLOG, 'welcomepack' ) );
 	if ( !$emails['emailstoggle'] )
 		return;
 

@@ -231,7 +231,7 @@ function dpw_admin_screen_emailsettingsbox( $settings ) {
 }
 
 function dpw_admin_settings_email_chooser( $settings ) {
-	$emails = maybe_unserialize( get_site_option( 'welcomepack' ) );
+	$emails = maybe_unserialize( get_blog_option( BP_ROOT_BLOG, 'welcomepack' ) );
 	$emails = $emails['emails'];
 ?>
 	<select id="emailpicker">
@@ -294,10 +294,10 @@ function dpw_admin_settings_toggle( $name, $settings ) {
 }
 
 function dpw_admin_validate( $input ) {
-	$current_settings = maybe_unserialize( get_site_option( 'welcomepack' ) );
+	$current_settings = maybe_unserialize( get_blog_option( BP_ROOT_BLOG, 'welcomepack' ) );
 
 	if ( is_string( $input ) )  // wpmu-edit.php
-		return get_site_option( 'welcomepack' );
+		return get_blog_option( BP_ROOT_BLOG, 'welcomepack' );
 
 	if ( isset( $input['friends'] ) )
 		foreach ( $input['friends'] as $friend_id )
@@ -355,7 +355,7 @@ function dpw_admin_validate( $input ) {
 function dpw_admin_screen() {
 	global $screen_layout_columns;
 
-	$settings = maybe_unserialize( get_site_option( 'welcomepack' ) );
+	$settings = maybe_unserialize( get_blog_option( BP_ROOT_BLOG, 'welcomepack' ) );
 
 	$is_email_tab = false;
 	if ( isset( $_GET['tab'] ) && 'emails' == $_GET['tab'] )

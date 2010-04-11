@@ -9,7 +9,7 @@ function dpw_fetch_email() {
 		return;
 	}
 
-	$emails = maybe_unserialize( get_site_option( 'welcomepack' ) );
+	$emails = maybe_unserialize( get_blog_option( BP_ROOT_BLOG, 'welcomepack' ) );
 	$emails = $emails['emails'];
 
 	$id = (int)$_POST['id'];

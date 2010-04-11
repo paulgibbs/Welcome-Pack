@@ -1,13 +1,13 @@
-# Welcome Pack 2.0
-# Copyright (C) 2009-10 Paul Gibbs
-# This file is distributed under the same license as the Welcome Pack package.
-# Paul Gibbs, djpaul@gmail.com 2009-10.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid   ""
 msgstr  "Project-Id-Version: PACKAGE VERSION\n"
         "Report-Msgid-Bugs-To: \n"
-        "POT-Creation-Date: 2010-04-10 23:43+0100\n"
+        "POT-Creation-Date: 2010-04-11 12:10+0100\n"
         "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
         "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
         "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,10 +21,6 @@ msgstr  ""
 
 #: includes/welcome-pack-admin.php:166
 msgid   "&hellip;with this subject:"
-msgstr  ""
-
-#: includes/welcome-pack-core.php:107
-msgid   "Activate Your Account"
 msgstr  ""
 
 #: includes/welcome-pack-admin.php:206
@@ -91,8 +87,24 @@ msgid   "Friends, Groups <span class=\"ampersand\">&amp;</span> Welcome "
         "Message"
 msgstr  ""
 
+#: includes/welcome-pack-core.php:171
+msgid   "Friendship accepted notification"
+msgstr  ""
+
 #: includes/welcome-pack-admin.php:74
 msgid   "Give it a good rating on WordPress.org"
+msgstr  ""
+
+#: includes/welcome-pack-core.php:118
+msgid   "Group details updated"
+msgstr  ""
+
+#: includes/welcome-pack-core.php:153
+msgid   "Group invitation received"
+msgstr  ""
+
+#: includes/welcome-pack-core.php:147
+msgid   "Group promotion"
 msgstr  ""
 
 #: includes/welcome-pack-admin.php:200
@@ -137,8 +149,36 @@ msgstr  ""
 msgid   "Like this plugin?"
 msgstr  ""
 
+#: includes/welcome-pack-core.php:135
+msgid   "Membership request accepted"
+msgstr  ""
+
+#: includes/welcome-pack-core.php:141
+msgid   "Membership request rejected"
+msgstr  ""
+
+#: includes/welcome-pack-core.php:163
+msgid   "Mentioned in a group"
+msgstr  ""
+
+#: includes/welcome-pack-core.php:185
+msgid   "Mentioned in an update"
+msgstr  ""
+
 #: includes/welcome-pack-admin.php:11 includes/welcome-pack-admin.php:18
 msgid   "Need support?"
+msgstr  ""
+
+#: includes/welcome-pack-core.php:177
+msgid   "New friendship request"
+msgstr  ""
+
+#: includes/welcome-pack-core.php:124
+msgid   "New membership request"
+msgstr  ""
+
+#: includes/welcome-pack-core.php:108
+msgid   "New message notification"
 msgstr  ""
 
 #: includes/welcome-pack-admin.php:98
@@ -161,6 +201,14 @@ msgstr  ""
 msgid   "Replaced with the person's username."
 msgstr  ""
 
+#: includes/welcome-pack-core.php:201
+msgid   "Replied to one of your comments"
+msgstr  ""
+
+#: includes/welcome-pack-core.php:193
+msgid   "Replied to one of your updates"
+msgstr  ""
+
 #: includes/welcome-pack-admin.php:417
 msgid   "Save Welcome Pack Settings"
 msgstr  ""
@@ -180,7 +228,7 @@ msgid   "Settings"
 msgstr  ""
 
 #: includes/welcome-pack-core.php:107
-msgid   "Signup validation email"
+msgid   "Signup validation"
 msgstr  ""
 
 #: includes/welcome-pack-admin.php:82
@@ -209,15 +257,6 @@ msgstr  ""
 
 #: includes/welcome-pack-admin.php:75
 msgid   "Thank me by donating towards future development"
-msgstr  ""
-
-#: includes/welcome-pack-core.php:107
-#, php-format
-msgid   "Thanks for registering! To complete the activation of your account "
-        "please click the following link:\n"
-        "\n"
-        "%s\n"
-        "\n"
 msgstr  ""
 
 #: includes/welcome-pack-admin.php:34

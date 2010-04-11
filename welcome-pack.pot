@@ -7,7 +7,7 @@
 msgid   ""
 msgstr  "Project-Id-Version: PACKAGE VERSION\n"
         "Report-Msgid-Bugs-To: \n"
-        "POT-Creation-Date: 2010-04-11 12:10+0100\n"
+        "POT-Creation-Date: 2010-04-11 14:36+0100\n"
         "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
         "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
         "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -87,7 +87,7 @@ msgid   "Friends, Groups <span class=\"ampersand\">&amp;</span> Welcome "
         "Message"
 msgstr  ""
 
-#: includes/welcome-pack-core.php:171
+#: includes/welcome-pack-core.php:172
 msgid   "Friendship accepted notification"
 msgstr  ""
 
@@ -95,15 +95,23 @@ msgstr  ""
 msgid   "Give it a good rating on WordPress.org"
 msgstr  ""
 
-#: includes/welcome-pack-core.php:118
+#: includes/welcome-pack-core.php:119
 msgid   "Group details updated"
 msgstr  ""
 
-#: includes/welcome-pack-core.php:153
+#: includes/welcome-pack-core.php:154
 msgid   "Group invitation received"
 msgstr  ""
 
-#: includes/welcome-pack-core.php:147
+#: includes/welcome-pack-core.php:136
+msgid   "Group membership request accepted"
+msgstr  ""
+
+#: includes/welcome-pack-core.php:142
+msgid   "Group membership request rejected"
+msgstr  ""
+
+#: includes/welcome-pack-core.php:148
 msgid   "Group promotion"
 msgstr  ""
 
@@ -149,19 +157,11 @@ msgstr  ""
 msgid   "Like this plugin?"
 msgstr  ""
 
-#: includes/welcome-pack-core.php:135
-msgid   "Membership request accepted"
-msgstr  ""
-
-#: includes/welcome-pack-core.php:141
-msgid   "Membership request rejected"
-msgstr  ""
-
-#: includes/welcome-pack-core.php:163
+#: includes/welcome-pack-core.php:164
 msgid   "Mentioned in a group"
 msgstr  ""
 
-#: includes/welcome-pack-core.php:185
+#: includes/welcome-pack-core.php:186
 msgid   "Mentioned in an update"
 msgstr  ""
 
@@ -169,15 +169,15 @@ msgstr  ""
 msgid   "Need support?"
 msgstr  ""
 
-#: includes/welcome-pack-core.php:177
+#: includes/welcome-pack-core.php:178
 msgid   "New friendship request"
 msgstr  ""
 
-#: includes/welcome-pack-core.php:124
-msgid   "New membership request"
+#: includes/welcome-pack-core.php:125
+msgid   "New group membership request"
 msgstr  ""
 
-#: includes/welcome-pack-core.php:108
+#: includes/welcome-pack-core.php:109
 msgid   "New message notification"
 msgstr  ""
 
@@ -201,11 +201,11 @@ msgstr  ""
 msgid   "Replaced with the person's username."
 msgstr  ""
 
-#: includes/welcome-pack-core.php:201
+#: includes/welcome-pack-core.php:202
 msgid   "Replied to one of your comments"
 msgstr  ""
 
-#: includes/welcome-pack-core.php:193
+#: includes/welcome-pack-core.php:194
 msgid   "Replied to one of your updates"
 msgstr  ""
 
@@ -227,7 +227,7 @@ msgstr  ""
 msgid   "Settings"
 msgstr  ""
 
-#: includes/welcome-pack-core.php:107
+#: includes/welcome-pack-core.php:108
 msgid   "Signup validation"
 msgstr  ""
 

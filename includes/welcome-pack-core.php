@@ -115,13 +115,13 @@ To view and read your messages please log in and visit: %s
 
 ---------------------
 ', 'To disable these notifications please log in and go to: %s' ) ),
-		array( 'name' => __( 'Group details updated', 'dpw' ), 'values' => array( 'Group details for the group "%s" were updated:
+		array( 'name' => __( 'Group details updated', 'dpw' ), 'values' => array( 'Group Details Updated', 'Group details for the group "%s" were updated:
 
 To view the group: %s
 
 ---------------------
 ', 'To disable these notifications please log in and go to: %s' ) ),
-		array( 'name' => __( 'New membership request', 'dpw' ), 'values' => array( 'Membership request for group: %s', '%s wants to join the group "%s".
+		array( 'name' => __( 'New group membership request', 'dpw' ), 'values' => array( 'Membership request for group: %s', '%s wants to join the group "%s".
 
 Because you are the administrator of this group, you must either accept or reject the membership request.
 
@@ -132,13 +132,13 @@ To view %s\'s profile: %s
 
 ---------------------
 ', 'To disable these notifications please log in and go to: %s' ) ),
-		array( 'name' => __( 'Membership request accepted', 'dpw' ), 'values' => array( 'Membership request for group "%s" accepted', 'Your membership request for the group "%s" has been accepted.
+		array( 'name' => __( 'Group membership request accepted', 'dpw' ), 'values' => array( 'Membership request for group "%s" accepted', 'Your membership request for the group "%s" has been accepted.
 
 To view the group please login and visit: %s
 
 ---------------------
 ', 'To disable these notifications please log in and go to: %s' ) ),
-		array( 'name' => __( 'Membership request rejected', 'dpw' ), 'values' => array( 'Membership request for group "%s" rejected', 'Your membership request for the group "%s" has been rejected.
+		array( 'name' => __( 'Group membership request rejected', 'dpw' ), 'values' => array( 'Membership request for group "%s" rejected', 'Your membership request for the group "%s" has been rejected.
 
 To submit another request please log in and visit: %s
 

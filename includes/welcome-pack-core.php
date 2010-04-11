@@ -80,12 +80,12 @@ function dpw_load_dynamic_i18n() {
 		for ( $j=0; $j<count( $defaults[$i]['values'] ); $j++ ) {
 			if ( $defaults[$i]['values'][$j] != $emails[$i]['values'][$j] ) {
 
-				if ( isset( $l10n['buddypress']->entries[$defaults[$i]['values'][$j]] ) ) {
-					$l10n['buddypress']->entries[$defaults[$i]['values'][$j]]->translations[0] = $emails[$i]['values'][$j];
+				if ( isset( $l10n['buddypress']->entries[$defaults[$i]['id'][$j]] ) ) {
+					$l10n['buddypress']->entries[$defaults[$i]['id'][$j]]->translations[0] = $emails[$i]['values'][$j];
 
 				} else {
 					$mo = new MO();
-					$mo->add_entry( array( 'singular' => $defaults[$i]['values'][$j], 'translations' => array( $emails[$i]['values'][$j] ) ) );
+					$mo->add_entry( array( 'singular' => $defaults[$i]['id'][$j], 'translations' => array( $emails[$i]['values'][$j] ) ) );
 
 					if ( isset( $l10n['buddypress'] ) )
 						$mo->merge_with( $l10n['buddypress'] );
@@ -104,8 +104,15 @@ function dpw_get_default_email_data() {
 	/* Translators: some of these strings below intentionally use the BuddyPress textdomain. */
 	$emails = array(
 		array( 'name' => '----', 'values' => array() ),
-		array( 'name' => __( 'Signup validation email', 'dpw' ), 'values' => array( __( 'Activate Your Account', 'buddypress' ), __( "Thanks for registering! To complete the activation of your account please click the following link:\n\n%s\n\n", 'buddypress' ) ) )
+		array( 'name' => __( 'Signup validation email', 'dpw' ), 'values' => array( 'Activate Your Account', "Thanks for registering! To complete the activation of your account please click the following link:\n\n%s\n\n" ) )
 	);
+
+	for ( $j=1; $j<count( $emails ); $j++ ) {
+		$emails[$j]['id'] = $emails[$j]['values'];
+
+		for ( $i=0; $i<count( $emails[$j]['values'] ); $i++ )	
+			$emails[$j]['values'][$i] = __( $emails[$j]['values'][$i], 'buddypress' );
+	}
 
 	return $emails;
 }

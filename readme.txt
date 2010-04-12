@@ -46,11 +46,12 @@ Added email customisation options and revamped the admin UI. Configuration page 
 * 1.0 - Initial release.
 
 == Thanks ==
+* Thanks to Luca Camellini for the Italian translation in v2.0.
 * Social Network Icon Pack by Rogie King is licensed under a Creative Commons Attribution-Share Alike 3.0 Unported License - komodomedia.com.
 * The idea of using meta boxes on the admin page came from Joost de Valk (http://yoast.com), your one stop-shop for a wide range of WordPress plugins and SEO advice.
 * The implementation of the above is credited to http://www.code-styling.de/english/how-to-use-wordpress-metaboxes-at-own-plugins.
 * I would sincerely like to thank [Dave Carson](http://solopracticeuniversity.com/) for helping me test this throughout early development.
 * Big thanks to [BeLogical](http://buddypress.org/developers/BeLogical/) for his bug reports and time in testing v1.2.
-* Thanks to Jason DeVelvis for reporting bugs in version v1.22.
-* Thanks to [SlaFFik](http://buddypress.org/developers/slaffik/) for providing a Russian translation in version v1.3.
-* Thanks to [urband](http://buddypress.org/developers/urband/) for providing a Hungarian translation in version v1.4.
+* Thanks to Jason DeVelvis for reporting bugs in v1.22.
+* Thanks to [SlaFFik](http://buddypress.org/developers/slaffik/) for providing a Russian translation in v1.3.
+* Thanks to [urband](http://buddypress.org/developers/urband/) for providing a Hungarian translation in v1.4.

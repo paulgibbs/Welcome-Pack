@@ -35,8 +35,18 @@ function dpw_init() {
 	__( 'When a user registers on your site, Welcome Pack lets you automatically send them a friend or group invitation, or a welcome message. You can also customise the default emails sent by BuddyPress to ensure that they match the brand and tone of your site.', 'dpw' );  // Metadata description translation
 	require( dirname( __FILE__ ) . '/includes/welcome-pack-core.php' );
 
-	if ( !get_blog_option( BP_ROOT_BLOG, 'welcomepack' ) )
+	if ( !get_blog_option( BP_ROOT_BLOG, 'welcomepack' ) ) {
 		update_blog_option( BP_ROOT_BLOG, 'welcomepack', serialize( array( 'friends' => array(), 'groups' => array(), 'welcomemsgsubject' => '', 'welcomemsg' => '', 'welcomemsgsender' => 0, 'welcomemsgtoggle' => false, 'friendstoggle' => false, 'groupstoggle' => false, 'emails' => dpw_get_default_email_data(), 'emailstoggle' => false ) ) );
+
+	} else {
+		$options = maybe_unserialize( get_blog_option( BP_ROOT_BLOG, 'welcomepack' ) );
+		if ( !isset( $options['emails'] ) && !isset( $options['emailstoggle'] ) ) {
+			$options['emails'] = dpw_get_default_email_data();
+			$options['emailstoggle'] = false;
+
+			update_blog_option( BP_ROOT_BLOG, 'welcomepack', serialize( $options ) );
+		}
+	}
 }
 add_action( 'bp_init', 'dpw_init' );
 ?>

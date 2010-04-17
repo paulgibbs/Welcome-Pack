@@ -124,20 +124,30 @@ function dpw_admin_screen_emailsconfigurationbox( $settings ) {
 
 /* TODO: need to figure out how to dynamically set bottom-margin = 0 of the last div.setting-group */
 function dpw_admin_screen_configurationbox( $settings ) {
+	global $wpdb;
+
+	if ( function_exists( 'friends_install' ) || function_exists( 'messages_install' ) ) {
+		if ( bp_core_is_multisite() )
+			$column = "spam";
+		else
+			$column = "user_status";
+
+		$members = $wpdb->get_results( $wpdb->prepare( "SELECT ID, display_name FROM $wpdb->users WHERE $column = 0" ) );
+	}
 ?>
-<?php if ( function_exists( 'friends_install' ) && bp_has_members( 'type=alphabetical&populate_extras=false&per_page=10000' ) ) : ?>	
+<?php if ( function_exists( 'friends_install' ) ) : ?>	
 	<div class="setting setting-group setting-friends <?php if ( !$settings["friendstoggle"] ) echo 'initially-hidden' ?>">
 		<div class="settingname">
 			<p><?php _e( 'Invite the new user to become friends with these people:', 'dpw' ) ?></p>
 		</div>
 		<div class="settingvalue">
-			<?php dpw_admin_settings_friends( $settings ) ?>
+			<?php dpw_admin_settings_friends( $settings, $members ) ?>
 		</div>
 		<div style="clear: left"></div>
 	</div>
 <?php endif ?>
 
-<?php if ( function_exists( 'groups_install' ) && bp_has_groups( 'type=alphabetically&populate_extras=false&per_page=10000' ) ) : ?>
+<?php if ( function_exists( 'groups_install' ) ) : ?>
 	<div class="setting setting-group setting-groups <?php if ( !$settings["groupstoggle"] ) echo 'initially-hidden' ?>">
 		<div class="settingname">
 			<p><?php _e( "Ask the new user if they'd like to join these groups:", 'dpw' ) ?></p>
@@ -149,7 +159,7 @@ function dpw_admin_screen_configurationbox( $settings ) {
 	</div>
 <?php endif ?>
 
-<?php if ( function_exists( 'messages_install' ) && bp_has_members( 'type=alphabetical&populate_extras=false&per_page=10000' ) ) : ?>
+<?php if ( function_exists( 'messages_install' ) ) : ?>
 	<div class="setting-welcomemsg setting-group <?php if ( !$settings["welcomemsgtoggle"] ) echo 'initially-hidden' ?>">
 		<div class="setting wide">
 			<div class="settingname">
@@ -176,7 +186,7 @@ function dpw_admin_screen_configurationbox( $settings ) {
 				<p><?php _e( '&hellip;from this user:', 'dpw' ) ?></p>
 			</div>
 			<div class="settingvalue">
-				<?php dpw_admin_settings_welcomemsg_sender( $settings ) ?>
+				<?php dpw_admin_settings_welcomemsg_sender( $settings, $members ) ?>
 			</div>
 			<div style="clear: left"></div>
 		</div>
@@ -242,15 +252,7 @@ function dpw_admin_settings_email_chooser( $settings ) {
 <?php
 }
 
-function dpw_admin_settings_friends( $settings ) {
-	global $wpdb;
-
-	if ( bp_core_is_multisite() )
-		$column = "spam";
-	else
-		$column = "user_status";
-
-	$members = $wpdb->get_results( $wpdb->prepare( "SELECT ID, display_name FROM $wpdb->users WHERE $column = 0" ) );	
+function dpw_admin_settings_friends( $settings, $members ) {
 ?>
 	<select multiple="multiple" name="welcomepack[friends][]" style="overflow-y: hidden">
 	<?php foreach ( $members as $member ) : ?>
@@ -261,11 +263,12 @@ function dpw_admin_settings_friends( $settings ) {
 }
 
 function dpw_admin_settings_groups( $settings ) {
+	$groups = $wpdb->get_results( $wpdb->prepare( "SELECT id, name FROM {$bp->groups->table_name}" ) );
 ?>
 	<select multiple="multiple" name="welcomepack[groups][]">
-	<?php while ( bp_groups() ) : bp_the_group(); ?>
-		<option value="<?php bp_group_id() ?>"<?php foreach ( $settings['groups'] as $id ) { if ( bp_get_group_id() == $id ) echo " selected='selected'"; } ?>><?php bp_group_name() ?></option>
-	<?php endwhile; ?>
+	<?php foreach( $groups as $group ) : ?>
+		<option value="<?php echo apply_filters( 'bp_get_group_id', $group->id ) ?>"<?php foreach ( $settings['groups'] as $id ) { if ( $group->id == $id ) echo " selected='selected'"; } ?>><?php echo apply_filters( 'bp_get_group_name', $group->name ) ?></option>
+	<?php endforeach; ?>
 	</select>
 <?php
 }
@@ -282,12 +285,12 @@ function dpw_admin_settings_welcomemsg_subject( $settings ) {
 <?php
 }
 
-function dpw_admin_settings_welcomemsg_sender( $settings ) {
+function dpw_admin_settings_welcomemsg_sender( $settings, $members ) {
 ?>
 	<select name="welcomepack[welcomemsgsender]">
-	<?php while ( bp_members() ) : bp_the_member(); ?>
-		<option value="<?php bp_member_user_id() ?>"<?php if ( bp_get_member_user_id() == $settings['welcomemsgsender'] ) echo " selected='selected'"; ?>><?php bp_member_name() ?></option>
-	<?php endwhile; ?>
+	<?php foreach ( $members as $member ) : ?>
+		<option value="<?php echo apply_filters( 'bp_get_member_user_id', $member->ID ) ?>"<?php if ( $member->ID == $settings['welcomemsgsender'] ) echo " selected='selected'"; ?>><?php echo apply_filters( 'bp_member_name', $member->display_name ) ?></option>
+	<?php endforeach; ?>
 	</select>
 <?php
 }

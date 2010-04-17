@@ -263,6 +263,8 @@ function dpw_admin_settings_friends( $settings, $members ) {
 }
 
 function dpw_admin_settings_groups( $settings ) {
+	global $bp, $wpdb;
+
 	$groups = $wpdb->get_results( $wpdb->prepare( "SELECT id, name FROM {$bp->groups->table_name}" ) );
 ?>
 	<select multiple="multiple" name="welcomepack[groups][]">

@@ -9,7 +9,6 @@ Stable tag: 2.0.1
 
 When a user registers on your site, Welcome Pack lets you automatically send them a friend or group invitation, or a welcome message. You can also customise the default emails sent by BuddyPress to ensure that they match the brand and tone of your site.
 
-
 == Description ==
 
 Welcome Pack is a BuddyPress plugin that enhances the new user experience. When a user registers on your site, Welcome Pack lets you automatically send them a friend or group invitation, or a welcome message. You can also customise the default emails sent by BuddyPress to ensure that they match the brand and tone of your site.
@@ -23,10 +22,15 @@ Welcome Pack is a BuddyPress plugin that enhances the new user experience. When 
 1. Visit the BuddyPress > Welcome Pack menu to configure.
 
 == Upgrade Notice == 
+
+= 2.0.1 =
+Improves memory usage on large sites and fixed email list bug.
+
 = 2.0 =
 Added email customisation options and revamped the admin UI. Configuration page moved to underneath the "BuddyPress" menu. You will need to re-enter all of your settings.
 
 == Change Log ==
+* 2.0.1 - Added Italian, French and Brazilian Portuguese translations. Fixed error with email list not working on certain sites which upgraded from previous version. Improved memory usage on configuration page for sites with several thousands users.
 * 2.0 - Added email customisation and revamped admin page. You will need to re-enter all of your configuration settings, sorry.
 * 1.64 - Welcome Message sender dropdown now shows >20 users, and minor tweaks to attempt to resolve error messages that some installs are experiencing.
 * 1.63 - User registration being ignored in most cases on WP installs, and the Welcome Message sender name not appearing on the message, are both fixed. Error on updating the wpmu-edit.php page on MU is fixed, too.
@@ -46,9 +50,10 @@ Added email customisation options and revamped the admin UI. Configuration page 
 * 1.0 - Initial release.
 
 == Thanks ==
+* Added French and Brazilian Portuguese in v2.0.1, thank you Arthur Freitas.
 * Thanks to Luca Camellini for the Italian translation in v2.0.
 * Social Network Icon Pack by Rogie King is licensed under a Creative Commons Attribution-Share Alike 3.0 Unported License - komodomedia.com.
-* The idea of using meta boxes on the admin page came from Joost de Valk (http://yoast.com), your one stop-shop for a wide range of WordPress plugins and SEO advice.
+* The idea of using meta boxes on the admin page came from [Joost de Valk](http://yoast.com/), your one stop-shop for a wide range of WordPress plugins and SEO advice.
 * The implementation of the above is credited to http://www.code-styling.de/english/how-to-use-wordpress-metaboxes-at-own-plugins.
 * I would sincerely like to thank [Dave Carson](http://solopracticeuniversity.com/) for helping me test this throughout early development.
 * Big thanks to [BeLogical](http://buddypress.org/developers/BeLogical/) for his bug reports and time in testing v1.2.

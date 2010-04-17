@@ -242,13 +242,20 @@ function dpw_admin_settings_email_chooser( $settings ) {
 <?php
 }
 
-// TODO: per_page http://trac.buddypress.org/ticket/1991
 function dpw_admin_settings_friends( $settings ) {
+	global $wpdb;
+
+	if ( bp_core_is_multisite() )
+		$column = "spam";
+	else
+		$column = "user_status";
+
+	$members = $wpdb->get_results( $wpdb->prepare( "SELECT ID, display_name FROM $wpdb->users WHERE $column = 0" ) );	
 ?>
 	<select multiple="multiple" name="welcomepack[friends][]" style="overflow-y: hidden">
-	<?php while ( bp_members() ) : bp_the_member(); ?>
-		<option value="<?php bp_member_user_id() ?>"<?php foreach ( $settings['friends'] as $id ) { if ( bp_get_member_user_id() == $id ) echo " selected='selected'"; } ?>><?php bp_member_name() ?></option>
-	<?php endwhile; ?>
+	<?php foreach ( $members as $member ) : ?>
+		<option value="<?php echo apply_filters( 'bp_get_member_user_id', $member->ID ) ?>"<?php foreach ( $settings['friends'] as $id ) { if ( $member->ID == $id ) echo " selected='selected'"; } ?>><?php echo apply_filters( 'bp_member_name', $member->display_name ) ?></option>
+	<?php endforeach; ?>
 	</select>
 <?php
 }

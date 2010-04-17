@@ -263,7 +263,7 @@ function dpw_admin_settings_friends( $settings, $members ) {
 }
 
 function dpw_admin_settings_groups( $settings ) {
-	global $wpdb;
+	global $bp, $wpdb;
 
 	$groups = $wpdb->get_results( $wpdb->prepare( "SELECT id, name FROM {$bp->groups->table_name}" ) );
 ?>

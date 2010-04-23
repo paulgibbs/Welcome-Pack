@@ -5,7 +5,7 @@ Tags: buddypress,friend,group,welcome,default,message,email,customise
 License: General Public License version 2
 Requires at least: WP/MU 2.9, BuddyPress 1.2
 Tested up to: WP/MU 2.9, BuddyPress 1.2.3
-Stable tag: 2.0.1
+Stable tag: 2.0.2
 
 When a user registers on your site, Welcome Pack lets you automatically send them a friend or group invitation, or a welcome message. You can also customise the default emails sent by BuddyPress to ensure that they match the brand and tone of your site.
 
@@ -23,6 +23,9 @@ Welcome Pack is a BuddyPress plugin that enhances the new user experience. When 
 
 == Upgrade Notice == 
 
+= 2.0.2 =
+Minor localisation fixes; username and group name lists now sorted alphabetically.
+
 = 2.0.1 =
 Improves memory usage on large sites and fixed email list bug.
 
@@ -30,6 +33,7 @@ Improves memory usage on large sites and fixed email list bug.
 Added email customisation options and revamped the admin UI. Configuration page moved to underneath the "BuddyPress" menu. You will need to re-enter all of your settings.
 
 == Change Log ==
+* 2.0.2 - Minor localisation fixes; username and group name lists now sorted alphabetically. Added Russian translation.
 * 2.0.1 - Added Italian, French and Brazilian Portuguese translations. Fixed error with email list not working on certain sites which upgraded from previous version. Improved memory usage on configuration page for sites with several thousands users.
 * 2.0 - Added email customisation and revamped admin page. You will need to re-enter all of your configuration settings, sorry.
 * 1.64 - Welcome Message sender dropdown now shows >20 users, and minor tweaks to attempt to resolve error messages that some installs are experiencing.
@@ -50,6 +54,7 @@ Added email customisation options and revamped the admin UI. Configuration page 
 * 1.0 - Initial release.
 
 == Thanks ==
+* Added Russian language file in v2.0.2, thank you [SlaFFik](http://cosydale.com/).
 * Added French and Brazilian Portuguese in v2.0.1, thank you Arthur Freitas.
 * Thanks to Luca Camellini for the Italian translation in v2.0.
 * Social Network Icon Pack by Rogie King is licensed under a Creative Commons Attribution-Share Alike 3.0 Unported License - komodomedia.com.

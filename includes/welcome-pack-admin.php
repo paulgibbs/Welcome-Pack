@@ -132,7 +132,7 @@ function dpw_admin_screen_configurationbox( $settings ) {
 		else
 			$column = "user_status";
 
-		$members = $wpdb->get_results( $wpdb->prepare( "SELECT ID, display_name FROM $wpdb->users WHERE $column = 0" ) );
+		$members = $wpdb->get_results( $wpdb->prepare( "SELECT ID, display_name FROM $wpdb->users WHERE $column = 0 ORDER BY display_name ASC" ) );
 	}
 ?>
 <?php if ( function_exists( 'friends_install' ) ) : ?>	
@@ -265,7 +265,7 @@ function dpw_admin_settings_friends( $settings, $members ) {
 function dpw_admin_settings_groups( $settings ) {
 	global $bp, $wpdb;
 
-	$groups = $wpdb->get_results( $wpdb->prepare( "SELECT id, name FROM {$bp->groups->table_name}" ) );
+	$groups = $wpdb->get_results( $wpdb->prepare( "SELECT id, name FROM {$bp->groups->table_name} ORDER BY name ASC" ) );
 ?>
 	<select multiple="multiple" name="welcomepack[groups][]">
 	<?php foreach( $groups as $group ) : ?>

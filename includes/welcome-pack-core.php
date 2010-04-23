@@ -4,6 +4,8 @@ define( 'WELCOME_PACK_IS_INSTALLED', 1 );
 if ( !defined( 'WELCOME_PACK_AUTOACCEPT_INVITATIONS' ) )
 	define( 'WELCOME_PACK_AUTOACCEPT_INVITATIONS', false );
 
+load_plugin_textdomain( 'dpw', false, '/welcome-pack/includes/languages/' );
+
 /* The notifications file should contain functions to send email notifications on specific user actions */
 require( dirname( __FILE__ ) . '/welcome-pack-notifications.php' );
 
@@ -16,8 +18,6 @@ require ( dirname( __FILE__ ) . '/welcome-pack-cssjs.php' );
 /* The filters file should create and apply filters to component output functions. */
 require( dirname( __FILE__ ) . '/welcome-pack-filters.php' );
 
-
-load_plugin_textdomain( 'dpw', false, '/welcome-pack/includes/languages/' );
 
 function dpw_add_admin_menu() {
 	global $bp;

@@ -36,28 +36,50 @@ Improves memory usage on large sites and fixed email list bug.
 Added email customisation options and revamped the admin UI. Configuration page moved to underneath the "BuddyPress" menu. You will need to re-enter all of your settings.
 
 == Change Log ==
-* 2.0.3 - Fixed the welcome message sender receiving copy of the message. Removed duplicate function calls when using email customisation.
-* 2.0.2 - Minor localisation fixes; username and group name lists now sorted alphabetically. Added Russian translation.
-* 2.0.1 - Added Italian, French and Brazilian Portuguese translations. Fixed error with email list not working on certain sites which upgraded from previous version. Improved memory usage on configuration page for sites with several thousands users.
-* 2.0 - Added email customisation and revamped admin page. You will need to re-enter all of your configuration settings, sorry.
-* 1.64 - Welcome Message sender dropdown now shows >20 users, and minor tweaks to attempt to resolve error messages that some installs are experiencing.
-* 1.63 - User registration being ignored in most cases on WP installs, and the Welcome Message sender name not appearing on the message, are both fixed. Error on updating the wpmu-edit.php page on MU is fixed, too.
-* 1.61 - Fixes error disabling the plugin on WP and now shows >20 users and groups in the settings.
-* 1.6 - Rewritten for BuddyPress 1.2.
-* 1.5 - Fixes for BuddyPress 1.2.
-* 1.41 - Fix for BuddyPress 1.1.1.
-* 1.4 - Updated for BuddyPress 1.1.  Now requires BuddyPress 1.1+.  Added Hungarian translation courtesy of urband.
-* 1.3 - Added Russian translation courtesy of SlaFFik. Changed the default group behaviour from "auto-join" to "auto-invite". Tested with WPMU 2.8.2.
-* 1.22 - Fixes cookie warnings in web server logs, and fixes bug preventing only the default admin user account (ID 1) sending the Welcome Message.
-* 1.21 - Updated for BuddyPress 1.0.2. Changed license from GPL v3. Private release.
-* 1.2 - Fixed bug where didn't trigger on account+blog type of registrations (as opposed to account-only). Fixed bug where Site Activity widget wasn't updated for group joins. Note you need to have the fix for http://trac.buddypress.org/changeset/1477 applied to your BuddyPress install for this to work.
-* 1.11 - Supports BP 1.0 and WPMU 2.7.1. Adds 'default message' functionality.
-* 1.1 - You can now select multiple default groups and friends.
-* 1.0.2 - Updated to work with BuddyPress revision 1324.
-* 1.0.1 - Plugin doesn't work on BuddyPress RC-1. Oops! Thanks jjj.
-* 1.0 - Initial release.
 
-== Thanks ==
+= 2.0.3 =
+* Fixed the welcome message sender receiving copy of the message. Removed duplicate function calls when using email customisation.
+= 2.0.2 =
+* Minor localisation fixes; username and group name lists now sorted alphabetically. Added Russian translation.
+= 2.0.1 =
+* Added Italian, French and Brazilian Portuguese translations. Fixed error with email list not working on certain sites which upgraded from previous version. Improved memory usage on configuration page for sites with several thousands users.
+= 2.0 =
+* Added email customisation and revamped admin page. You will need to re-enter all of your configuration settings, sorry.
+= 1.64 =
+* Welcome Message sender dropdown now shows >20 users, and minor tweaks to attempt to resolve error messages that some installs are experiencing.
+= 1.63 =
+* User registration being ignored in most cases on WP installs, and the Welcome Message sender name not appearing on the message, are both fixed. Error on updating the wpmu-edit.php page on MU is fixed, too.
+= 1.61 =
+* Fixes error disabling the plugin on WP and now shows >20 users and groups in the settings.
+= 1.6 =
+* Rewritten for BuddyPress 1.2.
+= 1.5 =
+* Fixes for BuddyPress 1.2.
+= 1.41 =
+* Fix for BuddyPress 1.1.1.
+= 1.4 =
+* Updated for BuddyPress 1.1.  Now requires BuddyPress 1.1+.  Added Hungarian translation courtesy of urband.
+= 1.3 =
+* Added Russian translation courtesy of SlaFFik. Changed the default group behaviour from "auto-join" to "auto-invite". Tested with WPMU 2.8.2.
+= 1.22 =
+* Fixes cookie warnings in web server logs, and fixes bug preventing only the default admin user account (ID 1) sending the Welcome Message.
+= 1.21 =
+* Updated for BuddyPress 1.0.2. Changed license from GPL v3. Private release.
+= 1.2 =
+* Fixed bug where didn't trigger on account+blog type of registrations (as opposed to account-only). Fixed bug where Site Activity widget wasn't updated for group joins. Note you need to have the fix for http://trac.buddypress.org/changeset/1477 applied to your BuddyPress install for this to work.
+= 1.11 =
+* Supports BP 1.0 and WPMU 2.7.1. Adds 'default message' functionality.
+= 1.1 =
+* You can now select multiple default groups and friends.
+= 1.0.2 =
+* Updated to work with BuddyPress revision 1324.
+= 1.0.1 =
+* Plugin doesn't work on BuddyPress RC-1. Oops! Thanks jjj.
+= 1.0 =
+* Initial release.
+
+== Frequently Asked Questions ==
+= Thanks =
 * Added Russian language file in v2.0.2, thank you [SlaFFik](http://cosydale.com/).
 * Added French and Brazilian Portuguese in v2.0.1, thank you Arthur Freitas.
 * Thanks to Luca Camellini for the Italian translation in v2.0.

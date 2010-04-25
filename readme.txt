@@ -1,5 +1,5 @@
 === Welcome Pack ===
-Contributors: Paul Gibbs
+Contributors: DJPaul
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=P3K7Z7NHWZ5CL&lc=GB&item_name=B%2eY%2eO%2eT%2eO%2eS%20%2d%20BuddyPress%20plugins&currency_code=GBP&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted
 Tags: buddypress,friend,group,welcome,default,message,email,customise
 License: General Public License version 2

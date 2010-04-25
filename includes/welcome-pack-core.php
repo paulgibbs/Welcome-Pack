@@ -52,7 +52,7 @@ function dpw_on_user_registration( $user_id ) {
 		if ( !$settings['welcomemsgsender'] || !$settings['welcomemsgsubject'] || !$settings['welcomemsg'] )
 			return;
 
-		messages_new_message( array( 'sender_id' => $settings['welcomemsgsender'], 'recipients' => array( $settings['welcomemsgsender'], $user_id ), 'subject' => apply_filters( 'dpw_keyword_replacement', $settings['welcomemsgsubject'], $user_id ), 'content' => apply_filters( 'dpw_keyword_replacement', $settings['welcomemsg'], $user_id ) ) );
+		messages_new_message( array( 'sender_id' => $settings['welcomemsgsender'], 'recipients' => $user_id, 'subject' => apply_filters( 'dpw_keyword_replacement', $settings['welcomemsgsubject'], $user_id ), 'content' => apply_filters( 'dpw_keyword_replacement', $settings['welcomemsg'], $user_id ) ) );
 	}
 }
 add_action( 'bp_core_activated_user', 'dpw_on_user_registration' );
@@ -99,7 +99,6 @@ function dpw_load_dynamic_i18n() {
 	}
 }
 add_action( 'init', 'dpw_load_dynamic_i18n', 9 );
-add_action( 'wp', 'dpw_load_dynamic_i18n', 1 );
 
 function dpw_get_default_email_data() {
 	/* Translators: some of these strings below intentionally use the BuddyPress textdomain. */

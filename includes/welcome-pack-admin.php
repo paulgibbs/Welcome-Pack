@@ -29,7 +29,7 @@ function dpw_admin_screen_on_load() {
 	$help .= '<dl>';
 	$help .= "<dt>USERNAME</dt><dd>" . __( "Replaced with the person's username.", 'dpw' ) . "</dd>";
 	$help .= "<dt>NICKNAME</dt><dd>" . __( "Replaced with the person's name from their user profile.", 'dpw' ) . "</dd>";
-	$help .= "<dt>USER_URL</dt><dd>" . __( "Replaced with the URL of their user profile.", 'dpw' ) . "</dd>";
+	$help .= "<dt>USER_URL</dt><dd>" . __( "Replaced with the link to their user profile.", 'dpw' ) . "</dd>";
 	$help .= '</dl><br />';
 	$help .= '<p>' . __( "The default behaviour for Friends and Groups is for invitations to be sent. If you would prefer to suppress those invitations and have them automatically accepted on the user's behalf, set <code>define( 'WELCOME_PACK_AUTOACCEPT_INVITATIONS', true );</code> in wp-config.php.", 'dpw' ) .'</p><br />';
 
@@ -38,7 +38,7 @@ function dpw_admin_screen_on_load() {
 
 /* WP Help panel (the "Help" dropdown in the top-right of the page) */
 function dpw_admin_screen_contextual_help( $default_text ) {
-	return '<a href="http://wordpress.org/tags/welcome-pack" target="_blank">' . __( 'Support Forums', 'dpw' ) . '</a>';
+	return '<a href="http://buddypress.org/community/groups/welcome-pack/">' . __( 'Support Forums', 'dpw' ) . '</a>';
 }
 
 // Tells WP that we support two columns
@@ -73,13 +73,14 @@ function dpw_admin_screen_socialmedia( $settings ) {
 	<li><p><?php _e( 'Tell your friends!', 'dpw' ) ?></a></p></li>
 	<li><p><a href="http://wordpress.org/extend/plugins/welcome-pack/"><?php _e( 'Give it a good rating on WordPress.org', 'dpw' ) ?></a>.</p></li>
 	<li><p><a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&amp;business=P3K7Z7NHWZ5CL&amp;lc=GB&amp;item_name=B%2eY%2eO%2eT%2eO%2eS%20%2d%20BuddyPress%20plugins&amp;currency_code=GBP&amp;bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted"><?php _e( 'Thank me by donating towards future development', 'dpw' ) ?></a>.</p></li>
+	<li><p><a href="mailto:paul@byotos.com"><?php _e( 'Hire me to create a custom plugin for your site.', 'dpw' ) ?></a></p></li>
 </ul>
 <p><?php _e( 'Or share on one of these social networks:', 'dpw' ) ?></p>
 <ul class="menu">
-	<li><a target="_new" href="http://twitter.com/home?status=Check%20out%20Welcome%20Pack%20for%20%23buddypress%20http://wordpress.org/extend/plugins/welcome-pack/"><img src="<?php echo plugins_url( '/images/twitter_32.png', __FILE__ ) ?>" alt="<?php _e( 'Twitter', 'dpw' ) ?>" /></a></li>
-	<li><a target="_new" href="http://www.facebook.com/sharer.php?u=http://wordpress.org/extend/plugins/welcome-pack/"><img src="<?php echo plugins_url( '/images/facebook_32.png', __FILE__ ) ?>" alt="<?php _e( 'Facebook', 'dpw' ) ?>" /></a></li>
-	<li><a target="_new" href="http://del.icio.us/post?url=http://wordpress.org/extend/plugins/welcome-pack/&amp;title=Welcome%20Pack%20is%20a%20BuddyPress%20plugin%20that%20enhances%20the%20new%20user%20experience.%20When%20a%20user%20registers%20on%20your%20site,%20Welcome%20Pack%20lets%20you%20automatically%20send%20them%20a%20friend%20or%20group%20invitation,%20or%20a%20welcome%20message.%20You%20can%20also%20customise%20the%20default%20emails%20sent%20by%20BuddyPress%20to%20ensure%20that%20they%20match%20the%20brand%20and%20tone%20of%20your%20site."><img src="<?php echo plugins_url( '/images/delicious_32.png', __FILE__ ) ?>" alt="<?php _e( 'Delicious - social bookmarking', 'dpw' ) ?>" /></a></li>
-	<li><a target="_new" href="http://www.stumbleupon.com/submit?url=http://wordpress.org/extend/plugins/welcome-pack/&amp;title=Welcome%20Pack%20is%20a%20BuddyPress%20plugin%20that%20enhances%20the%20new%20user%20experience.%20When%20a%20user%20registers%20on%20your%20site,%20Welcome%20Pack%20lets%20you%20automatically%20send%20them%20a%20friend%20or%20group%20invitation,%20or%20a%20welcome%20message.%20You%20can%20also%20customise%20the%20default%20emails%20sent%20by%20BuddyPress%20to%20ensure%20that%20they%20match%20the%20brand%20and%20tone%20of%20your%20site."><img src="<?php echo plugins_url( '/images/stumbleupon_32.png', __FILE__ ) ?>" alt="<?php _e( 'Stumble Upon', 'dpw' ) ?>" /></a></li>
+	<li><a href="http://twitter.com/home?status=Check%20out%20Welcome%20Pack%20for%20%23buddypress%20http://wordpress.org/extend/plugins/welcome-pack/"><img src="<?php echo plugins_url( '/images/twitter_32.png', __FILE__ ) ?>" alt="<?php _e( 'Twitter', 'dpw' ) ?>" /></a></li>
+	<li><a href="http://www.facebook.com/sharer.php?u=http://wordpress.org/extend/plugins/welcome-pack/"><img src="<?php echo plugins_url( '/images/facebook_32.png', __FILE__ ) ?>" alt="<?php _e( 'Facebook', 'dpw' ) ?>" /></a></li>
+	<li><a href="http://del.icio.us/post?url=http://wordpress.org/extend/plugins/welcome-pack/&amp;title=Welcome%20Pack%20is%20a%20BuddyPress%20plugin%20that%20enhances%20the%20new%20user%20experience.%20When%20a%20user%20registers%20on%20your%20site,%20Welcome%20Pack%20lets%20you%20automatically%20send%20them%20a%20friend%20or%20group%20invitation,%20or%20a%20welcome%20message.%20You%20can%20also%20customise%20the%20default%20emails%20sent%20by%20BuddyPress%20to%20ensure%20that%20they%20match%20the%20brand%20and%20tone%20of%20your%20site."><img src="<?php echo plugins_url( '/images/delicious_32.png', __FILE__ ) ?>" alt="<?php _e( 'Delicious - social bookmarking', 'dpw' ) ?>" /></a></li>
+	<li><a href="http://www.stumbleupon.com/submit?url=http://wordpress.org/extend/plugins/welcome-pack/&amp;title=Welcome%20Pack%20is%20a%20BuddyPress%20plugin%20that%20enhances%20the%20new%20user%20experience.%20When%20a%20user%20registers%20on%20your%20site,%20Welcome%20Pack%20lets%20you%20automatically%20send%20them%20a%20friend%20or%20group%20invitation,%20or%20a%20welcome%20message.%20You%20can%20also%20customise%20the%20default%20emails%20sent%20by%20BuddyPress%20to%20ensure%20that%20they%20match%20the%20brand%20and%20tone%20of%20your%20site."><img src="<?php echo plugins_url( '/images/stumbleupon_32.png', __FILE__ ) ?>" alt="<?php _e( 'Stumble Upon', 'dpw' ) ?>" /></a></li>
 </ul>
 <?php
 }
@@ -90,9 +91,9 @@ function dpw_admin_screen_news( $settings ) {
 		$items = $rss->get_items( 0, $rss->get_item_quantity( 3 ) );
 
 		foreach ( $items as $item )
-			$content .= '<li><p><a target="_new" href="' . clean_url( $item->get_permalink(), null, 'display' ) . '">' . apply_filters( 'dpw_admin_rss_feed', $item->get_title() ) . '</a></p></li>';
+			$content .= '<li><p><a href="' . clean_url( $item->get_permalink(), null, 'display' ) . '">' . apply_filters( 'dpw_admin_rss_feed', $item->get_title() ) . '</a></p></li>';
 
-		$content .= '<li class="rss"><p><a target="_new" href="http://feeds.feedburner.com/BYOTOS">' . __( 'Subscribe with RSS', 'dpw' ) . '</a></p></li></ul>';
+		$content .= '<li class="rss"><p><a href="http://feeds.feedburner.com/BYOTOS">' . __( 'Subscribe with RSS', 'dpw' ) . '</a></p></li></ul>';
 		echo $content;
 	} else {
 		echo '<ul><li>' . __( 'No news!', 'dpw' ) . '</li></ul>';
@@ -101,7 +102,7 @@ function dpw_admin_screen_news( $settings ) {
 
 function dpw_admin_screen_support( $settings ) {
 ?>
-<p><?php _e( "If you need help and support using this plugin, or ideas for new features, please visit the ", 'dpw' ) ?><a href="http://wordpress.org/tags/welcome-pack" target="_new"><?php _e( 'Support Forums', 'dpw' ) ?></a>.</p>
+<p><?php _e( "If you need help and support using this plugin, or have ideas for new features, please visit the ", 'dpw' ) ?><a href="http://buddypress.org/community/groups/welcome-pack/"><?php _e( 'Support Forums', 'dpw' ) ?></a>.</p>
 <?php
 }
 
@@ -159,11 +160,21 @@ function dpw_admin_screen_configurationbox( $settings ) {
 	</div>
 <?php endif ?>
 
+	<div class="setting setting-group setting-startpage <?php if ( !$settings["startpagetoggle"] ) echo 'initially-hidden' ?>">
+		<div class="settingname">
+			<p><?php _e( "When the new user logs into your site for the very first time, redirect them to this link:", 'dpw' ) ?></p>
+		</div>
+		<div class="settingvalue">
+			<?php dpw_admin_settings_startpage( $settings ) ?>
+		</div>
+		<div style="clear: left"></div>
+	</div>
+
 <?php if ( function_exists( 'messages_install' ) ) : ?>
 	<div class="setting-welcomemsg setting-group <?php if ( !$settings["welcomemsgtoggle"] ) echo 'initially-hidden' ?>">
 		<div class="setting wide">
 			<div class="settingname">
-				<p><?php _e( 'Send the new user a welcome message&hellip;', 'dpw' ) ?></p>
+				<p><?php _e( 'Send the new user a Welcome Message&hellip;', 'dpw' ) ?></p>
 			</div>
 			<div class="settingvalue">
 				<?php dpw_admin_settings_welcomemsg( $settings ) ?>
@@ -203,7 +214,7 @@ function dpw_admin_screen_settingsbox( $settings ) {
 		</div>
 	</h5>
 
-	<p><?php _e( "Invite the new user to become friends with the selected members. It's a great way of teaching people how the friend acceptance process works on your website, and how they can use friendships to filter activity streams.", 'dpw' ) ?></p>
+	<p><?php _e( "Invite the new user to become friends with certain members. It's a great way of teaching people how the friend acceptance process works on your site, and how they can use friendships to filter activity streams.", 'dpw' ) ?></p>
 </div>
 
 <div class="component">
@@ -213,7 +224,16 @@ function dpw_admin_screen_settingsbox( $settings ) {
 		</div>
 	</h5>
 
-	<p><?php _e( "Ask the new user if they'd like to join a group. You could use this to invite all new users on your site to join a support group, so that all of your frequently asked questions are kept in the same place.", 'dpw' ) ?></p>
+	<p><?php _e( "Ask the new user if they'd like to join a group. You could use this to invite all new users on your site to join a support group, to keep all of your frequently asked questions in the same place.", 'dpw' ) ?></p>
+</div>
+
+<div class="component">
+	<h5><?php _e( "Start Page", 'dpw' ) ?>
+		<div class="radio">
+			<?php dpw_admin_settings_toggle( 'startpage', $settings ) ?>
+		</div>
+	</h5>
+	<p><?php _e( "When the new user logs into your site for the very first time, use Start Page to redirect them anywhere you'd like. This complements the Welcome Message fantastically; create a page or blog post which showcases the features of your site.", 'dpw' ) ?></p>
 </div>
 
 <div class="component">
@@ -235,7 +255,7 @@ function dpw_admin_screen_emailsettingsbox( $settings ) {
 			<?php dpw_admin_settings_toggle( 'emails', $settings ) ?>
 		</div>
 	</h5>
-	<p><?php _e( "Easily change emails which are sent by your website.", 'dpw' ) ?></p>
+	<p><?php _e( "Easily change emails which are sent by your site.", 'dpw' ) ?></p>
 </div>
 <?php
 }
@@ -275,6 +295,12 @@ function dpw_admin_settings_groups( $settings ) {
 <?php
 }
 
+function dpw_admin_settings_startpage( $settings ) {
+?>
+	<input type="text" name="welcomepack[firstloginurl]" value="<?php echo esc_url( apply_filters( 'dpw_admin_settings_firstloginurl', $settings['firstloginurl'] ) ) ?>" />
+<?php
+}
+
 function dpw_admin_settings_welcomemsg( $settings ) {
 ?>
 	<textarea name="welcomepack[welcomemsg]"><?php echo apply_filters( 'dpw_admin_settings_welcomemsg', $settings['welcomemsg'] ) ?></textarea>
@@ -300,8 +326,8 @@ function dpw_admin_settings_welcomemsg_sender( $settings, $members ) {
 function dpw_admin_settings_toggle( $name, $settings ) {
 	$checked = $settings["{$name}toggle"];
 ?>
-	<input type="radio" class="<?php echo $name ?>" name="welcomepack[<?php echo $name ?>toggle]" value="1" <?php if ( $checked ) echo 'checked="checked" ' ?>/> <?php _e( 'Enabled', 'buddypress' ) ?> &nbsp;
-	<input type="radio" class="<?php echo $name ?>" name="welcomepack[<?php echo $name ?>toggle]" value="0" <?php if ( !$checked ) echo 'checked="checked" ' ?>/> <?php _e( 'Disabled', 'buddypress' ) ?>
+	<input type="radio" class="<?php echo $name ?>" name="welcomepack[<?php echo $name ?>toggle]" value="1" <?php if ( $checked ) echo 'checked="checked" ' ?>/> <?php _e( 'Enabled', 'dpw' ) ?> &nbsp;
+	<input type="radio" class="<?php echo $name ?>" name="welcomepack[<?php echo $name ?>toggle]" value="0" <?php if ( !$checked ) echo 'checked="checked" ' ?>/> <?php _e( 'Disabled', 'dpw' ) ?>
 <?php
 }
 
@@ -319,6 +345,9 @@ function dpw_admin_validate( $input ) {
 		foreach ( $input['groups'] as $group_id )
 			$group_id = apply_filters( 'dpw_admin_validate_group_id', $group_id );
 
+	if ( isset( $input['firstloginurl'] ) )
+		$input['firstloginurl'] = esc_url_raw( apply_filters( 'dpw_admin_settings_firstloginurl', $input['firstloginurl'] ) );
+
 	if ( isset( $input['welcomemsg'] ) )
 		$input['welcomemsg'] = apply_filters( 'dpw_admin_settings_welcomemsg', $input['welcomemsg'] );
 
@@ -333,6 +362,9 @@ function dpw_admin_validate( $input ) {
 
 	if ( isset( $input['friendstoggle'] ) )
 		$input['friendstoggle'] = ( $input['friendstoggle'] ) ? true : false;
+
+	if ( isset( $input['startpagetoggle'] ) )
+		$input['startpagetoggle'] = ( $input['startpagetoggle'] ) ? true : false;
 
 	if ( isset( $input['welcomemsgtoggle'] ) )
 		$input['welcomemsgtoggle'] = ( $input['welcomemsgtoggle'] ) ? true : false;
@@ -396,7 +428,7 @@ function dpw_admin_screen() {
 
 	<div class="dpw-spacer">
 	<?php if ( !$is_email_tab ) : ?>
-		<p><?php _e( 'When a user registers on your site, Welcome Pack lets you automatically send them a friend or group invitation, or a welcome message.', 'dpw' ) ?></p>
+		<p><?php _e( 'When a user registers on your site, Welcome Pack lets you automatically send them a friend or group invitation, a Welcome Message and can redirect them to a Start Page.', 'dpw' ) ?></p>
 	<?php else : ?>
 		<p><?php _e( "You can customise the default emails sent by BuddyPress to ensure that they match the brand and tone of your site.", 'dpw' ) ?></p>
 	<?php endif; ?>

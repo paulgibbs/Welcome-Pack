@@ -6,9 +6,6 @@ if ( !defined( 'WELCOME_PACK_AUTOACCEPT_INVITATIONS' ) )
 
 load_plugin_textdomain( 'dpw', false, '/welcome-pack/includes/languages/' );
 
-/* The notifications file should contain functions to send email notifications on specific user actions */
-require( dirname( __FILE__ ) . '/welcome-pack-notifications.php' );
-
 /* The ajax file should hold all functions used in AJAX queries */
 require ( dirname( __FILE__ ) . '/welcome-pack-ajax.php' );
 
@@ -54,8 +51,21 @@ function dpw_on_user_registration( $user_id ) {
 
 		messages_new_message( array( 'sender_id' => $settings['welcomemsgsender'], 'recipients' => $user_id, 'subject' => apply_filters( 'dpw_keyword_replacement', $settings['welcomemsgsubject'], $user_id ), 'content' => apply_filters( 'dpw_keyword_replacement', $settings['welcomemsg'], $user_id ) ) );
 	}
+
+	if ( $settings['firstlogintoggle'] && get_usermeta( $user_id, 'welcomepack_firstlogin', true ) ) {
+		delete_usermeta( $user_id, 'welcomepack_firstlogin' );
+		add_filter( 'login_redirect', 'dpw_first_login_redirect', 15, 1 );
+	}
 }
 add_action( 'bp_core_activated_user', 'dpw_on_user_registration' );
+
+function dpw_first_login_redirect( $redirect_to ) {
+	$settings = maybe_unserialize( get_blog_option( BP_ROOT_BLOG, 'welcomepack' ) );
+	if ( !$settings['firstlogintoggle'] || !$settings['firstloginurl'] )
+		return $redirect_to;
+
+	return esc_url( $settings['firstloginurl'] );
+}
 
 function dpw_do_keyword_replacement( $text, $user_id ) {
 	$text = str_replace( "USERNAME", bp_core_get_username( $user_id ), $text );

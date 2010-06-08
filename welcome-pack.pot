@@ -1,311 +1,339 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Translation of the WordPress plugin "Welcome Pack" by Paul Gibbs (paul@byotos.com).
+# Copyright (C) 2009-10 Paul Gibbs
+# This file is distributed under the same license as the "Welcome Pack" package.
 #
 #, fuzzy
-msgid   ""
-msgstr  "Project-Id-Version: PACKAGE VERSION\n"
-        "Report-Msgid-Bugs-To: \n"
-        "POT-Creation-Date: 2010-04-11 17:06+0100\n"
-        "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-        "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-        "Language-Team: LANGUAGE <LL@li.org>\n"
-        "MIME-Version: 1.0\n"
-        "Content-Type: text/plain; charset=CHARSET\n"
-        "Content-Transfer-Encoding: 8bit\n"
-
-#: includes/welcome-pack-admin.php:176
-msgid   "&hellip;from this user:"
-msgstr  ""
-
-#: includes/welcome-pack-admin.php:166
-msgid   "&hellip;with this subject:"
-msgstr  ""
-
-#: includes/welcome-pack-admin.php:206
-msgid   "Ask the new user if they'd like to join a group. You could use this "
-        "to invite all new users on your site to join a support group, so "
-        "that all of your frequently asked questions are kept in the same "
-        "place."
-msgstr  ""
-
-#: includes/welcome-pack-admin.php:143
-msgid   "Ask the new user if they'd like to join these groups:"
-msgstr  ""
-
-#: includes/welcome-pack-admin.php:368
-msgid   "BuddyPress"
-msgstr  ""
-
-#: includes/welcome-pack-admin.php:113
-msgid   "Choose an email:"
-msgstr  ""
-
-#: includes/welcome-pack-admin.php:14 includes/welcome-pack-admin.php:21
-msgid   "Configuration"
-msgstr  ""
-
-#: includes/welcome-pack-admin.php:81
-msgid   "Delicious - social bookmarking"
-msgstr  ""
-
-#: includes/welcome-pack-admin.php:292
-msgid   "Disabled"
-msgstr  ""
-
-#: includes/welcome-pack-admin.php:228
-msgid   "Easily change emails which are sent by your website."
-msgstr  ""
-
-#: includes/welcome-pack-admin.php:223
-msgid   "Email Customisation"
-msgstr  ""
-
-#: includes/welcome-pack-admin.php:375
-msgid   "Emails"
-msgstr  ""
-
-#: includes/welcome-pack-admin.php:291
-msgid   "Enabled"
-msgstr  ""
-
-#: includes/welcome-pack-admin.php:80
-msgid   "Facebook"
-msgstr  ""
-
-#: includes/welcome-pack-ajax.php:42
-msgid   "For your information"
-msgstr  ""
-
-#: includes/welcome-pack-admin.php:190
-msgid   "Friends"
-msgstr  ""
-
-#: includes/welcome-pack-admin.php:374
-msgid   "Friends, Groups <span class=\"ampersand\">&amp;</span> Welcome "
-        "Message"
-msgstr  ""
-
-#: includes/welcome-pack-core.php:172
-msgid   "Friendship accepted notification"
-msgstr  ""
-
-#: includes/welcome-pack-admin.php:74
-msgid   "Give it a good rating on WordPress.org"
-msgstr  ""
-
-#: includes/welcome-pack-core.php:119
-msgid   "Group details updated"
-msgstr  ""
-
-#: includes/welcome-pack-core.php:154
-msgid   "Group invitation received"
-msgstr  ""
-
-#: includes/welcome-pack-core.php:136
-msgid   "Group membership request accepted"
-msgstr  ""
-
-#: includes/welcome-pack-core.php:142
-msgid   "Group membership request rejected"
-msgstr  ""
-
-#: includes/welcome-pack-core.php:148
-msgid   "Group promotion"
-msgstr  ""
-
-#: includes/welcome-pack-admin.php:200
-msgid   "Groups"
-msgstr  ""
-
-#: includes/welcome-pack-admin.php:28
-msgid   "If you are changing a setting that allows text entry, you can use "
-        "the following placeholder tags which will be automatically replaced "
-        "when a private message or an email is being sent:"
-msgstr  ""
-
-#: includes/welcome-pack-admin.php:104
-msgid   "If you need help and support using this plugin, or ideas for new "
-        "features, please visit the "
-msgstr  ""
-
-#: includes/welcome-pack-ajax.php:43
-#, php-format
-msgid   "In the email text, there are often special placeholders. Typically, "
-        "these are either %s or %d. The placeholders are replaced with "
-        "another value when an email is about to be sent, such as person's "
-        "name or a link to a web page."
-msgstr  ""
-
-#: includes/welcome-pack-admin.php:196
-msgid   "Invite the new user to become friends with the selected members. "
-        "It's a great way of teaching people how the friend acceptance "
-        "process works on your website, and how they can use friendships to "
-        "filter activity streams."
-msgstr  ""
-
-#: includes/welcome-pack-admin.php:131
-msgid   "Invite the new user to become friends with these people:"
-msgstr  ""
-
-#: includes/welcome-pack-admin.php:12 includes/welcome-pack-admin.php:19
-msgid   "Latest news from the author"
-msgstr  ""
+msgid ""
+msgstr ""
+"Project-Id-Version:  \n"
+"Report-Msgid-Bugs-To: http://buddypress.org/community/groups/welcome-pack/\n"
+"POT-Creation-Date: 2010-06-08 23:06+0100\n"
+"PO-Revision-Date: 2010-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
 
 #: includes/welcome-pack-admin.php:10 includes/welcome-pack-admin.php:17
-msgid   "Like this plugin?"
-msgstr  ""
-
-#: includes/welcome-pack-core.php:164
-msgid   "Mentioned in a group"
-msgstr  ""
-
-#: includes/welcome-pack-core.php:186
-msgid   "Mentioned in an update"
-msgstr  ""
+msgid "Like this plugin?"
+msgstr ""
 
 #: includes/welcome-pack-admin.php:11 includes/welcome-pack-admin.php:18
-msgid   "Need support?"
-msgstr  ""
+msgid "Need support?"
+msgstr ""
 
-#: includes/welcome-pack-core.php:178
-msgid   "New friendship request"
-msgstr  ""
-
-#: includes/welcome-pack-core.php:125
-msgid   "New group membership request"
-msgstr  ""
-
-#: includes/welcome-pack-core.php:109
-msgid   "New message notification"
-msgstr  ""
-
-#: includes/welcome-pack-admin.php:98
-msgid   "No news!"
-msgstr  ""
-
-#: includes/welcome-pack-admin.php:77
-msgid   "Or share on one of these social networks:"
-msgstr  ""
-
-#: includes/welcome-pack-admin.php:32
-msgid   "Replaced with the URL of their user profile."
-msgstr  ""
-
-#: includes/welcome-pack-admin.php:31
-msgid   "Replaced with the person's name from their user profile."
-msgstr  ""
-
-#: includes/welcome-pack-admin.php:30
-msgid   "Replaced with the person's username."
-msgstr  ""
-
-#: includes/welcome-pack-core.php:202
-msgid   "Replied to one of your comments"
-msgstr  ""
-
-#: includes/welcome-pack-core.php:194
-msgid   "Replied to one of your updates"
-msgstr  ""
-
-#: includes/welcome-pack-admin.php:417
-msgid   "Save Welcome Pack Settings"
-msgstr  ""
-
-#: includes/welcome-pack-admin.php:156
-msgid   "Send the new user a welcome message&hellip;"
-msgstr  ""
-
-#: includes/welcome-pack-admin.php:215
-msgid   "Send the newly-registered user a private message; use this to "
-        "welcome people to your site and help them get started."
-msgstr  ""
+#: includes/welcome-pack-admin.php:12 includes/welcome-pack-admin.php:19
+msgid "Latest news from the author"
+msgstr ""
 
 #: includes/welcome-pack-admin.php:13 includes/welcome-pack-admin.php:20
 #: includes/welcome-pack-admin.php:58
-msgid   "Settings"
-msgstr  ""
+msgid "Settings"
+msgstr ""
 
-#: includes/welcome-pack-core.php:108
-msgid   "Signup validation"
-msgstr  ""
+#: includes/welcome-pack-admin.php:14 includes/welcome-pack-admin.php:21
+msgid "Configuration"
+msgstr ""
 
-#: includes/welcome-pack-admin.php:82
-msgid   "Stumble Upon"
-msgstr  ""
+#: includes/welcome-pack-admin.php:28
+msgid ""
+"If you are changing a setting that allows text entry, you can use the "
+"following placeholder tags which will be automatically replaced when a "
+"private message or an email is being sent:"
+msgstr ""
 
-#: includes/welcome-pack-ajax.php:23
-msgid   "Subject"
-msgstr  ""
+#: includes/welcome-pack-admin.php:30
+msgid "Replaced with the person's username."
+msgstr ""
 
-#: includes/welcome-pack-admin.php:95
-msgid   "Subscribe with RSS"
-msgstr  ""
+#: includes/welcome-pack-admin.php:31
+msgid "Replaced with the person's name from their user profile."
+msgstr ""
 
-#: includes/welcome-pack-admin.php:41 includes/welcome-pack-admin.php:104
-msgid   "Support Forums"
-msgstr  ""
-
-#: includes/welcome-pack-admin.php:73
-msgid   "Tell your friends!"
-msgstr  ""
-
-#: includes/welcome-pack-ajax.php:32
-msgid   "Text"
-msgstr  ""
-
-#: includes/welcome-pack-admin.php:75
-msgid   "Thank me by donating towards future development"
-msgstr  ""
+#: includes/welcome-pack-admin.php:32
+msgid "Replaced with the link to their user profile."
+msgstr ""
 
 #: includes/welcome-pack-admin.php:34
-msgid   "The default behaviour for Friends and Groups is for invitations to "
-        "be sent. If you would prefer to suppress those invitations and have "
-        "them automatically accepted on the user's behalf, set <code>define"
-        "( 'WELCOME_PACK_AUTOACCEPT_INVITATIONS', true );</code> in wp-config."
-        "php."
-msgstr  ""
+msgid ""
+"The default behaviour for Friends and Groups is for invitations to be sent. "
+"If you would prefer to suppress those invitations and have them "
+"automatically accepted on the user's behalf, set <code>define"
+"( 'WELCOME_PACK_AUTOACCEPT_INVITATIONS', true );</code> in wp-config.php."
+msgstr ""
 
-#: includes/welcome-pack-ajax.php:44
-msgid   "To learn what these placeholders are replaced with, refer to an "
-        "email which you've already been sent."
-msgstr  ""
-
-#: includes/welcome-pack-admin.php:79
-msgid   "Twitter"
-msgstr  ""
-
-#: includes/welcome-pack-admin.php:210
-msgid   "Welcome Message"
-msgstr  ""
-
-#: includes/welcome-pack-admin.php:369 includes/welcome-pack-core.php:30
-msgid   "Welcome Pack"
-msgstr  ""
-
-#: includes/welcome-pack-admin.php:387
-msgid   "When a user registers on your site, Welcome Pack lets you "
-        "automatically send them a friend or group invitation, or a welcome "
-        "message."
-msgstr  ""
-
-#: loader.php:35
-msgid   "When a user registers on your site, Welcome Pack lets you "
-        "automatically send them a friend or group invitation, or a welcome "
-        "message. You can also customise the default emails sent by "
-        "BuddyPress to ensure that they match the brand and tone of your site."
-msgstr  ""
+#: includes/welcome-pack-admin.php:41 includes/welcome-pack-admin.php:105
+msgid "Support Forums"
+msgstr ""
 
 #: includes/welcome-pack-admin.php:71
-msgid   "Why not do any or all of the following:"
-msgstr  ""
+msgid "Why not do any or all of the following:"
+msgstr ""
 
-#: includes/welcome-pack-admin.php:389
-msgid   "You can customise the default emails sent by BuddyPress to ensure "
-        "that they match the brand and tone of your site."
-msgstr  ""
+#: includes/welcome-pack-admin.php:73
+msgid "Tell your friends!"
+msgstr ""
 
-#: includes/welcome-pack-admin.php:381
-msgid   "Your Welcome Pack settings have been saved."
-msgstr  ""
+#: includes/welcome-pack-admin.php:74
+msgid "Give it a good rating on WordPress.org"
+msgstr ""
+
+#: includes/welcome-pack-admin.php:75
+msgid "Thank me by donating towards future development"
+msgstr ""
+
+#: includes/welcome-pack-admin.php:76
+msgid "Hire me to create a custom plugin for your site."
+msgstr ""
+
+#: includes/welcome-pack-admin.php:78
+msgid "Or share on one of these social networks:"
+msgstr ""
+
+#: includes/welcome-pack-admin.php:80
+msgid "Twitter"
+msgstr ""
+
+#: includes/welcome-pack-admin.php:81
+msgid "Facebook"
+msgstr ""
+
+#: includes/welcome-pack-admin.php:82
+msgid "Delicious - social bookmarking"
+msgstr ""
+
+#: includes/welcome-pack-admin.php:83
+msgid "Stumble Upon"
+msgstr ""
+
+#: includes/welcome-pack-admin.php:96
+msgid "Subscribe with RSS"
+msgstr ""
+
+#: includes/welcome-pack-admin.php:99
+msgid "No news!"
+msgstr ""
+
+#: includes/welcome-pack-admin.php:105
+msgid ""
+"If you need help and support using this plugin, or have ideas for new "
+"features, please visit the "
+msgstr ""
+
+#: includes/welcome-pack-admin.php:114
+msgid "Choose an email:"
+msgstr ""
+
+#: includes/welcome-pack-admin.php:142
+msgid "Invite the new user to become friends with these people:"
+msgstr ""
+
+#: includes/welcome-pack-admin.php:154
+msgid "Ask the new user if they'd like to join these groups:"
+msgstr ""
+
+#: includes/welcome-pack-admin.php:166
+msgid ""
+"When the new user logs into your site for the very first time, redirect them "
+"to:"
+msgstr ""
+
+#: includes/welcome-pack-admin.php:179
+msgid "Send the new user a Welcome Message&hellip;"
+msgstr ""
+
+#: includes/welcome-pack-admin.php:189
+msgid "&hellip;with this subject:"
+msgstr ""
+
+#: includes/welcome-pack-admin.php:199
+msgid "&hellip;from this user:"
+msgstr ""
+
+#: includes/welcome-pack-admin.php:213
+msgid "Friends"
+msgstr ""
+
+#: includes/welcome-pack-admin.php:219
+msgid ""
+"Invite the new user to become friends with certain members. It's a great way "
+"of teaching people how the friend acceptance process works on your site, and "
+"how they can use friendships to filter activity streams."
+msgstr ""
+
+#: includes/welcome-pack-admin.php:223
+msgid "Groups"
+msgstr ""
+
+#: includes/welcome-pack-admin.php:229
+msgid ""
+"Ask the new user if they'd like to join a group. You could use this to "
+"invite all new users on your site to join a support group, to keep all of "
+"your frequently asked questions in the same place."
+msgstr ""
+
+#: includes/welcome-pack-admin.php:233
+msgid "Start Page"
+msgstr ""
+
+#: includes/welcome-pack-admin.php:238
+msgid ""
+"When the new user logs into your site for the very first time, use Start "
+"Page to redirect them anywhere you'd like. This complements the Welcome "
+"Message fantastically; create a page or blog post which showcases the "
+"features of your site."
+msgstr ""
+
+#: includes/welcome-pack-admin.php:242
+msgid "Welcome Message"
+msgstr ""
+
+#: includes/welcome-pack-admin.php:247
+msgid ""
+"Send the newly-registered user a private message; use this to welcome people "
+"to your site and help them get started."
+msgstr ""
+
+#: includes/welcome-pack-admin.php:255
+msgid "Email Customisation"
+msgstr ""
+
+#: includes/welcome-pack-admin.php:260
+msgid "Easily change emails which are sent by your site."
+msgstr ""
+
+#: includes/welcome-pack-admin.php:331
+msgid "Enabled"
+msgstr ""
+
+#: includes/welcome-pack-admin.php:332
+msgid "Disabled"
+msgstr ""
+
+#: includes/welcome-pack-admin.php:414
+msgid "BuddyPress"
+msgstr ""
+
+#: includes/welcome-pack-admin.php:415 includes/welcome-pack-core.php:27
+msgid "Welcome Pack"
+msgstr ""
+
+#: includes/welcome-pack-admin.php:420
+msgid "Friends, Groups <span class=\"ampersand\">&amp;</span> Welcome Message"
+msgstr ""
+
+#: includes/welcome-pack-admin.php:421
+msgid "Emails"
+msgstr ""
+
+#: includes/welcome-pack-admin.php:427
+msgid "Your Welcome Pack settings have been saved."
+msgstr ""
+
+#: includes/welcome-pack-admin.php:433
+msgid ""
+"When a user registers on your site, Welcome Pack lets you automatically send "
+"them a friend or group invitation, a Welcome Message and can redirect them "
+"to a Start Page."
+msgstr ""
+
+#: includes/welcome-pack-admin.php:435
+msgid ""
+"You can customise the default emails sent by BuddyPress to ensure that they "
+"match the brand and tone of your site."
+msgstr ""
+
+#: includes/welcome-pack-admin.php:463
+msgid "Save Welcome Pack Settings"
+msgstr ""
+
+#: includes/welcome-pack-ajax.php:23
+msgid "Subject"
+msgstr ""
+
+#: includes/welcome-pack-ajax.php:32
+msgid "Text"
+msgstr ""
+
+#: includes/welcome-pack-ajax.php:42
+msgid "For your information"
+msgstr ""
+
+#: includes/welcome-pack-ajax.php:43
+#, php-format
+msgid ""
+"In the email text, there are often special placeholders. Typically, these "
+"are either %s or %d. The placeholders are replaced with another value when "
+"an email is about to be sent, such as person's name or a link to a web page."
+msgstr ""
+
+#: includes/welcome-pack-ajax.php:44
+msgid ""
+"To learn what these placeholders are replaced with, refer to an email which "
+"you've already been sent."
+msgstr ""
+
+#: includes/welcome-pack-core.php:124
+msgid "Signup validation"
+msgstr ""
+
+#: includes/welcome-pack-core.php:125
+msgid "New message notification"
+msgstr ""
+
+#: includes/welcome-pack-core.php:135
+msgid "Group details updated"
+msgstr ""
+
+#: includes/welcome-pack-core.php:141
+msgid "New group membership request"
+msgstr ""
+
+#: includes/welcome-pack-core.php:152
+msgid "Group membership request accepted"
+msgstr ""
+
+#: includes/welcome-pack-core.php:158
+msgid "Group membership request rejected"
+msgstr ""
+
+#: includes/welcome-pack-core.php:164
+msgid "Group promotion"
+msgstr ""
+
+#: includes/welcome-pack-core.php:170
+msgid "Group invitation received"
+msgstr ""
+
+#: includes/welcome-pack-core.php:180
+msgid "Mentioned in a group"
+msgstr ""
+
+#: includes/welcome-pack-core.php:188
+msgid "Friendship accepted notification"
+msgstr ""
+
+#: includes/welcome-pack-core.php:194
+msgid "New friendship request"
+msgstr ""
+
+#: includes/welcome-pack-core.php:202
+msgid "Mentioned in an update"
+msgstr ""
+
+#: includes/welcome-pack-core.php:210
+msgid "Replied to one of your updates"
+msgstr ""
+
+#: includes/welcome-pack-core.php:218
+msgid "Replied to one of your comments"
+msgstr ""
+
+#: loader.php:35
+msgid ""
+"When a user registers on your site, Welcome Pack lets you automatically send "
+"them a friend or group invitation, a Welcome Message and can redirect them "
+"to a Start Page. You can also customise the default emails sent by "
+"BuddyPress to ensure that they match the brand and tone of your site."
+msgstr ""

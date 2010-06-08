@@ -52,20 +52,27 @@ function dpw_on_user_registration( $user_id ) {
 		messages_new_message( array( 'sender_id' => $settings['welcomemsgsender'], 'recipients' => $user_id, 'subject' => apply_filters( 'dpw_keyword_replacement', $settings['welcomemsgsubject'], $user_id ), 'content' => apply_filters( 'dpw_keyword_replacement', $settings['welcomemsg'], $user_id ) ) );
 	}
 
-	if ( $settings['firstlogintoggle'] && get_usermeta( $user_id, 'welcomepack_firstlogin', true ) ) {
-		delete_usermeta( $user_id, 'welcomepack_firstlogin' );
-		add_filter( 'login_redirect', 'dpw_first_login_redirect', 15, 1 );
-	}
+	if ( $settings['startpagetoggle'] )
+		update_usermeta( $user_id, 'welcomepack_firstlogin', true );
 }
 add_action( 'bp_core_activated_user', 'dpw_on_user_registration' );
 
-function dpw_first_login_redirect( $redirect_to ) {
-	$settings = maybe_unserialize( get_blog_option( BP_ROOT_BLOG, 'welcomepack' ) );
-	if ( !$settings['firstlogintoggle'] || !$settings['firstloginurl'] )
+function dpw_first_login_redirect( $redirect_to, $notused, $WP_User ) {
+	if ( is_wp_error( $WP_User ) )
 		return $redirect_to;
 
+	$user_id = $WP_User->ID;
+	if ( !get_usermeta( $user_id, 'welcomepack_firstlogin', true ) )
+		return $redirect_to;
+
+	$settings = maybe_unserialize( get_blog_option( BP_ROOT_BLOG, 'welcomepack' ) );
+	if ( !$settings['startpagetoggle'] || !$settings['firstloginurl'] )
+		return $redirect_to;
+
+	delete_usermeta( $user_id, 'welcomepack_firstlogin' );
 	return esc_url( $settings['firstloginurl'] );
 }
+add_filter( 'login_redirect', 'dpw_first_login_redirect', 15, 3 );
 
 function dpw_do_keyword_replacement( $text, $user_id ) {
 	$text = str_replace( "USERNAME", bp_core_get_username( $user_id ), $text );

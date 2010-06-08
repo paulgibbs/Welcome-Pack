@@ -11,7 +11,7 @@ jQuery(document).ready( function() {
 		jq(this).hide();
 	});
 
-	jq('div#dpw-admin-metaboxes-general input').click( function() {
+	jq('#dpw-admin-metaboxes-general input').click( function() {
 		var button = jq(this);
 		var config = jq('div.setting-' + button.attr('class'));
 
@@ -21,17 +21,17 @@ jQuery(document).ready( function() {
 			config.stop(true).slideUp();
 	});
 
-	jq('select#emailpicker').change( function() {
+	jq('#emailpicker').change( function() {
 		var index = this.selectedIndex;
 		if ( 0 == index ) {
-			jq('div#email').hide().empty();
+			jq('#email').hide().empty();
 			return;
 		}
 
 		jQuery.post( ajaxurl, {
 			action: 'dpw_fetch_email',
 			'cookie': encodeURIComponent(document.cookie),
-			'_wpnonce': jQuery("input#_ajax_nonce_dpw_emails").val(),
+			'_wpnonce': jQuery("#_ajax_nonce_dpw_emails").val(),
 			'id': index
 		},
 		function(response)
@@ -39,7 +39,7 @@ jQuery(document).ready( function() {
 			if ( response[0] + response[1] == '-1' )
 				return;
 
-			jq('div#email').html(response.substr(0, response.length-1)).show();
+			jq('#email').html(response.substr(0, response.length-1)).show();
 		});
 	});
 

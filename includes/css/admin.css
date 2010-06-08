@@ -5,7 +5,7 @@ div#dpw-admin-metaboxes-general div.settingname { float: left; width: 50%; margi
 div#dpw-admin-metaboxes-general div.settingvalue { float: left; width: 48%; }
 div#dpw-admin-metaboxes-general div.setting-friends, div#dpw-admin-metaboxes-general div.setting-groups, div#dpw-admin-metaboxes-general div.setting-welcomemsg { margin-top: 8px; margin-bottom: 30px; }
 div#dpw-admin-metaboxes-general div.wide div.settingname { clear: left; }
-div#dpw-admin-metaboxes-general div.wide div.settingvalue { width: 98%; margin-left: 6px; }
+div#dpw-admin-metaboxes-general div.wide div.settingvalue, div#dpw-admin-metaboxes-general div.wide div.settingname { width: 98%; margin-left: 6px; }
 
 div#dpw-admin-metaboxes-general textarea, div#dpw-admin-metaboxes-general select, div#dpw-admin-metaboxes-general input[type="text"] { width: 100%; }
 div#dpw-admin-metaboxes-general textarea { height: 128px; }

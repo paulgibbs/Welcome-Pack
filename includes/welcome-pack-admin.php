@@ -160,14 +160,16 @@ function dpw_admin_screen_configurationbox( $settings ) {
 	</div>
 <?php endif ?>
 
-	<div class="setting setting-group setting-startpage <?php if ( !$settings["startpagetoggle"] ) echo 'initially-hidden' ?>">
-		<div class="settingname">
-			<p><?php _e( "When the new user logs into your site for the very first time, redirect them to this link:", 'dpw' ) ?></p>
+	<div class="setting-group setting-startpage <?php if ( !$settings["startpagetoggle"] ) echo 'initially-hidden' ?>">
+		<div class="setting wide">
+			<div class="settingname">
+				<p><?php _e( "When the new user logs into your site for the very first time, redirect them to:", 'dpw' ) ?></p>
+			</div>
+			<div class="settingvalue">
+				<?php dpw_admin_settings_startpage( $settings ) ?>
+			</div>
+			<div style="clear: left"></div>
 		</div>
-		<div class="settingvalue">
-			<?php dpw_admin_settings_startpage( $settings ) ?>
-		</div>
-		<div style="clear: left"></div>
 	</div>
 
 <?php if ( function_exists( 'messages_install' ) ) : ?>

@@ -136,7 +136,7 @@ msgstr ""
 #: includes/welcome-pack-admin.php:166
 msgid ""
 "When the new user logs into your site for the very first time, redirect them "
-"to:"
+"to this URL. It has to be on the same domain as this site."
 msgstr ""
 
 #: includes/welcome-pack-admin.php:179

@@ -163,7 +163,7 @@ function dpw_admin_screen_configurationbox( $settings ) {
 	<div class="setting-group setting-startpage <?php if ( !$settings["startpagetoggle"] ) echo 'initially-hidden' ?>">
 		<div class="setting wide">
 			<div class="settingname">
-				<p><?php _e( "When the new user logs into your site for the very first time, redirect them to:", 'dpw' ) ?></p>
+				<p><?php _e( "When the new user logs into your site for the very first time, redirect them to this URL. It has to be on the same domain as this site.", 'dpw' ) ?></p>
 			</div>
 			<div class="settingvalue">
 				<?php dpw_admin_settings_startpage( $settings ) ?>

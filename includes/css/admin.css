@@ -3,7 +3,7 @@
 #dpw-admin-metaboxes-general div.setting p { margin-top: 0px; }
 #dpw-admin-metaboxes-general div.settingname { float: left; width: 50%; margin-right: 6px; }
 #dpw-admin-metaboxes-general div.settingvalue { float: left; width: 48%; }
-#dpw-admin-metaboxes-general div.setting-friends, #dpw-admin-metaboxes-general div.setting-groups, #dpw-admin-metaboxes-general div.setting-welcomemsg { margin-top: 8px; margin-bottom: 30px; }
+#dpw-admin-metaboxes-general div.setting-friends, #dpw-admin-metaboxes-general div.setting-startpage, #dpw-admin-metaboxes-general div.setting-groups, #dpw-admin-metaboxes-general div.setting-welcomemsg { margin-top: 8px; margin-bottom: 30px; }
 #dpw-admin-metaboxes-general div.wide div.settingname { clear: left; }
 #dpw-admin-metaboxes-general div.wide div.settingvalue, #dpw-admin-metaboxes-general div.wide div.settingname { width: 98%; margin-left: 6px; }
 

@@ -58,15 +58,15 @@ function dpw_on_user_registration( $user_id ) {
 add_action( 'bp_core_activated_user', 'dpw_on_user_registration' );
 
 function dpw_first_login_redirect( $redirect_to, $notused, $WP_User ) {
+	$settings = maybe_unserialize( get_blog_option( BP_ROOT_BLOG, 'welcomepack' ) );
+	if ( !$settings['startpagetoggle'] || !$settings['firstloginurl'] )
+		return $redirect_to;
+
 	if ( is_wp_error( $WP_User ) )
 		return $redirect_to;
 
 	$user_id = $WP_User->ID;
 	if ( !get_usermeta( $user_id, 'welcomepack_firstlogin', true ) )
-		return $redirect_to;
-
-	$settings = maybe_unserialize( get_blog_option( BP_ROOT_BLOG, 'welcomepack' ) );
-	if ( !$settings['startpagetoggle'] || !$settings['firstloginurl'] )
 		return $redirect_to;
 
 	delete_usermeta( $user_id, 'welcomepack_firstlogin' );

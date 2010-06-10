@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Welcome Pack\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-22 14:10+0200\n"
+"Report-Msgid-Bugs-To: http://buddypress.org/community/groups/welcome-pack/\n"
+"POT-Creation-Date: 2010-06-08 23:06+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: slaFFik <slaffik@list.ru>\n"
 "Language-Team: CosyDale <slaffik@list.ru>\n"
@@ -15,282 +15,298 @@ msgstr ""
 "X-Poedit-Basepath: G:\\Webservers\\home\\plugins\\welcome-pack\n"
 "X-Poedit-SearchPath-0: G:\\Webservers\\home\\plugins\\welcome-pack\n"
 
-#: G:\Webservers\home\plugins\welcome-pack/loader.php:35
-msgid "When a user registers on your site, Welcome Pack lets you automatically send them a friend or group invitation, or a welcome message. You can also customise the default emails sent by BuddyPress to ensure that they match the brand and tone of your site."
-msgstr "Когда пользователь регистрируется на вашем сайте,  Welcome Pack позволяет отправить ему ссылку на вступление в группу или создание дружеских связей, или первое вступительное сообщение. Вы также можете настроить стандартный email, который отправляет BuddyPress, чтобы быть увереным в его соответствии духу и бренду вашего сайта."
-
-#: G:\Webservers\home\plugins\welcome-pack/includes/welcome-pack-admin.php:10
-#: G:\Webservers\home\plugins\welcome-pack/includes/welcome-pack-admin.php:17
+#: includes/welcome-pack-admin.php:10
+#: includes/welcome-pack-admin.php:17
 msgid "Like this plugin?"
 msgstr "Понравился этот плагин?"
 
-#: G:\Webservers\home\plugins\welcome-pack/includes/welcome-pack-admin.php:11
-#: G:\Webservers\home\plugins\welcome-pack/includes/welcome-pack-admin.php:18
+#: includes/welcome-pack-admin.php:11
+#: includes/welcome-pack-admin.php:18
 msgid "Need support?"
 msgstr "Нужна помощь?"
 
-#: G:\Webservers\home\plugins\welcome-pack/includes/welcome-pack-admin.php:12
-#: G:\Webservers\home\plugins\welcome-pack/includes/welcome-pack-admin.php:19
+#: includes/welcome-pack-admin.php:12
+#: includes/welcome-pack-admin.php:19
 msgid "Latest news from the author"
 msgstr "Последние новости от автора"
 
-#: G:\Webservers\home\plugins\welcome-pack/includes/welcome-pack-admin.php:13
-#: G:\Webservers\home\plugins\welcome-pack/includes/welcome-pack-admin.php:20
-#: G:\Webservers\home\plugins\welcome-pack/includes/welcome-pack-admin.php:58
+#: includes/welcome-pack-admin.php:13
+#: includes/welcome-pack-admin.php:20
+#: includes/welcome-pack-admin.php:58
 msgid "Settings"
 msgstr "Глобальные настройки"
 
-#: G:\Webservers\home\plugins\welcome-pack/includes/welcome-pack-admin.php:14
-#: G:\Webservers\home\plugins\welcome-pack/includes/welcome-pack-admin.php:21
+#: includes/welcome-pack-admin.php:14
+#: includes/welcome-pack-admin.php:21
 msgid "Configuration"
 msgstr "Настройка элементов"
 
-#: G:\Webservers\home\plugins\welcome-pack/includes/welcome-pack-admin.php:28
+#: includes/welcome-pack-admin.php:28
 msgid "If you are changing a setting that allows text entry, you can use the following placeholder tags which will be automatically replaced when a private message or an email is being sent:"
 msgstr "Если вы изменяете опцию, которая подразумевает ввод текста, то вы можете использовать следующие блоки тегов, которые автоматически будут заменены в тексте письма."
 
-#: G:\Webservers\home\plugins\welcome-pack/includes/welcome-pack-admin.php:30
+#: includes/welcome-pack-admin.php:30
 msgid "Replaced with the person's username."
 msgstr "Замена на логин пользователя."
 
-#: G:\Webservers\home\plugins\welcome-pack/includes/welcome-pack-admin.php:31
+#: includes/welcome-pack-admin.php:31
 msgid "Replaced with the person's name from their user profile."
 msgstr "Замена на имя пользователя из его профиля."
 
-#: G:\Webservers\home\plugins\welcome-pack/includes/welcome-pack-admin.php:32
-msgid "Replaced with the URL of their user profile."
+#: includes/welcome-pack-admin.php:32
+msgid "Replaced with the link to their user profile."
 msgstr "Замена на ссылку на профиль пользователя."
 
-#: G:\Webservers\home\plugins\welcome-pack/includes/welcome-pack-admin.php:34
+#: includes/welcome-pack-admin.php:34
 msgid "The default behaviour for Friends and Groups is for invitations to be sent. If you would prefer to suppress those invitations and have them automatically accepted on the user's behalf, set <code>define( 'WELCOME_PACK_AUTOACCEPT_INVITATIONS', true );</code> in wp-config.php."
 msgstr "Обычное поведение для Друзей и Групп - это рассылка соответствующих приглашений. Если же вы хотите автоматически подружиться с новыми пользователями и сделать их участниками групп, укажите <code>define( 'WELCOME_PACK_AUTOACCEPT_INVITATIONS', true );</code> в файле wp-config.php."
 
-#: G:\Webservers\home\plugins\welcome-pack/includes/welcome-pack-admin.php:41
-#: G:\Webservers\home\plugins\welcome-pack/includes/welcome-pack-admin.php:104
+#: includes/welcome-pack-admin.php:41
+#: includes/welcome-pack-admin.php:105
 msgid "Support Forums"
 msgstr "Форумы поддержки"
 
-#: G:\Webservers\home\plugins\welcome-pack/includes/welcome-pack-admin.php:71
+#: includes/welcome-pack-admin.php:71
 msgid "Why not do any or all of the following:"
 msgstr "Почему бы не сделать что-нибудь из следующего ниже?"
 
-#: G:\Webservers\home\plugins\welcome-pack/includes/welcome-pack-admin.php:73
+#: includes/welcome-pack-admin.php:73
 msgid "Tell your friends!"
 msgstr "Расскажите друзьям!"
 
-#: G:\Webservers\home\plugins\welcome-pack/includes/welcome-pack-admin.php:74
+#: includes/welcome-pack-admin.php:74
 msgid "Give it a good rating on WordPress.org"
 msgstr "Высоко оценить на WordPress.org"
 
-#: G:\Webservers\home\plugins\welcome-pack/includes/welcome-pack-admin.php:75
+#: includes/welcome-pack-admin.php:75
 msgid "Thank me by donating towards future development"
 msgstr "Отблагодарить меня через пожертвование для будущих разработок"
 
-#: G:\Webservers\home\plugins\welcome-pack/includes/welcome-pack-admin.php:77
+#: includes/welcome-pack-admin.php:76
+msgid "Hire me to create a custom plugin for your site."
+msgstr "Наймите меня, если хотите создать уникальный плагин для своего сайта."
+
+#: includes/welcome-pack-admin.php:78
 msgid "Or share on one of these social networks:"
 msgstr "Или же поделиться с людьми с помощью этих социальных сетей:"
 
-#: G:\Webservers\home\plugins\welcome-pack/includes/welcome-pack-admin.php:79
+#: includes/welcome-pack-admin.php:80
 msgid "Twitter"
 msgstr "Twitter"
 
-#: G:\Webservers\home\plugins\welcome-pack/includes/welcome-pack-admin.php:80
+#: includes/welcome-pack-admin.php:81
 msgid "Facebook"
 msgstr "Facebook"
 
-#: G:\Webservers\home\plugins\welcome-pack/includes/welcome-pack-admin.php:81
+#: includes/welcome-pack-admin.php:82
 msgid "Delicious - social bookmarking"
 msgstr "Delicious - social bookmarking"
 
-#: G:\Webservers\home\plugins\welcome-pack/includes/welcome-pack-admin.php:82
+#: includes/welcome-pack-admin.php:83
 msgid "Stumble Upon"
 msgstr "Stumble Upon"
 
-#: G:\Webservers\home\plugins\welcome-pack/includes/welcome-pack-admin.php:95
+#: includes/welcome-pack-admin.php:96
 msgid "Subscribe with RSS"
 msgstr "Подписаться на RSS"
 
-#: G:\Webservers\home\plugins\welcome-pack/includes/welcome-pack-admin.php:98
+#: includes/welcome-pack-admin.php:99
 msgid "No news!"
 msgstr "Новостей нет!"
 
-#: G:\Webservers\home\plugins\welcome-pack/includes/welcome-pack-admin.php:104
-msgid "If you need help and support using this plugin, or ideas for new features, please visit the "
+#: includes/welcome-pack-admin.php:105
+msgid "If you need help and support using this plugin, or have ideas for new features, please visit the "
 msgstr "Если вам необходима помощь и поддержка для этого плагина, или у вас есть идеи для его улучшения, зайдите на страницу <a href=\"http://cosydale.com/plugin-welcome-pack-se-for-buddypress.html\">русского перевода к slaFFik'y</a> или посетите "
 
-#: G:\Webservers\home\plugins\welcome-pack/includes/welcome-pack-admin.php:113
+#: includes/welcome-pack-admin.php:114
 msgid "Choose an email:"
 msgstr "Выберите e-mail:"
 
-#: G:\Webservers\home\plugins\welcome-pack/includes/welcome-pack-admin.php:141
+#: includes/welcome-pack-admin.php:142
 msgid "Invite the new user to become friends with these people:"
 msgstr "Предложить новому пользователю подружиться с этими людьми:"
 
-#: G:\Webservers\home\plugins\welcome-pack/includes/welcome-pack-admin.php:153
+#: includes/welcome-pack-admin.php:154
 msgid "Ask the new user if they'd like to join these groups:"
 msgstr "Спросить у нового пользователя, хочет ли он вступить в эти группы:"
 
-#: G:\Webservers\home\plugins\welcome-pack/includes/welcome-pack-admin.php:166
-msgid "Send the new user a welcome message&hellip;"
+#: includes/welcome-pack-admin.php:166
+msgid "When the new user logs into your site for the very first time, redirect them to this URL. It has to be on the same domain as this site."
+msgstr "Когда новый пользователь авторизуется на сайте первый раз, он будет перенаправлен на этот адрес. Он должен быть на том же домене, что и этот сайт."
+
+#: includes/welcome-pack-admin.php:179
+msgid "Send the new user a Welcome Message&hellip;"
 msgstr "Отправить новому пользователю сообщение при его регистрации&hellip;"
 
-#: G:\Webservers\home\plugins\welcome-pack/includes/welcome-pack-admin.php:176
+#: includes/welcome-pack-admin.php:189
 msgid "&hellip;with this subject:"
 msgstr "&hellip;с этой темой:"
 
-#: G:\Webservers\home\plugins\welcome-pack/includes/welcome-pack-admin.php:186
+#: includes/welcome-pack-admin.php:199
 msgid "&hellip;from this user:"
 msgstr "&hellip;от этого пользователя:"
 
-#: G:\Webservers\home\plugins\welcome-pack/includes/welcome-pack-admin.php:200
+#: includes/welcome-pack-admin.php:213
 msgid "Friends"
 msgstr "Друзья"
 
-#: G:\Webservers\home\plugins\welcome-pack/includes/welcome-pack-admin.php:206
-msgid "Invite the new user to become friends with the selected members. It's a great way of teaching people how the friend acceptance process works on your website, and how they can use friendships to filter activity streams."
+#: includes/welcome-pack-admin.php:219
+msgid "Invite the new user to become friends with certain members. It's a great way of teaching people how the friend acceptance process works on your site, and how they can use friendships to filter activity streams."
 msgstr "Предложить новому пользователю подружиться с выбранными пользователями. Это замечательный способ показать людям, как работает процесс принятия предложения дружбы на вашем сайте, а также то, как они могут использовать друзей для фильтрации ленты активности на сайте."
 
-#: G:\Webservers\home\plugins\welcome-pack/includes/welcome-pack-admin.php:210
+#: includes/welcome-pack-admin.php:223
 msgid "Groups"
 msgstr "Группы"
 
-#: G:\Webservers\home\plugins\welcome-pack/includes/welcome-pack-admin.php:216
-msgid "Ask the new user if they'd like to join a group. You could use this to invite all new users on your site to join a support group, so that all of your frequently asked questions are kept in the same place."
+#: includes/welcome-pack-admin.php:229
+msgid "Ask the new user if they'd like to join a group. You could use this to invite all new users on your site to join a support group, to keep all of your frequently asked questions in the same place."
 msgstr "Спросите нового пользователя, хочет ли он вступить в какую-либо группу. Вы можете использовать это для того, чтобы приглашать новых пользователей вступить в группу поддержки, где хранятся все вопросы и ответы."
 
-#: G:\Webservers\home\plugins\welcome-pack/includes/welcome-pack-admin.php:220
+#: includes/welcome-pack-admin.php:233
+msgid "Start Page"
+msgstr "Страница Начала"
+
+#: includes/welcome-pack-admin.php:238
+msgid "When the new user logs into your site for the very first time, use Start Page to redirect them anywhere you'd like. This complements the Welcome Message fantastically; create a page or blog post which showcases the features of your site."
+msgstr "Когда новый пользователь авторизуется на вашем сайте первый раз, используйте Страницу Начала для переадресации его, куда вы захотите. Это позволяет грамотно настроить сайт: создайте страницу или запись в блоге, в которой описываются все особенности вашей сети."
+
+#: includes/welcome-pack-admin.php:242
 msgid "Welcome Message"
 msgstr "Вступительное сообщение"
 
-#: G:\Webservers\home\plugins\welcome-pack/includes/welcome-pack-admin.php:225
+#: includes/welcome-pack-admin.php:247
 msgid "Send the newly-registered user a private message; use this to welcome people to your site and help them get started."
 msgstr "Отправить новому зарегистрированному пользователю личное сообщение; используйте его, чтобы поприветствовать новых людей на сайте и рассказать им, что и как они могут здесь сделать."
 
-#: G:\Webservers\home\plugins\welcome-pack/includes/welcome-pack-admin.php:233
+#: includes/welcome-pack-admin.php:255
 msgid "Email Customisation"
 msgstr "Настройка e-mail письма"
 
-#: G:\Webservers\home\plugins\welcome-pack/includes/welcome-pack-admin.php:238
-msgid "Easily change emails which are sent by your website."
+#: includes/welcome-pack-admin.php:260
+msgid "Easily change emails which are sent by your site."
 msgstr "С легкостью измените email'ы, которые отправляются вашим сайтом."
 
-#: G:\Webservers\home\plugins\welcome-pack/includes/welcome-pack-admin.php:303
+#: includes/welcome-pack-admin.php:331
 msgid "Enabled"
 msgstr "Включено"
 
-#: G:\Webservers\home\plugins\welcome-pack/includes/welcome-pack-admin.php:304
+#: includes/welcome-pack-admin.php:332
 msgid "Disabled"
 msgstr "Выключено"
 
-#: G:\Webservers\home\plugins\welcome-pack/includes/welcome-pack-admin.php:380
+#: includes/welcome-pack-admin.php:414
 msgid "BuddyPress"
 msgstr "BuddyPress"
 
-#: G:\Webservers\home\plugins\welcome-pack/includes/welcome-pack-admin.php:381
-#: G:\Webservers\home\plugins\welcome-pack/includes/welcome-pack-core.php:30
+#: includes/welcome-pack-admin.php:415
+#: includes/welcome-pack-core.php:27
 msgid "Welcome Pack"
 msgstr "Welcome Pack"
 
-#: G:\Webservers\home\plugins\welcome-pack/includes/welcome-pack-admin.php:386
+#: includes/welcome-pack-admin.php:420
 msgid "Friends, Groups <span class=\"ampersand\">&amp;</span> Welcome Message"
 msgstr "Друзья, Группы <span class=\"ampersand\">&amp;</span> Вступительное сообщение"
 
-#: G:\Webservers\home\plugins\welcome-pack/includes/welcome-pack-admin.php:387
+#: includes/welcome-pack-admin.php:421
 msgid "Emails"
 msgstr "E-mail'ы"
 
-#: G:\Webservers\home\plugins\welcome-pack/includes/welcome-pack-admin.php:393
+#: includes/welcome-pack-admin.php:427
 msgid "Your Welcome Pack settings have been saved."
 msgstr "Настройки Welcome Pack были сохранены."
 
-#: G:\Webservers\home\plugins\welcome-pack/includes/welcome-pack-admin.php:399
-msgid "When a user registers on your site, Welcome Pack lets you automatically send them a friend or group invitation, or a welcome message."
-msgstr "Когда пользователь регистрируется на вашем сайте, Welcome Pack позволяет вам отправить ему ссылку на вступление в группу или создание дружеских связей, или первое вступительное сообщение."
+#: includes/welcome-pack-admin.php:433
+msgid "When a user registers on your site, Welcome Pack lets you automatically send them a friend or group invitation, a Welcome Message and can redirect them to a Start Page."
+msgstr "Когда пользователь регистрируется на вашем сайте, Welcome Pack позволяет вам отправить ему ссылку на вступление в группу или создание дружеских связей, или первое вступительное сообщение, а также может перенаправить на страницу начала работы с сайтом."
 
-#: G:\Webservers\home\plugins\welcome-pack/includes/welcome-pack-admin.php:401
+#: includes/welcome-pack-admin.php:435
 msgid "You can customise the default emails sent by BuddyPress to ensure that they match the brand and tone of your site."
 msgstr "Вы можете настроить вид стандартных сообщений, которые отправляются сайтом для того, чтобы они соответствовали бренду и тематике вашего сайта."
 
-#: G:\Webservers\home\plugins\welcome-pack/includes/welcome-pack-admin.php:429
+#: includes/welcome-pack-admin.php:463
 msgid "Save Welcome Pack Settings"
 msgstr "Сохранить настройки Welcome Pack"
 
-#: G:\Webservers\home\plugins\welcome-pack/includes/welcome-pack-ajax.php:23
+#: includes/welcome-pack-ajax.php:23
 msgid "Subject"
 msgstr "Тема"
 
-#: G:\Webservers\home\plugins\welcome-pack/includes/welcome-pack-ajax.php:32
+#: includes/welcome-pack-ajax.php:32
 msgid "Text"
 msgstr "Текст"
 
-#: G:\Webservers\home\plugins\welcome-pack/includes/welcome-pack-ajax.php:42
+#: includes/welcome-pack-ajax.php:42
 msgid "For your information"
 msgstr "В качестве справки"
 
-#: G:\Webservers\home\plugins\welcome-pack/includes/welcome-pack-ajax.php:43
+#: includes/welcome-pack-ajax.php:43
 #, php-format
 msgid "In the email text, there are often special placeholders. Typically, these are either %s or %d. The placeholders are replaced with another value when an email is about to be sent, such as person's name or a link to a web page."
 msgstr "В тексте сообщения часто есть специальные переменные. Обычно это %s или %d. Эти переменные заменяются другими значениями перед тем, как будет отправлено сообщение, к примеру, на имя пользователя и ссылкой на его страницу."
 
-#: G:\Webservers\home\plugins\welcome-pack/includes/welcome-pack-ajax.php:44
+#: includes/welcome-pack-ajax.php:44
 msgid "To learn what these placeholders are replaced with, refer to an email which you've already been sent."
 msgstr "Чтобы понять, чем же заменяются эти переменные, обратитесь к письму, которые вы уже отправили."
 
-#: G:\Webservers\home\plugins\welcome-pack/includes/welcome-pack-core.php:108
+#: includes/welcome-pack-core.php:124
 msgid "Signup validation"
 msgstr "Проверка регистрации"
 
-#: G:\Webservers\home\plugins\welcome-pack/includes/welcome-pack-core.php:109
+#: includes/welcome-pack-core.php:125
 msgid "New message notification"
 msgstr "Уведомление о новом сообщении"
 
-#: G:\Webservers\home\plugins\welcome-pack/includes/welcome-pack-core.php:119
+#: includes/welcome-pack-core.php:135
 msgid "Group details updated"
 msgstr "Детали Группы обновлены"
 
-#: G:\Webservers\home\plugins\welcome-pack/includes/welcome-pack-core.php:125
+#: includes/welcome-pack-core.php:141
 msgid "New group membership request"
 msgstr "Запрос на вступление в группу"
 
-#: G:\Webservers\home\plugins\welcome-pack/includes/welcome-pack-core.php:136
+#: includes/welcome-pack-core.php:152
 msgid "Group membership request accepted"
 msgstr "Запрос на вступление в группу принят"
 
-#: G:\Webservers\home\plugins\welcome-pack/includes/welcome-pack-core.php:142
+#: includes/welcome-pack-core.php:158
 msgid "Group membership request rejected"
 msgstr "Запрос на вступление в группу отклонен"
 
-#: G:\Webservers\home\plugins\welcome-pack/includes/welcome-pack-core.php:148
+#: includes/welcome-pack-core.php:164
 msgid "Group promotion"
 msgstr "Повышение в группе"
 
-#: G:\Webservers\home\plugins\welcome-pack/includes/welcome-pack-core.php:154
+#: includes/welcome-pack-core.php:170
 msgid "Group invitation received"
 msgstr "Получено приглашение в группу"
 
-#: G:\Webservers\home\plugins\welcome-pack/includes/welcome-pack-core.php:164
+#: includes/welcome-pack-core.php:180
 msgid "Mentioned in a group"
 msgstr "Упоминание в группе"
 
-#: G:\Webservers\home\plugins\welcome-pack/includes/welcome-pack-core.php:172
+#: includes/welcome-pack-core.php:188
 msgid "Friendship accepted notification"
 msgstr "Уведомление и принятой дружбе"
 
-#: G:\Webservers\home\plugins\welcome-pack/includes/welcome-pack-core.php:178
+#: includes/welcome-pack-core.php:194
 msgid "New friendship request"
 msgstr "Новый запрос дружбы"
 
-#: G:\Webservers\home\plugins\welcome-pack/includes/welcome-pack-core.php:186
+#: includes/welcome-pack-core.php:202
 msgid "Mentioned in an update"
 msgstr "Упоминание в статусе"
 
-#: G:\Webservers\home\plugins\welcome-pack/includes/welcome-pack-core.php:194
+#: includes/welcome-pack-core.php:210
 msgid "Replied to one of your updates"
 msgstr "Ответ на ваш статус"
 
-#: G:\Webservers\home\plugins\welcome-pack/includes/welcome-pack-core.php:202
+#: includes/welcome-pack-core.php:218
 msgid "Replied to one of your comments"
 msgstr "Ответ на один из ваших комментариев"
+
+#: loader.php:35
+msgid "When a user registers on your site, Welcome Pack lets you automatically send them a friend or group invitation, a Welcome Message and can redirect them to a Start Page. You can also customise the default emails sent by BuddyPress to ensure that they match the brand and tone of your site."
+msgstr "Когда пользователь регистрируется на вашем сайте,  Welcome Pack позволяет отправить ему ссылку на вступление в группу или создание дружеских связей, или первое вступительное сообщение, а также может перенаправить на страницу начала работы с сайтом. Вы также можете настроить стандартный email, который отправляет BuddyPress, чтобы быть увереным в его соответствии духу и бренду вашего сайта."
 
 #~ msgid "Your Welcome Pack"
 #~ msgstr "Ваши настройки Welcome Pack"

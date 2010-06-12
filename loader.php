@@ -8,7 +8,7 @@ Description: When a user registers on your site, Welcome Pack lets you automatic
 Version: 2.1
 License: General Public License version 2
 Requires at least: WP 2.9.x, BuddyPress 1.2.3
-Tested up to: WP 3.0, BuddyPress 1.2.4
+Tested up to: WP 3.0, BuddyPress 1.2.4.1
 Site Wide Only: true
 Network: true
 Domain Path: /includes/languages/

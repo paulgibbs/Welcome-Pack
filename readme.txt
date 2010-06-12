@@ -88,6 +88,7 @@ Added email customisation options and revamped the admin UI. Configuration page 
 
 == Frequently Asked Questions ==
 = Thanks =
+* Thanks to [SlaFFik](http://cosydale.com/), Arthur Freitas and Luca Camellini for translations in v2.1.
 * Added Russian language file in v2.0.2, thank you [SlaFFik](http://cosydale.com/).
 * Added French and Brazilian Portuguese in v2.0.1, thank you Arthur Freitas.
 * Thanks to Luca Camellini for the Italian translation in v2.0.

@@ -74,6 +74,15 @@ function dpw_first_login_redirect( $redirect_to, $notused, $WP_User ) {
 }
 add_filter( 'login_redirect', 'dpw_first_login_redirect', 15, 3 );
 
+// For compatibility with S2Member plugin
+function dpw_first_login_s2member_redirect( $url, $login_info ) {
+  if ( !$login_info['current_user'] )
+    return $url;
+
+  return dpw_first_login_redirect( $url, '', $login_info['current_user'] );
+}
+add_filter( 'ws_plugin__s2member_fill_login_redirect_rc_vars', 'dpw_first_login_s2member_redirect', 10, 2 );
+
 function dpw_do_keyword_replacement( $text, $user_id ) {
 	$text = str_replace( "USERNAME", bp_core_get_username( $user_id ), $text );
 	$text = str_replace( "NICKNAME", bp_core_get_user_displayname( $user_id ), $text );

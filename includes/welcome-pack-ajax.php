@@ -4,7 +4,7 @@ function dpw_fetch_email() {
 
 	check_ajax_referer( 'dpw-emails', '_wpnonce' );
 
-	if ( !is_user_logged_in() || !is_site_admin() || !isset( $_POST['id'] ) || !$_POST['id'] ) {
+	if ( !is_user_logged_in() || !$bp->loggedin_user->is_site_admin || !$_POST['id'] ) {
 		echo '-1';
 		return;
 	}
@@ -22,7 +22,7 @@ function dpw_fetch_email() {
 	<div class="setting wide">
 		<div class="settingname"><p><?php _e( 'Subject', 'dpw' ) ?></p></div>
 		<div class="settingvalue">
-			<input type="text" name="welcomepack[email][]" value="<?php echo apply_filters( 'dpw_admin_settings_email', $emails[$id]['values'][0] ) ?>" />
+			<input type="text" name="welcomepack[email][]" value="<?php echo esc_attr( apply_filters( 'dpw_admin_settings_email', $emails[$id]['values'][0] ) ) ?>" />
 		</div>
 		<div style="clear: left"></div>
 	</div>

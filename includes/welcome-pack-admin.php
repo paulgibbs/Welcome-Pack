@@ -299,7 +299,7 @@ function dpw_admin_settings_groups( $settings ) {
 
 function dpw_admin_settings_startpage( $settings ) {
 ?>
-	<input type="text" name="welcomepack[firstloginurl]" value="<?php echo esc_url( apply_filters( 'dpw_admin_settings_firstloginurl', $settings['firstloginurl'] ) ) ?>" />
+	<input type="text" name="welcomepack[firstloginurl]" value="<?php echo esc_attr( apply_filters( 'dpw_admin_settings_firstloginurl', $settings['firstloginurl'] ) ) ?>" />
 <?php
 }
 

@@ -70,7 +70,7 @@ function dpw_first_login_redirect( $redirect_to, $notused, $WP_User ) {
 		return $redirect_to;
 
 	delete_usermeta( $user_id, 'welcomepack_firstlogin' );
-	return esc_url( $settings['firstloginurl'] );
+	return esc_url( do_action( 'dpw_keyword_replacement', $settings['firstloginurl'] ) );
 }
 add_filter( 'login_redirect', 'dpw_first_login_redirect', 15, 3 );
 

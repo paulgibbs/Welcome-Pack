@@ -24,8 +24,14 @@ add_filter( 'dpw_admin_settings_firstloginurl', 'wptexturize' );
 add_filter( 'dpw_admin_settings_firstloginurl', 'convert_chars' );
 add_filter( 'dpw_admin_settings_firstloginurl', 'stripslashes_deep' );
 
+add_filter( 'dpw_admin_settings_email_name', 'wp_filter_kses', 1 );
+add_filter( 'dpw_admin_settings_email_name', 'wptexturize' );
+add_filter( 'dpw_admin_settings_email_name', 'convert_chars' );
+add_filter( 'dpw_admin_settings_email_name', 'stripslashes_deep' );
+
 add_filter( 'dpw_admin_validate_group_id', 'absint' );
 add_filter( 'dpw_admin_validate_friend_id', 'absint' );
+add_filter( 'dpw_admin_validate_sender_id', 'absint' );
 add_filter( 'dpw_admin_validate_email_id', 'absint' );
 
 add_filter( 'dpw_admin_rss_feed', 'wp_filter_kses', 1 );

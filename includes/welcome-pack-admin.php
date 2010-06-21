@@ -269,7 +269,7 @@ function dpw_admin_settings_email_chooser( $settings ) {
 ?>
 	<select id="emailpicker">
 		<?php for ( $i=0; $i<count( $emails ); $i++ ) : ?>
-		<option value="<?php echo $i ?>"><?php echo $emails[$i]['name'] ?></option>
+		<option value="<?php echo $i ?>"><?php echo apply_filters( 'dpw_admin_settings_email_name', $emails[$i]['name'] ) ?></option>
 		<?php endfor; ?>
 	</select>
 <?php
@@ -279,7 +279,7 @@ function dpw_admin_settings_friends( $settings, $members ) {
 ?>
 	<select multiple="multiple" name="welcomepack[friends][]" style="overflow-y: hidden">
 	<?php foreach ( $members as $member ) : ?>
-		<option value="<?php echo esc_attr( apply_filters( 'bp_get_member_user_id', $member->ID ) ) ?>"<?php foreach ( $settings['friends'] as $id ) { if ( $member->ID == $id ) echo " selected='selected'"; } ?>><?php echo apply_filters( 'bp_member_name', $member->display_name ) ?></option>
+		<option value="<?php echo esc_attr( apply_filters( 'bp_get_member_user_id', $member->ID ) ) ?>"<?php foreach ( $settings['friends'] as $id ) { if ( $member->ID == $id ) echo " selected='selected'"; } ?>><?php echo apply_filters( 'bp_get_member_name', $member->display_name ) ?></option>
 	<?php endforeach; ?>
 	</select>
 <?php
@@ -320,7 +320,7 @@ function dpw_admin_settings_welcomemsg_sender( $settings, $members ) {
 ?>
 	<select name="welcomepack[welcomemsgsender]">
 	<?php foreach ( $members as $member ) : ?>
-		<option value="<?php echo esc_attr( apply_filters( 'bp_get_member_user_id', $member->ID ) ) ?>"<?php if ( $member->ID == $settings['welcomemsgsender'] ) echo " selected='selected'"; ?>><?php echo apply_filters( 'bp_member_name', $member->display_name ) ?></option>
+		<option value="<?php echo esc_attr( apply_filters( 'bp_get_member_user_id', $member->ID ) ) ?>"<?php if ( $member->ID == $settings['welcomemsgsender'] ) echo " selected='selected'"; ?>><?php echo apply_filters( 'bp_get_member_name', $member->display_name ) ?></option>
 	<?php endforeach; ?>
 	</select>
 <?php
@@ -358,7 +358,7 @@ function dpw_admin_validate( $input ) {
 		$input['welcomemsgsubject'] = apply_filters( 'dpw_admin_settings_welcomemsg_subject', $input['welcomemsgsubject'] );
 
 	if ( isset( $input['welcomemsgsender'] ) )
-		$input['welcomemsgsender'] = apply_filters( 'dpw_admin_validate_friend_id', $input['welcomemsgsender'] );
+		$input['welcomemsgsender'] = apply_filters( 'dpw_admin_validate_sender_id', $input['welcomemsgsender'] );
  
 	if ( isset( $input['groupstoggle'] ) )
 		$input['groupstoggle'] = ( $input['groupstoggle'] ) ? true : false;

@@ -86,7 +86,8 @@ function dpw_admin_screen_socialmedia( $settings ) {
 }
 
 function dpw_admin_screen_news( $settings ) {
-	if ( $rss = fetch_feed( 'http://feeds.feedburner.com/BYOTOS' ) ) {
+	$rss = fetch_feed( 'http://feeds.feedburner.com/BYOTOS' );
+	if ( !is_wp_error( $rss ) ) {
 		$content = '<ul>';
 		$items = $rss->get_items( 0, $rss->get_item_quantity( 3 ) );
 

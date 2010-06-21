@@ -25,7 +25,7 @@ function dpw_admin_screen_on_load() {
 	if ( isset( $_GET['tab'] ) && 'emails' == $_GET['tab'] )
 		return;
 
-	$help = '<p>' . __( 'If you are changing a setting that allows text entry, you can use the following placeholder tags which will be automatically replaced when a private message or an email is being sent:', 'dpw' ) . '</p>';
+	$help = '<p>' . __( 'If you are changing a setting that allows text entry, you can use the following placeholder tags:', 'dpw' ) . '</p>';
 	$help .= '<dl>';
 	$help .= "<dt>USERNAME</dt><dd>" . __( "Replaced with the person's username.", 'dpw' ) . "</dd>";
 	$help .= "<dt>NICKNAME</dt><dd>" . __( "Replaced with the person's name from their user profile.", 'dpw' ) . "</dd>";

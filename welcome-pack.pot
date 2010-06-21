@@ -39,8 +39,7 @@ msgstr ""
 #: includes/welcome-pack-admin.php:28
 msgid ""
 "If you are changing a setting that allows text entry, you can use the "
-"following placeholder tags which will be automatically replaced when a "
-"private message or an email is being sent:"
+"following placeholder tags:"
 msgstr ""
 
 #: includes/welcome-pack-admin.php:30

@@ -279,7 +279,7 @@ function dpw_admin_settings_friends( $settings, $members ) {
 ?>
 	<select multiple="multiple" name="welcomepack[friends][]" style="overflow-y: hidden">
 	<?php foreach ( $members as $member ) : ?>
-		<option value="<?php echo apply_filters( 'bp_get_member_user_id', $member->ID ) ?>"<?php foreach ( $settings['friends'] as $id ) { if ( $member->ID == $id ) echo " selected='selected'"; } ?>><?php echo apply_filters( 'bp_member_name', $member->display_name ) ?></option>
+		<option value="<?php echo esc_attr( apply_filters( 'bp_get_member_user_id', $member->ID ) ) ?>"<?php foreach ( $settings['friends'] as $id ) { if ( $member->ID == $id ) echo " selected='selected'"; } ?>><?php echo apply_filters( 'bp_member_name', $member->display_name ) ?></option>
 	<?php endforeach; ?>
 	</select>
 <?php
@@ -292,7 +292,7 @@ function dpw_admin_settings_groups( $settings ) {
 ?>
 	<select multiple="multiple" name="welcomepack[groups][]">
 	<?php foreach( $groups as $group ) : ?>
-		<option value="<?php echo apply_filters( 'bp_get_group_id', $group->id ) ?>"<?php foreach ( $settings['groups'] as $id ) { if ( $group->id == $id ) echo " selected='selected'"; } ?>><?php echo apply_filters( 'bp_get_group_name', $group->name ) ?></option>
+		<option value="<?php echo esc_attr( apply_filters( 'bp_get_group_id', $group->id ) ) ?>"<?php foreach ( $settings['groups'] as $id ) { if ( $group->id == $id ) echo " selected='selected'"; } ?>><?php echo apply_filters( 'bp_get_group_name', $group->name ) ?></option>
 	<?php endforeach; ?>
 	</select>
 <?php
@@ -312,7 +312,7 @@ function dpw_admin_settings_welcomemsg( $settings ) {
 
 function dpw_admin_settings_welcomemsg_subject( $settings ) {
 ?>
-	<input type="text" name="welcomepack[welcomemsgsubject]" value="<?php echo apply_filters( 'dpw_admin_settings_welcomemsg_subject', $settings['welcomemsgsubject'] ) ?>" />
+	<input type="text" name="welcomepack[welcomemsgsubject]" value="<?php echo esc_attr( apply_filters( 'dpw_admin_settings_welcomemsg_subject', $settings['welcomemsgsubject'] ) ) ?>" />
 <?php
 }
 
@@ -320,7 +320,7 @@ function dpw_admin_settings_welcomemsg_sender( $settings, $members ) {
 ?>
 	<select name="welcomepack[welcomemsgsender]">
 	<?php foreach ( $members as $member ) : ?>
-		<option value="<?php echo apply_filters( 'bp_get_member_user_id', $member->ID ) ?>"<?php if ( $member->ID == $settings['welcomemsgsender'] ) echo " selected='selected'"; ?>><?php echo apply_filters( 'bp_member_name', $member->display_name ) ?></option>
+		<option value="<?php echo esc_attr( apply_filters( 'bp_get_member_user_id', $member->ID ) ) ?>"<?php if ( $member->ID == $settings['welcomemsgsender'] ) echo " selected='selected'"; ?>><?php echo apply_filters( 'bp_member_name', $member->display_name ) ?></option>
 	<?php endforeach; ?>
 	</select>
 <?php
@@ -329,16 +329,16 @@ function dpw_admin_settings_welcomemsg_sender( $settings, $members ) {
 function dpw_admin_settings_toggle( $name, $settings ) {
 	$checked = $settings["{$name}toggle"];
 ?>
-	<input type="radio" class="<?php echo $name ?>" name="welcomepack[<?php echo $name ?>toggle]" value="1" <?php if ( $checked ) echo 'checked="checked" ' ?>/> <?php _e( 'Enabled', 'dpw' ) ?> &nbsp;
-	<input type="radio" class="<?php echo $name ?>" name="welcomepack[<?php echo $name ?>toggle]" value="0" <?php if ( !$checked ) echo 'checked="checked" ' ?>/> <?php _e( 'Disabled', 'dpw' ) ?>
+	<input type="radio" class="<?php echo esc_attr( $name ) ?>" name="welcomepack[<?php echo esc_attr( $name ) ?>toggle]" value="1" <?php if ( $checked ) echo 'checked="checked" ' ?>/> <?php _e( 'Enabled', 'dpw' ) ?> &nbsp;
+	<input type="radio" class="<?php echo esc_attr( $name ) ?>" name="welcomepack[<?php echo esc_attr( $name ) ?>toggle]" value="0" <?php if ( !$checked ) echo 'checked="checked" ' ?>/> <?php _e( 'Disabled', 'dpw' ) ?>
 <?php
 }
 
 function dpw_admin_validate( $input ) {
-	$current_settings = maybe_unserialize( get_blog_option( BP_ROOT_BLOG, 'welcomepack' ) );
-
 	if ( is_string( $input ) )  // wpmu-edit.php
 		return get_blog_option( BP_ROOT_BLOG, 'welcomepack' );
+
+	$current_settings = maybe_unserialize( get_blog_option( BP_ROOT_BLOG, 'welcomepack' ) );
 
 	if ( isset( $input['friends'] ) )
 		foreach ( $input['friends'] as $friend_id )

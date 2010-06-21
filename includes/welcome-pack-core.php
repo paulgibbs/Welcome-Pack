@@ -57,6 +57,14 @@ function dpw_on_user_registration( $user_id ) {
 }
 add_action( 'bp_core_activated_user', 'dpw_on_user_registration' );
 
+function dpa_on_wp_admin_user_registration( $user_id ) {
+	if ( !is_admin() )
+		return;
+
+	dpw_on_user_registration( $user_id );
+}
+add_action( 'user_register', 'dpa_on_wp_admin_user_registration' );
+
 function dpw_first_login_redirect( $redirect_to, $notused, $WP_User ) {
 	$settings = maybe_unserialize( get_blog_option( BP_ROOT_BLOG, 'welcomepack' ) );
 	if ( !$settings['startpagetoggle'] || !$settings['firstloginurl'] )

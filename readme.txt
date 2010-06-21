@@ -87,6 +87,8 @@ Added email customisation options and revamped the admin UI. Configuration page 
 * Initial release.
 
 == Frequently Asked Questions ==
+On the Welcome Pack admin pages, be sure to visit the "Help" button near the top-right of the screen; this sections contains handy hints and tips.
+
 = Thanks =
 * Thanks to [SlaFFik](http://cosydale.com/), Arthur Freitas and Luca Camellini for translations in v2.1.
 * Added Russian language file in v2.0.2, thank you [SlaFFik](http://cosydale.com/).

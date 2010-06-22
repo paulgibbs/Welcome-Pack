@@ -279,7 +279,7 @@ function dpw_admin_settings_friends( $settings, $members ) {
 ?>
 	<select multiple="multiple" name="welcomepack[friends][]" style="overflow-y: hidden">
 	<?php foreach ( $members as $member ) : ?>
-		<option value="<?php echo esc_attr( apply_filters( 'bp_get_member_user_id', $member->ID ) ) ?>"<?php foreach ( $settings['friends'] as $id ) { if ( $member->ID == $id ) echo " selected='selected'"; } ?>><?php echo apply_filters( 'bp_get_member_name', $member->display_name ) ?></option>
+		<option value="<?php echo esc_attr( apply_filters( 'bp_get_member_user_id', $member->ID ) ) ?>"<?php foreach ( $settings['friends'] as $id ) { if ( $member->ID == $id ) echo " selected='selected'"; } ?>><?php echo apply_filters( 'bp_core_get_user_displayname', $member->display_name, $member->ID ) ?></option>
 	<?php endforeach; ?>
 	</select>
 <?php
@@ -320,7 +320,7 @@ function dpw_admin_settings_welcomemsg_sender( $settings, $members ) {
 ?>
 	<select name="welcomepack[welcomemsgsender]">
 	<?php foreach ( $members as $member ) : ?>
-		<option value="<?php echo esc_attr( apply_filters( 'bp_get_member_user_id', $member->ID ) ) ?>"<?php if ( $member->ID == $settings['welcomemsgsender'] ) echo " selected='selected'"; ?>><?php echo apply_filters( 'bp_get_member_name', $member->display_name ) ?></option>
+		<option value="<?php echo esc_attr( apply_filters( 'bp_get_member_user_id', $member->ID ) ) ?>"<?php if ( $member->ID == $settings['welcomemsgsender'] ) echo " selected='selected'"; ?>><?php echo apply_filters( 'bp_core_get_user_displayname', $member->display_name, $member->ID ) ?></option>
 	<?php endforeach; ?>
 	</select>
 <?php

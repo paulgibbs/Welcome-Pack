@@ -44,7 +44,7 @@ Added email customisation options and revamped the admin UI. Configuration page 
 == Change Log ==
 
 = 2.1 =
-* Adds Start Page feature; use this to redirect users to a link of your choice on the very first time they login to your site.
+* Adds Start Page feature; use this to redirect users to a link of your choice on the very first time they log in to your site.
 = 2.0.3 =
 * Fixed the welcome message sender receiving copy of the message. Removed duplicate function calls when using email customisation.
 = 2.0.2 =

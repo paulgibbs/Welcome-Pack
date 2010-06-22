@@ -3,9 +3,9 @@ Contributors: DJPaul
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=P3K7Z7NHWZ5CL&lc=GB&item_name=B%2eY%2eO%2eT%2eO%2eS%20%2d%20BuddyPress%20plugins&currency_code=GBP&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted
 Tags: buddypress,friend,group,welcome,default,message,email,customise,customize,initial,redirect,registration,start
 License: General Public License version 2
-Requires at least: WP 2.9.x, BuddyPress 1.2.3
+Requires at least: WP 2.9.2, BuddyPress 1.2.4
 Tested up to: WP 3.0, BuddyPress 1.2.4.1
-Stable tag: 2.1
+Stable tag: 2.2-alpha
 
 When a user registers on your site, Welcome Pack lets you automatically send them a friend or group invitation, a Welcome Message and can redirect them to a Start Page. You can also customise the default emails sent by BuddyPress to ensure that they match the brand and tone of your site.
 

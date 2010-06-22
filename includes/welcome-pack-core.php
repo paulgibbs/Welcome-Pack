@@ -61,7 +61,7 @@ function dpw_on_user_registration( $user_id ) {
 		messages_new_message( array( 'sender_id' => $settings['welcomemsgsender'], 'recipients' => $user_id, 'subject' => apply_filters( 'dpw_keyword_replacement', $settings['welcomemsgsubject'], $user_id ), 'content' => apply_filters( 'dpw_keyword_replacement', $settings['welcomemsg'], $user_id ) ) );
 	}
 
-	if ( $settings['startpagetoggle'] )
+	if ( $settings['startpagetoggle'] || $settings['somthing'] )
 		update_usermeta( $user_id, 'welcomepack_firstlogin', true );
 }
 add_action( 'bp_core_activated_user', 'dpw_on_user_registration' );
@@ -75,20 +75,25 @@ function dpa_on_wp_admin_user_registration( $user_id ) {
 add_action( 'user_register', 'dpa_on_wp_admin_user_registration' );
 
 function dpw_first_login_redirect( $redirect_to, $notused, $WP_User ) {
-	$settings = dpw_get_settings();
+	if ( is_wp_error( $WP_User ) || !get_usermeta( $WP_User->ID, 'welcomepack_firstlogin', true ) )
+		return $redirect_to;
 
+	$settings = dpw_get_settings();
+	$user_id = $WP_User->ID;
+
+	// Move avatar for sites using automatic account activation.
+	if ( $settings['somthing'] ) {
+		$key = wp_hash( $user_id );
+
+		if ( file_exists( BP_AVATAR_UPLOAD_PATH . '/avatars/signups/' . $key ) )
+			@rename( BP_AVATAR_UPLOAD_PATH . '/avatars/signups/' . $key, BP_AVATAR_UPLOAD_PATH . '/avatars/' . $user_id );
+	}
+
+	delete_usermeta( $user_id, 'welcomepack_firstlogin' );
 	if ( !$settings['startpagetoggle'] || !$settings['firstloginurl'] )
 		return $redirect_to;
 
-	if ( is_wp_error( $WP_User ) )
-		return $redirect_to;
-
-	$user_id = $WP_User->ID;
-	if ( !get_usermeta( $user_id, 'welcomepack_firstlogin', true ) )
-		return $redirect_to;
-
-	delete_usermeta( $user_id, 'welcomepack_firstlogin' );
-	return esc_url( do_action( 'dpw_keyword_replacement', $settings['firstloginurl'] ) );
+	return esc_url( do_action( 'dpw_keyword_replacement', $settings['firstloginurl'], $user_id ) );
 }
 add_filter( 'login_redirect', 'dpw_first_login_redirect', 15, 3 );
 
@@ -100,6 +105,33 @@ function dpw_first_login_s2member_redirect( $url, $login_info ) {
   return dpw_first_login_redirect( $url, '', $login_info['current_user'] );
 }
 add_filter( 'ws_plugin__s2member_fill_login_redirect_rc_vars', 'dpw_first_login_s2member_redirect', 10, 2 );
+
+function dpw_maybe_activate_user( $user_id ) {
+	global $bp;
+
+	if ( dpw_maybe_disable_user_activation() )
+		return;
+
+	if ( bp_core_is_multisite() )
+		return;
+
+	/* Check for an uploaded avatar and move that to the correct user folder */
+	$key = wp_hash( $user_id );
+	update_usermeta( $user_id, 'activation_key', $key );
+	bp_core_activate_signup( $key );
+
+	$bp->activation_complete = true;
+}
+add_action( 'bp_core_signup_user', 'dpw_maybe_activate_user' );
+
+// True is false!
+function dpw_maybe_disable_user_activation() {
+	$settings = dpw_get_settings();
+	return false;
+//	return $settings['somthing'];
+}
+add_filter( 'bp_registration_needs_activation', 'dpw_maybe_disable_user_activation' );
+add_filter( 'bp_core_signup_send_activation_key', 'dpw_maybe_disable_user_activation' );
 
 function dpw_do_keyword_replacement( $text, $user_id ) {
 	$text = str_replace( "USERNAME", bp_core_get_username( $user_id ), $text );

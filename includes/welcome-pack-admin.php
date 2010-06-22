@@ -108,14 +108,20 @@ function dpw_admin_screen_support( $settings ) {
 }
 
 function dpw_admin_screen_emailsconfigurationbox( $settings ) {
+	$emails = $settings['emails'];
 	wp_nonce_field( 'dpw-emails', '_ajax_nonce_dpw_emails' );
 ?>
 	<div class="setting wide setting-emails <?php if ( !$settings["emailstoggle"] ) echo 'initially-hidden' ?>">
 		<div class="settingname">
 			<p><?php _e( 'Choose an email:', 'dpw' ) ?></p>
 		</div>
+
 		<div class="settingvalue">
-			<?php dpw_admin_settings_email_chooser( $settings ) ?>
+			<select id="emailpicker">
+				<?php for ( $i=0; $i<count( $emails ); $i++ ) : ?>
+				<option value="<?php echo $i ?>"><?php echo apply_filters( 'dpw_admin_settings_email_name', $emails[$i]['name'] ) ?></option>
+				<?php endfor; ?>
+			</select>
 		</div>
 		<div style="clear: left"></div>
 
@@ -143,19 +149,27 @@ function dpw_admin_screen_configurationbox( $settings ) {
 			<p><?php _e( 'Invite the new user to become friends with these people:', 'dpw' ) ?></p>
 		</div>
 		<div class="settingvalue">
-			<?php dpw_admin_settings_friends( $settings, $members ) ?>
+			<select multiple="multiple" name="welcomepack[friends][]" style="overflow-y: hidden">
+			<?php foreach ( $members as $member ) : ?>
+				<option value="<?php echo esc_attr( apply_filters( 'bp_get_member_user_id', $member->ID ) ) ?>"<?php foreach ( $settings['friends'] as $id ) { if ( $member->ID == $id ) echo " selected='selected'"; } ?>><?php echo apply_filters( 'bp_core_get_user_displayname', $member->display_name, $member->ID ) ?></option>
+			<?php endforeach; ?>
+			</select>
 		</div>
 		<div style="clear: left"></div>
 	</div>
 <?php endif ?>
 
-<?php if ( function_exists( 'groups_install' ) ) : ?>
+<?php if ( function_exists( 'groups_install' ) ) : $groups = $wpdb->get_results( $wpdb->prepare( "SELECT id, name FROM {$bp->groups->table_name} ORDER BY name ASC" ) ); ?>
 	<div class="setting setting-group setting-groups <?php if ( !$settings["groupstoggle"] ) echo 'initially-hidden' ?>">
 		<div class="settingname">
 			<p><?php _e( "Ask the new user if they'd like to join these groups:", 'dpw' ) ?></p>
 		</div>
 		<div class="settingvalue">
-			<?php dpw_admin_settings_groups( $settings ) ?>
+			<select multiple="multiple" name="welcomepack[groups][]">
+			<?php foreach( $groups as $group ) : ?>
+				<option value="<?php echo esc_attr( apply_filters( 'bp_get_group_id', $group->id ) ) ?>"<?php foreach ( $settings['groups'] as $id ) { if ( $group->id == $id ) echo " selected='selected'"; } ?>><?php echo apply_filters( 'bp_get_group_name', $group->name ) ?></option>
+			<?php endforeach; ?>
+			</select>
 		</div>
 		<div style="clear: left"></div>
 	</div>
@@ -167,7 +181,7 @@ function dpw_admin_screen_configurationbox( $settings ) {
 				<p><?php _e( "When the new user logs into your site for the very first time, redirect them to this URL. It has to be on the same domain as this site.", 'dpw' ) ?></p>
 			</div>
 			<div class="settingvalue">
-				<?php dpw_admin_settings_startpage( $settings ) ?>
+				<input type="text" name="welcomepack[firstloginurl]" value="<?php echo esc_attr( apply_filters( 'dpw_admin_settings_firstloginurl', $settings['firstloginurl'] ) ) ?>" />
 			</div>
 			<div style="clear: left"></div>
 		</div>
@@ -180,7 +194,7 @@ function dpw_admin_screen_configurationbox( $settings ) {
 				<p><?php _e( 'Send the new user a Welcome Message&hellip;', 'dpw' ) ?></p>
 			</div>
 			<div class="settingvalue">
-				<?php dpw_admin_settings_welcomemsg( $settings ) ?>
+				<textarea name="welcomepack[welcomemsg]"><?php echo apply_filters( 'dpw_admin_settings_welcomemsg', $settings['welcomemsg'] ) ?></textarea>
 			</div>
 			<div style="clear: left"></div>
 		</div>
@@ -190,7 +204,7 @@ function dpw_admin_screen_configurationbox( $settings ) {
 				<p><?php _e( '&hellip;with this subject:', 'dpw' ) ?></p>
 			</div>
 			<div class="settingvalue">
-				<?php dpw_admin_settings_welcomemsg_subject( $settings ) ?>
+				<input type="text" name="welcomepack[welcomemsgsubject]" value="<?php echo esc_attr( apply_filters( 'dpw_admin_settings_welcomemsg_subject', $settings['welcomemsgsubject'] ) ) ?>" />
 			</div>
 			<div style="clear: left"></div>
 		</div>
@@ -200,7 +214,11 @@ function dpw_admin_screen_configurationbox( $settings ) {
 				<p><?php _e( '&hellip;from this user:', 'dpw' ) ?></p>
 			</div>
 			<div class="settingvalue">
-				<?php dpw_admin_settings_welcomemsg_sender( $settings, $members ) ?>
+				<select name="welcomepack[welcomemsgsender]">
+				<?php foreach ( $members as $member ) : ?>
+					<option value="<?php echo esc_attr( apply_filters( 'bp_get_member_user_id', $member->ID ) ) ?>"<?php if ( $member->ID == $settings['welcomemsgsender'] ) echo " selected='selected'"; ?>><?php echo apply_filters( 'bp_core_get_user_displayname', $member->display_name, $member->ID ) ?></option>
+				<?php endforeach; ?>
+				</select>
 			</div>
 			<div style="clear: left"></div>
 		</div>
@@ -260,68 +278,6 @@ function dpw_admin_screen_emailsettingsbox( $settings ) {
 	</h5>
 	<p><?php _e( "Easily change emails which are sent by your site.", 'dpw' ) ?></p>
 </div>
-<?php
-}
-
-function dpw_admin_settings_email_chooser( $settings ) {
-	$emails = $settings['emails'];
-?>
-	<select id="emailpicker">
-		<?php for ( $i=0; $i<count( $emails ); $i++ ) : ?>
-		<option value="<?php echo $i ?>"><?php echo apply_filters( 'dpw_admin_settings_email_name', $emails[$i]['name'] ) ?></option>
-		<?php endfor; ?>
-	</select>
-<?php
-}
-
-function dpw_admin_settings_friends( $settings, $members ) {
-?>
-	<select multiple="multiple" name="welcomepack[friends][]" style="overflow-y: hidden">
-	<?php foreach ( $members as $member ) : ?>
-		<option value="<?php echo esc_attr( apply_filters( 'bp_get_member_user_id', $member->ID ) ) ?>"<?php foreach ( $settings['friends'] as $id ) { if ( $member->ID == $id ) echo " selected='selected'"; } ?>><?php echo apply_filters( 'bp_core_get_user_displayname', $member->display_name, $member->ID ) ?></option>
-	<?php endforeach; ?>
-	</select>
-<?php
-}
-
-function dpw_admin_settings_groups( $settings ) {
-	global $bp, $wpdb;
-
-	$groups = $wpdb->get_results( $wpdb->prepare( "SELECT id, name FROM {$bp->groups->table_name} ORDER BY name ASC" ) );
-?>
-	<select multiple="multiple" name="welcomepack[groups][]">
-	<?php foreach( $groups as $group ) : ?>
-		<option value="<?php echo esc_attr( apply_filters( 'bp_get_group_id', $group->id ) ) ?>"<?php foreach ( $settings['groups'] as $id ) { if ( $group->id == $id ) echo " selected='selected'"; } ?>><?php echo apply_filters( 'bp_get_group_name', $group->name ) ?></option>
-	<?php endforeach; ?>
-	</select>
-<?php
-}
-
-function dpw_admin_settings_startpage( $settings ) {
-?>
-	<input type="text" name="welcomepack[firstloginurl]" value="<?php echo esc_attr( apply_filters( 'dpw_admin_settings_firstloginurl', $settings['firstloginurl'] ) ) ?>" />
-<?php
-}
-
-function dpw_admin_settings_welcomemsg( $settings ) {
-?>
-	<textarea name="welcomepack[welcomemsg]"><?php echo apply_filters( 'dpw_admin_settings_welcomemsg', $settings['welcomemsg'] ) ?></textarea>
-<?php
-}
-
-function dpw_admin_settings_welcomemsg_subject( $settings ) {
-?>
-	<input type="text" name="welcomepack[welcomemsgsubject]" value="<?php echo esc_attr( apply_filters( 'dpw_admin_settings_welcomemsg_subject', $settings['welcomemsgsubject'] ) ) ?>" />
-<?php
-}
-
-function dpw_admin_settings_welcomemsg_sender( $settings, $members ) {
-?>
-	<select name="welcomepack[welcomemsgsender]">
-	<?php foreach ( $members as $member ) : ?>
-		<option value="<?php echo esc_attr( apply_filters( 'bp_get_member_user_id', $member->ID ) ) ?>"<?php if ( $member->ID == $settings['welcomemsgsender'] ) echo " selected='selected'"; ?>><?php echo apply_filters( 'bp_core_get_user_displayname', $member->display_name, $member->ID ) ?></option>
-	<?php endforeach; ?>
-	</select>
 <?php
 }
 
@@ -412,6 +368,10 @@ function dpw_admin_screen() {
 	$is_email_tab = false;
 	if ( isset( $_GET['tab'] ) && 'emails' == $_GET['tab'] )
 		$is_email_tab = true;
+
+	$is_log_in_tab = false;
+	if ( isset( $_GET['tab'] ) && 'log_in' == $_GET['tab'] )
+		$is_log_in_tab = true;
 ?>
 <div id="bp-admin">
 <div id="dpw-admin-metaboxes-general" class="wrap">
@@ -423,8 +383,9 @@ function dpw_admin_screen() {
 
 	<div id="bp-admin-nav">
 		<ol>
-			<li <?php if ( !$is_email_tab ) echo 'class="current"' ?>><a href="<?php echo site_url('wp-admin/admin.php?page=welcome-pack', 'admin') ?>"><?php _e( 'Friends, Groups <span class="ampersand">&amp;</span> Welcome Message', 'dpw' ) ?></a></li>
-			<li <?php if ( $is_email_tab ) echo 'class="current"' ?>><a href="<?php echo site_url('wp-admin/admin.php?page=welcome-pack&amp;tab=emails', 'admin') ?>"><?php _e( 'Emails', 'dpw' ) ?></a></li>
+			<li <?php if ( !$is_email_tab && !$is_log_in_tab ) echo 'class="current"' ?>><a href="<?php echo site_url( 'wp-admin/admin.php?page=welcome-pack', 'admin' ) ?>"><?php _e( 'Friends, Groups <span class="ampersand">&amp;</span> Welcome Message', 'dpw' ) ?></a></li>
+			<li <?php if ( $is_email_tab ) echo 'class="current"' ?>><a href="<?php echo site_url( 'wp-admin/admin.php?page=welcome-pack&amp;tab=emails', 'admin' ) ?>"><?php _e( 'Emails', 'dpw' ) ?></a></li>
+			<li <?php if ( $is_log_in_tab ) echo 'class="current"' ?>><a href="<?php echo site_url( 'wp-admin/admin.php?page=welcome-pack&amp;tab=log_in', 'admin' ) ?>"><?php _e( 'First Log In', 'dpw' ) ?></a></li>
 		</ol>
 	</div>
 

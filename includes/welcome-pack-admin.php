@@ -336,9 +336,9 @@ function dpw_admin_settings_toggle( $name, $settings ) {
 function dpw_admin_validate( $input ) {
 	if ( is_string( $input ) )  // wpmu-edit.php
 		if ( bp_core_is_multisite() )
-			return get_blog_option( BP_ROOT_BLOG, 'welcomepack' )
+			return get_blog_option( BP_ROOT_BLOG, 'welcomepack' );
 		else
-			return get_option( 'welcomepack' )
+			return get_option( 'welcomepack' );
 
 	if ( bp_core_is_multisite() )
 		$current_settings = maybe_unserialize( get_blog_option( BP_ROOT_BLOG, 'welcomepack' ) );

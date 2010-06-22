@@ -264,8 +264,7 @@ function dpw_admin_screen_emailsettingsbox( $settings ) {
 }
 
 function dpw_admin_settings_email_chooser( $settings ) {
-	$emails = maybe_unserialize( get_blog_option( BP_ROOT_BLOG, 'welcomepack' ) );
-	$emails = $emails['emails'];
+	$emails = $settings['emails'];
 ?>
 	<select id="emailpicker">
 		<?php for ( $i=0; $i<count( $emails ); $i++ ) : ?>

@@ -9,9 +9,12 @@ function dpw_fetch_email() {
 		return;
 	}
 
-	$emails = maybe_unserialize( get_blog_option( BP_ROOT_BLOG, 'welcomepack' ) );
-	$emails = $emails['emails'];
+	if ( bp_core_is_multisite() )
+		$emails = maybe_unserialize( get_blog_option( BP_ROOT_BLOG, 'welcomepack' ) );
+	else
+		$emails = maybe_unserialize( get_option( 'welcomepack' ) );
 
+	$emails = $emails['emails'];
 	$id = (int)$_POST['id'];
 	if ( !isset( $emails[$id] ) ) {
 		echo '-1';

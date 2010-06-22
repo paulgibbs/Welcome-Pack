@@ -31,7 +31,10 @@ function dpw_add_admin_menu() {
 add_action( 'admin_menu', 'dpw_add_admin_menu' );
 
 function dpw_on_user_registration( $user_id ) {
-	$settings = maybe_unserialize( get_blog_option( BP_ROOT_BLOG, 'welcomepack' ) );
+	if ( bp_core_is_multisite() )
+		$settings = maybe_unserialize( get_blog_option( BP_ROOT_BLOG, 'welcomepack' ) );
+	else
+		$settings = maybe_unserialize( get_option( 'welcomepack' ) );
 
 	if ( $settings['friendstoggle'] && function_exists( 'friends_install' ) )
 		foreach ( $settings['friends'] as $friend_id )
@@ -66,7 +69,11 @@ function dpa_on_wp_admin_user_registration( $user_id ) {
 add_action( 'user_register', 'dpa_on_wp_admin_user_registration' );
 
 function dpw_first_login_redirect( $redirect_to, $notused, $WP_User ) {
-	$settings = maybe_unserialize( get_blog_option( BP_ROOT_BLOG, 'welcomepack' ) );
+	if ( bp_core_is_multisite() )
+		$settings = maybe_unserialize( get_blog_option( BP_ROOT_BLOG, 'welcomepack' ) );
+	else
+		$settings = maybe_unserialize( get_option( 'welcomepack' ) );
+
 	if ( !$settings['startpagetoggle'] || !$settings['firstloginurl'] )
 		return $redirect_to;
 
@@ -103,7 +110,11 @@ add_filter( 'dpw_keyword_replacement', 'dpw_do_keyword_replacement', 10, 2 );
 function dpw_load_dynamic_i18n() {
 	global $l10n;
 
-	$emails = maybe_unserialize( get_blog_option( BP_ROOT_BLOG, 'welcomepack' ) );
+	if ( bp_core_is_multisite() )
+		$emails = maybe_unserialize( get_blog_option( BP_ROOT_BLOG, 'welcomepack' ) );
+	else
+		$emails = maybe_unserialize( get_option( 'welcomepack' ) );
+
 	if ( !$emails['emailstoggle'] )
 		return;
 

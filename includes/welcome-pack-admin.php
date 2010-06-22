@@ -407,10 +407,7 @@ function dpw_admin_validate( $input ) {
 function dpw_admin_screen() {
 	global $screen_layout_columns;
 
-	if ( bp_core_is_multisite() )
-		$settings = maybe_unserialize( get_blog_option( BP_ROOT_BLOG, 'welcomepack' ) );
-	else
-		$settings = maybe_unserialize( get_option( 'welcomepack' ) );
+	$settings = dpw_get_settings();
 
 	$is_email_tab = false;
 	if ( isset( $_GET['tab'] ) && 'emails' == $_GET['tab'] )

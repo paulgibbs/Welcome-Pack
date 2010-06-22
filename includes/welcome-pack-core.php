@@ -30,11 +30,17 @@ function dpw_add_admin_menu() {
 }
 add_action( 'admin_menu', 'dpw_add_admin_menu' );
 
-function dpw_on_user_registration( $user_id ) {
+function dpw_get_settings() {
 	if ( bp_core_is_multisite() )
 		$settings = maybe_unserialize( get_blog_option( BP_ROOT_BLOG, 'welcomepack' ) );
 	else
 		$settings = maybe_unserialize( get_option( 'welcomepack' ) );
+
+	return $settings;
+}
+
+function dpw_on_user_registration( $user_id ) {
+	$settings = dpw_get_settings();
 
 	if ( $settings['friendstoggle'] && function_exists( 'friends_install' ) )
 		foreach ( $settings['friends'] as $friend_id )
@@ -69,10 +75,7 @@ function dpa_on_wp_admin_user_registration( $user_id ) {
 add_action( 'user_register', 'dpa_on_wp_admin_user_registration' );
 
 function dpw_first_login_redirect( $redirect_to, $notused, $WP_User ) {
-	if ( bp_core_is_multisite() )
-		$settings = maybe_unserialize( get_blog_option( BP_ROOT_BLOG, 'welcomepack' ) );
-	else
-		$settings = maybe_unserialize( get_option( 'welcomepack' ) );
+	$settings = dpw_get_settings();
 
 	if ( !$settings['startpagetoggle'] || !$settings['firstloginurl'] )
 		return $redirect_to;

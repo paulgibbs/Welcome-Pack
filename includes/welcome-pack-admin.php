@@ -181,7 +181,7 @@ function dpw_admin_screen_configurationbox( $settings ) {
 				<p><?php _e( "When the new user logs into your site for the very first time, redirect them to this URL. It has to be on the same domain as this site.", 'dpw' ) ?></p>
 			</div>
 			<div class="settingvalue">
-				<input type="text" name="welcomepack[firstloginurl]" value="<?php echo esc_attr( apply_filters( 'dpw_admin_settings_firstloginurl', $settings['firstloginurl'] ) ) ?>" />
+				<input type="url" name="welcomepack[firstloginurl]" value="<?php echo esc_attr( apply_filters( 'dpw_admin_settings_firstloginurl', $settings['firstloginurl'] ) ) ?>" />
 			</div>
 			<div style="clear: left"></div>
 		</div>

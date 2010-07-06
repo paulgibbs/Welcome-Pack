@@ -93,6 +93,7 @@ function dpw_first_login_redirect( $redirect_to, $notused, $WP_User ) {
 	if ( !$settings['startpagetoggle'] || !$settings['firstloginurl'] )
 		return $redirect_to;
 
+	//TODO: add an action for when we have a start page redirect
 	return esc_url( do_action( 'dpw_keyword_replacement', $settings['firstloginurl'], $user_id ) );
 }
 add_filter( 'login_redirect', 'dpw_first_login_redirect', 15, 3 );

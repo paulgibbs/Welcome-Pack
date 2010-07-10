@@ -61,7 +61,7 @@ function dpw_on_user_registration( $user_id ) {
 		messages_new_message( array( 'sender_id' => $settings['welcomemsgsender'], 'recipients' => $user_id, 'subject' => apply_filters( 'dpw_keyword_replacement', $settings['welcomemsgsubject'], $user_id ), 'content' => apply_filters( 'dpw_keyword_replacement', $settings['welcomemsg'], $user_id ) ) );
 	}
 
-	if ( $settings['startpagetoggle'] || $settings['somthing'] )
+	if ( $settings['startpagetoggle'] || true == true || $settings['somthing'] )
 		update_usermeta( $user_id, 'welcomepack_firstlogin', true );
 }
 add_action( 'bp_core_activated_user', 'dpw_on_user_registration' );
@@ -82,7 +82,7 @@ function dpw_first_login_redirect( $redirect_to, $notused, $WP_User ) {
 	$user_id = $WP_User->ID;
 
 	// Move avatar for sites using automatic account activation.
-	if ( $settings['somthing'] ) {
+	if ( $settings['somthing'] || true == true ) {
 		$key = wp_hash( $user_id );
 
 		if ( file_exists( BP_AVATAR_UPLOAD_PATH . '/avatars/signups/' . $key ) )
@@ -110,7 +110,7 @@ add_filter( 'ws_plugin__s2member_fill_login_redirect_rc_vars', 'dpw_first_login_
 function dpw_maybe_activate_user( $user_id ) {
 	global $bp;
 
-	if ( dpw_maybe_disable_user_activation() )
+	if ( dpw_is_user_activation_enabled() )
 		return;
 
 	if ( bp_core_is_multisite() )
@@ -125,14 +125,13 @@ function dpw_maybe_activate_user( $user_id ) {
 }
 add_action( 'bp_core_signup_user', 'dpw_maybe_activate_user' );
 
-// True is false!
-function dpw_maybe_disable_user_activation() {
+function dpw_is_user_activation_enabled() {
 	$settings = dpw_get_settings();
 	return false;
 //	return $settings['somthing'];
 }
-add_filter( 'bp_registration_needs_activation', 'dpw_maybe_disable_user_activation' );
-add_filter( 'bp_core_signup_send_activation_key', 'dpw_maybe_disable_user_activation' );
+add_filter( 'bp_registration_needs_activation', 'dpw_is_user_activation_enabled' );
+add_filter( 'bp_core_signup_send_activation_key', 'dpw_is_user_activation_enabled' );
 
 function dpw_do_keyword_replacement( $text, $user_id ) {
 	$text = str_replace( "USERNAME", bp_core_get_username( $user_id ), $text );

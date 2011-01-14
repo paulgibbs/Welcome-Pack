@@ -31,7 +31,7 @@ function dpw_add_admin_menu() {
 add_action( 'admin_menu', 'dpw_add_admin_menu' );
 
 function dpw_get_settings() {
-	if ( bp_core_is_multisite() )
+	if ( is_multisite() )
 		$settings = maybe_unserialize( get_blog_option( BP_ROOT_BLOG, 'welcomepack' ) );
 	else
 		$settings = maybe_unserialize( get_option( 'welcomepack' ) );
@@ -113,7 +113,7 @@ function dpw_maybe_activate_user( $user_id ) {
 	if ( dpw_is_user_activation_enabled() )
 		return;
 
-	if ( bp_core_is_multisite() )
+	if ( is_multisite() )
 		return;
 
 	/* Check for an uploaded avatar and move that to the correct user folder */
@@ -145,7 +145,7 @@ add_filter( 'dpw_keyword_replacement', 'dpw_do_keyword_replacement', 10, 2 );
 function dpw_load_dynamic_i18n() {
 	global $l10n;
 
-	if ( bp_core_is_multisite() )
+	if ( is_multisite() )
 		$emails = maybe_unserialize( get_blog_option( BP_ROOT_BLOG, 'welcomepack' ) );
 	else
 		$emails = maybe_unserialize( get_option( 'welcomepack' ) );

@@ -9,7 +9,7 @@ function dpw_fetch_email() {
 		return;
 	}
 
-	if ( bp_core_is_multisite() )
+	if ( is_multisite() )
 		$emails = maybe_unserialize( get_blog_option( BP_ROOT_BLOG, 'welcomepack' ) );
 	else
 		$emails = maybe_unserialize( get_option( 'welcomepack' ) );

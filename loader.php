@@ -30,19 +30,23 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/.
 */
 
-
+/**
+ * Only load the component if BuddyPress is loaded and initialised. 
+ *
+ * @since 1.0
+ */
 function dpw_init() {
 	__( 'When a user registers on your site, Welcome Pack lets you automatically send them a friend or group invitation, a Welcome Message and can redirect them to a Start Page. You can also customise the default emails sent by BuddyPress to ensure that they match the brand and tone of your site.', 'dpw' );  // Metadata description translation
 	require( dirname( __FILE__ ) . '/includes/welcome-pack-core.php' );
 
-	if ( bp_core_is_multisite() )
+	if ( is_multisite() )
 		$options = maybe_unserialize( get_blog_option( BP_ROOT_BLOG, 'welcomepack' ) );
 	else
 		$options = maybe_unserialize( get_option( 'welcomepack' ) );
 
 	// TODO: This settings/upgrade check needs improving.
 	if ( !$options ) {
-		if ( bp_core_is_multisite() )
+		if ( is_multisite() )
 			update_blog_option( BP_ROOT_BLOG, 'welcomepack', serialize( array( 'friends' => array(), 'groups' => array(), 'welcomemsgsubject' => '', 'welcomemsg' => '', 'welcomemsgsender' => 0, 'welcomemsgtoggle' => false, 'friendstoggle' => false, 'groupstoggle' => false, 'emails' => dpw_get_default_email_data(), 'emailstoggle' => false, 'startpagetoggle' => false, 'firstloginurl' => '' ) ) );
 		else
 			update_option( 'welcomepack', serialize( array( 'friends' => array(), 'groups' => array(), 'welcomemsgsubject' => '', 'welcomemsg' => '', 'welcomemsgsender' => 0, 'welcomemsgtoggle' => false, 'friendstoggle' => false, 'groupstoggle' => false, 'emails' => dpw_get_default_email_data(), 'emailstoggle' => false, 'startpagetoggle' => false, 'firstloginurl' => '' ) ) );
@@ -60,11 +64,11 @@ function dpw_init() {
 		if ( !isset( $options['firstloginurl'] ) )
 			$options['firstloginurl'] = '';
 
-		if ( bp_core_is_multisite() )
+		if ( is_multisite() )
 			update_blog_option( BP_ROOT_BLOG, 'welcomepack', serialize( $options ) );
 		else
 			update_option( 'welcomepack', serialize( $options ) );
 	}
 }
-add_action( 'bp_init', 'dpw_init' );
+add_action( 'bp_include', 'dpw_init' );
 ?>

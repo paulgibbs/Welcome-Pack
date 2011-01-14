@@ -135,7 +135,7 @@ function dpw_admin_screen_configurationbox( $settings ) {
 	global $wpdb;
 
 	if ( function_exists( 'friends_install' ) || function_exists( 'messages_install' ) ) {
-		if ( bp_core_is_multisite() )
+		if ( is_multisite() )
 			$column = "spam";
 		else
 			$column = "user_status";
@@ -291,12 +291,12 @@ function dpw_admin_settings_toggle( $name, $settings ) {
 
 function dpw_admin_validate( $input ) {
 	if ( is_string( $input ) )  // wpmu-edit.php
-		if ( bp_core_is_multisite() )
+		if ( is_multisite() )
 			return get_blog_option( BP_ROOT_BLOG, 'welcomepack' );
 		else
 			return get_option( 'welcomepack' );
 
-	if ( bp_core_is_multisite() )
+	if ( is_multisite() )
 		$current_settings = maybe_unserialize( get_blog_option( BP_ROOT_BLOG, 'welcomepack' ) );
 	else
 		$current_settings = maybe_unserialize( get_option( 'welcomepack' ) );

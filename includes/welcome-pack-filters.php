@@ -43,4 +43,13 @@ add_filter( 'dpw_admin_settings_email', 'wp_filter_kses', 1 );
 add_filter( 'dpw_admin_settings_email', 'wptexturize' );
 add_filter( 'dpw_admin_settings_email', 'convert_chars' );
 add_filter( 'dpw_admin_settings_email', 'stripslashes_deep' );
+
+function dpw_do_keyword_replacement( $text, $user_id ) {
+	$text = str_replace( "USERNAME", bp_core_get_username( $user_id ), $text );
+	$text = str_replace( "NICKNAME", bp_core_get_user_displayname( $user_id ), $text );
+	$text = str_replace( "USER_URL", bp_core_get_user_domain( $user_id ), $text );
+
+	return $text;
+}
+add_filter( 'dpw_keyword_replacement', 'dpw_do_keyword_replacement', 10, 2 );
 ?>

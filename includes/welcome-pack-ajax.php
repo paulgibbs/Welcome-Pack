@@ -4,7 +4,7 @@ function dpw_fetch_email() {
 
 	check_ajax_referer( 'dpw-emails', '_wpnonce' );
 
-	if ( !is_user_logged_in() || !$bp->loggedin_user->is_site_admin || !$_POST['id'] ) {
+	if ( !is_user_logged_in() || !$bp->loggedin_user->is_super_admin || !$_POST['id'] ) {
 		echo '-1';
 		return;
 	}

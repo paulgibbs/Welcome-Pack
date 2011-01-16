@@ -45,7 +45,8 @@
 
 #dpw-admin-metaboxes-general textarea,
 #dpw-admin-metaboxes-general select,
-#dpw-admin-metaboxes-general input[type="text"] {
+#dpw-admin-metaboxes-general input[type="text"],
+#dpw-admin-metaboxes-general input[type="url"] {
 	width: 100%;
 }
 

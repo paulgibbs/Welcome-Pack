@@ -221,9 +221,9 @@ function dpw_admin_screen_emailsconfigurationbox( $settings ) {
 
 /* TODO: need to figure out how to dynamically set bottom-margin = 0 of the last div.setting-group */
 function dpw_admin_screen_configurationbox( $settings ) {
-	global $wpdb;
+	global $bp, $wpdb;
 
-	if ( function_exists( 'friends_install' ) || function_exists( 'messages_install' ) ) {
+	if ( bp_is_active( 'friends' ) || bp_is_active( 'messages' ) ) {
 		if ( is_multisite() )
 			$column = "spam";
 		else
@@ -231,87 +231,90 @@ function dpw_admin_screen_configurationbox( $settings ) {
 
 		$members = $wpdb->get_results( $wpdb->prepare( "SELECT ID, display_name FROM $wpdb->users WHERE $column = 0 ORDER BY display_name ASC" ) );
 	}
+
+	if ( bp_is_active( 'groups' ) )
+		$groups = $wpdb->get_results( $wpdb->prepare( "SELECT id, name FROM {$bp->groups->table_name} ORDER BY name ASC" ) );
 ?>
-<?php if ( function_exists( 'friends_install' ) ) : ?>
-	<div class="setting setting-group setting-friends <?php if ( !$settings["friendstoggle"] ) echo 'initially-hidden' ?>">
-		<div class="settingname">
-			<p><?php _e( 'Invite the new user to become friends with these people:', 'dpw' ) ?></p>
-		</div>
-		<div class="settingvalue">
-			<select multiple="multiple" name="welcomepack[friends][]" style="overflow-y: hidden">
-			<?php foreach ( $members as $member ) : ?>
-				<option value="<?php echo esc_attr( apply_filters( 'bp_get_member_user_id', $member->ID ) ) ?>"<?php foreach ( $settings['friends'] as $id ) { if ( $member->ID == $id ) echo " selected='selected'"; } ?>><?php echo apply_filters( 'bp_core_get_user_displayname', $member->display_name, $member->ID ) ?></option>
-			<?php endforeach; ?>
-			</select>
-		</div>
-		<div style="clear: left"></div>
-	</div>
-<?php endif ?>
-
-<?php if ( function_exists( 'groups_install' ) ) : $groups = $wpdb->get_results( $wpdb->prepare( "SELECT id, name FROM {$bp->groups->table_name} ORDER BY name ASC" ) ); ?>
-	<div class="setting setting-group setting-groups <?php if ( !$settings["groupstoggle"] ) echo 'initially-hidden' ?>">
-		<div class="settingname">
-			<p><?php _e( "Ask the new user if they'd like to join these groups:", 'dpw' ) ?></p>
-		</div>
-		<div class="settingvalue">
-			<select multiple="multiple" name="welcomepack[groups][]">
-			<?php foreach( $groups as $group ) : ?>
-				<option value="<?php echo esc_attr( apply_filters( 'bp_get_group_id', $group->id ) ) ?>"<?php foreach ( $settings['groups'] as $id ) { if ( $group->id == $id ) echo " selected='selected'"; } ?>><?php echo apply_filters( 'bp_get_group_name', $group->name ) ?></option>
-			<?php endforeach; ?>
-			</select>
-		</div>
-		<div style="clear: left"></div>
-	</div>
-<?php endif ?>
-
-	<div class="setting-group setting-startpage <?php if ( !$settings["startpagetoggle"] ) echo 'initially-hidden' ?>">
-		<div class="setting wide">
+	<?php if ( bp_is_active( 'friends' ) ) : ?>
+		<div class="setting setting-group setting-friends <?php if ( empty( $settings["friendstoggle"] ) ) echo 'initially-hidden' ?>">
 			<div class="settingname">
-				<p><?php _e( "When the new user logs into your site for the very first time, redirect them to this URL. It has to be on the same domain as this site.", 'dpw' ) ?></p>
+				<p><?php _e( 'Invite the new user to become friends with these people:', 'dpw' ) ?></p>
 			</div>
 			<div class="settingvalue">
-				<input type="url" name="welcomepack[firstloginurl]" value="<?php echo esc_attr( apply_filters( 'dpw_admin_settings_startpage', $settings['firstloginurl'] ) ) ?>" />
-			</div>
-			<div style="clear: left"></div>
-		</div>
-	</div>
-
-<?php if ( function_exists( 'messages_install' ) ) : ?>
-	<div class="setting-welcomemsg setting-group <?php if ( !$settings["welcomemsgtoggle"] ) echo 'initially-hidden' ?>">
-		<div class="setting wide">
-			<div class="settingname">
-				<p><?php _e( 'Send the new user a Welcome Message&hellip;', 'dpw' ) ?></p>
-			</div>
-			<div class="settingvalue">
-				<textarea name="welcomepack[welcomemsg]"><?php echo apply_filters( 'dpw_admin_settings_welcomemsg', $settings['welcomemsg'] ) ?></textarea>
-			</div>
-			<div style="clear: left"></div>
-		</div>
-
-		<div class="setting">
-			<div class="settingname">
-				<p><?php _e( '&hellip;with this subject:', 'dpw' ) ?></p>
-			</div>
-			<div class="settingvalue">
-				<input type="text" name="welcomepack[welcomemsgsubject]" value="<?php echo esc_attr( apply_filters( 'dpw_admin_settings_welcomemsg_subject', $settings['welcomemsgsubject'] ) ) ?>" />
-			</div>
-			<div style="clear: left"></div>
-		</div>
-
-		<div class="setting">
-			<div class="settingname">
-				<p><?php _e( '&hellip;from this user:', 'dpw' ) ?></p>
-			</div>
-			<div class="settingvalue">
-				<select name="welcomepack[welcomemsgsender]">
+				<select multiple="multiple" name="welcomepack[friends][]" style="overflow-y: hidden">
 				<?php foreach ( $members as $member ) : ?>
-					<option value="<?php echo esc_attr( apply_filters( 'bp_get_member_user_id', $member->ID ) ) ?>"<?php if ( $member->ID == $settings['welcomemsgsender'] ) echo " selected='selected'"; ?>><?php echo apply_filters( 'bp_core_get_user_displayname', $member->display_name, $member->ID ) ?></option>
+					<option value="<?php echo esc_attr( apply_filters( 'bp_get_member_user_id', $member->ID ) ) ?>"<?php foreach ( (array)$settings['friends'] as $id ) { if ( $member->ID == $id ) echo " selected='selected'"; } ?>><?php echo apply_filters( 'bp_core_get_user_displayname', $member->display_name, $member->ID ) ?></option>
 				<?php endforeach; ?>
 				</select>
 			</div>
 			<div style="clear: left"></div>
 		</div>
+	<?php endif ?>
+
+	<?php if ( bp_is_active( 'groups' ) ) : ?>
+		<div class="setting setting-group setting-groups <?php if ( empty( $settings["groupstoggle"] ) ) echo 'initially-hidden' ?>">
+			<div class="settingname">
+				<p><?php _e( "Ask the new user if they'd like to join these groups:", 'dpw' ) ?></p>
+			</div>
+			<div class="settingvalue">
+				<select multiple="multiple" name="welcomepack[groups][]">
+				<?php foreach( $groups as $group ) : ?>
+					<option value="<?php echo esc_attr( apply_filters( 'bp_get_group_id', $group->id ) ) ?>"<?php foreach ( (array)$settings['groups'] as $id ) { if ( $group->id == $id ) echo " selected='selected'"; } ?>><?php echo apply_filters( 'bp_get_group_name', $group->name ) ?></option>
+				<?php endforeach; ?>
+				</select>
+			</div>
+			<div style="clear: left"></div>
+		</div>
+	<?php endif ?>
+
+	<div class="setting-group setting-startpage <?php if ( empty( $settings["startpagetoggle"] ) ) echo 'initially-hidden' ?>">
+		<div class="setting wide">
+			<div class="settingname">
+				<p><?php _e( "When the new user logs into your site for the very first time, redirect them to this URL.", 'dpw' ) ?></p>
+			</div>
+			<div class="settingvalue">
+				<input type="url" name="welcomepack[startpage]" value="<?php echo esc_attr( apply_filters( 'dpw_admin_settings_startpage', $settings['startpage'] ) ) ?>" />
+			</div>
+			<div style="clear: left"></div>
+		</div>
 	</div>
+
+	<?php if ( bp_is_Active( 'messages' ) ) : ?>
+		<div class="setting-welcomemsg setting-group <?php if ( empty( $settings["welcomemsgtoggle"] ) ) echo 'initially-hidden' ?>">
+			<div class="setting wide">
+				<div class="settingname">
+					<p><?php _e( 'Send the new user a Welcome Message&hellip;', 'dpw' ) ?></p>
+				</div>
+				<div class="settingvalue">
+					<textarea name="welcomepack[welcomemsg]"><?php echo apply_filters( 'dpw_admin_settings_welcomemsg', $settings['welcomemsg'] ) ?></textarea>
+				</div>
+				<div style="clear: left"></div>
+			</div>
+
+			<div class="setting">
+				<div class="settingname">
+					<p><?php _e( '&hellip;with this subject:', 'dpw' ) ?></p>
+				</div>
+				<div class="settingvalue">
+					<input type="text" name="welcomepack[welcomemsgsubject]" value="<?php echo esc_attr( apply_filters( 'dpw_admin_settings_welcomemsg_subject', $settings['welcomemsgsubject'] ) ) ?>" />
+				</div>
+				<div style="clear: left"></div>
+			</div>
+
+			<div class="setting">
+				<div class="settingname">
+					<p><?php _e( '&hellip;from this user:', 'dpw' ) ?></p>
+				</div>
+				<div class="settingvalue">
+					<select name="welcomepack[welcomemsgsender]">
+					<?php foreach ( $members as $member ) : ?>
+						<option value="<?php echo esc_attr( apply_filters( 'bp_get_member_user_id', $member->ID ) ) ?>"<?php if ( $member->ID == $settings['welcomemsgsender'] ) echo " selected='selected'"; ?>><?php echo apply_filters( 'bp_core_get_user_displayname', $member->display_name, $member->ID ) ?></option>
+					<?php endforeach; ?>
+					</select>
+				</div>
+				<div style="clear: left"></div>
+			</div>
+		</div>
 <?php endif;
 }
 

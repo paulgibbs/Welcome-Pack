@@ -379,7 +379,7 @@ function dpw_admin_settings_toggle( $name, $settings ) {
  * @since 2.0
  */
 function dpw_admin_validate( $input ) {
-	$current_settings = get_site_option( 'welcomepack' )
+	$current_settings = get_site_option( 'welcomepack' );
 
 	if ( is_string( $input ) )  // wpmu-edit.php
 		return $current_settings;

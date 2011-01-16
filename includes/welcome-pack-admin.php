@@ -267,7 +267,7 @@ function dpw_admin_screen_configurationbox( $settings ) {
 	<div class="setting-group setting-startpage <?php if ( !$startpagetoggle ) echo 'initially-hidden' ?>">
 		<div class="setting wide">
 			<div class="settingname">
-				<p><?php _e( "When the new user logs into your site for the very first time, redirect them to this URL.", 'dpw' ) ?></p>
+				<p><?php _e( "When the new user logs into your site for the very first time, redirect them to this URL:", 'dpw' ) ?></p>
 			</div>
 			<div class="settingvalue">
 				<input type="url" name="welcomepack[startpage]" value="<?php echo esc_attr( apply_filters( 'dpw_admin_settings_startpage', $startpage ) ) ?>" />
@@ -386,11 +386,11 @@ function dpw_admin_validate( $input ) {
 		return $current_settings;
 
 	if ( isset( $input['friends'] ) )
-		foreach ( $input['friends'] as $friend_id )
+		foreach ( (array)$input['friends'] as $friend_id )
 			$friend_id = apply_filters( 'dpw_admin_validate_friend_id', $friend_id );
 
 	if ( isset( $input['groups'] ) )
-		foreach ( $input['groups'] as $group_id )
+		foreach ( (array)$input['groups'] as $group_id )
 			$group_id = apply_filters( 'dpw_admin_validate_group_id', $group_id );
 
 	if ( isset( $input['startpage'] ) )
@@ -417,9 +417,6 @@ function dpw_admin_validate( $input ) {
 	if ( isset( $input['welcomemsgtoggle'] ) )
 		$input['welcomemsgtoggle'] = ( $input['welcomemsgtoggle'] ) ? true : false;
 
-	if ( isset( $input['emailstoggle'] ) )
-		$input['emailstoggle'] = ( $input['emailstoggle'] ) ? true : false;
-
-	return serialize( wp_parse_args( $input, $current_settings ) );
+	return wp_parse_args( $input, $current_settings );
 }
 ?>

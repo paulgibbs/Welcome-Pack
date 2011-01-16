@@ -19,10 +19,10 @@ add_filter( 'dpw_admin_settings_welcomemsg_subject', 'wptexturize' );
 add_filter( 'dpw_admin_settings_welcomemsg_subject', 'convert_chars' );
 add_filter( 'dpw_admin_settings_welcomemsg_subject', 'stripslashes_deep' );
 
-add_filter( 'dpw_admin_settings_firstloginurl', 'wp_filter_kses', 1 );
-add_filter( 'dpw_admin_settings_firstloginurl', 'wptexturize' );
-add_filter( 'dpw_admin_settings_firstloginurl', 'convert_chars' );
-add_filter( 'dpw_admin_settings_firstloginurl', 'stripslashes_deep' );
+add_filter( 'dpw_admin_settings_startpage', 'wp_filter_kses', 1 );
+add_filter( 'dpw_admin_settings_startpage', 'wptexturize' );
+add_filter( 'dpw_admin_settings_startpage', 'convert_chars' );
+add_filter( 'dpw_admin_settings_startpage', 'stripslashes_deep' );
 
 add_filter( 'dpw_admin_settings_email_name', 'wp_filter_kses', 1 );
 add_filter( 'dpw_admin_settings_email_name', 'wptexturize' );
@@ -44,6 +44,13 @@ add_filter( 'dpw_admin_settings_email', 'wptexturize' );
 add_filter( 'dpw_admin_settings_email', 'convert_chars' );
 add_filter( 'dpw_admin_settings_email', 'stripslashes_deep' );
 
+/**
+ * Basic keyword substitution routine for welcome message and start page data.
+ *
+ * @param string $text
+ * @param int $user_id
+ * @since 2.0
+ */
 function dpw_do_keyword_replacement( $text, $user_id ) {
 	$text = str_replace( "USERNAME", bp_core_get_username( $user_id ), $text );
 	$text = str_replace( "NICKNAME", bp_core_get_user_displayname( $user_id ), $text );

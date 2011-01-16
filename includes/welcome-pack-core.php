@@ -22,14 +22,69 @@ if ( !defined( 'WELCOME_PACK_AUTOACCEPT_INVITATIONS' ) )
 
 load_plugin_textdomain( 'dpw', false, '/welcome-pack/includes/languages/' );
 
-// The ajax file holds all functions used in AJAX queries
-require ( dirname( __FILE__ ) . '/welcome-pack-ajax.php' );
-
 // The cssjs file sets up and enqueue all CSS and JS files
 require ( dirname( __FILE__ ) . '/welcome-pack-cssjs.php' );
 
 // The filters file creates and apply filters to component output functions
 require ( dirname( __FILE__ ) . '/welcome-pack-filters.php' );
+
+/**
+ * Register email post type
+ *
+ * @since 2.3
+ */
+function dpw_register_post_types() {
+	$email_labels = array(
+		'name'               => __( 'Emails',                   'dpw' ),
+		'singular_name'      => __( 'Email',                    'dpw' ),
+		'add_new'            => __( 'New email',                'dpw' ),
+		'add_new_item'       => __( 'Create new email',         'dpw' ),
+		'edit'               => __( 'Edit',                     'dpw' ),
+		'edit_item'          => __( 'Edit email',               'dpw' ),
+		'new_item'           => __( 'New email',                'dpw' ),
+		'view'               => __( 'View email',               'dpw' ),
+		'view_item'          => __( 'View email',               'dpw' ),
+		'search_items'       => __( 'Search emails',            'dpw' ),
+		'not_found'          => __( 'No emails found',          'dpw' ),
+		'not_found_in_trash' => __( 'No emails found in Trash', 'dpw' )
+	);
+
+	$email_supports = array(
+		'editor',
+		'page-attributes',
+		'revisions',
+		'title'
+	);
+
+	$email_cpt = array(
+		'labels'          => $email_labels,
+		'public'          => false,
+		'show_in_menu'    => false,
+		'show_ui'         => true,
+		'supports'        => $email_supports
+	);
+
+	register_post_type( 'dpw_email', $email_cpt );
+}
+add_action( 'init', 'dpw_register_post_types' );
+
+/**
+ * Add "Settings" link on plugins menu
+ *
+ * @param array $links
+ * @param string $file Name of main plugin file
+ * @since 2.0
+ */
+function dpw_admin_add_action_link( $links, $file ) {
+	if ( 'welcome-pack/loader.php' != $file )
+		return $links;
+
+	$settings_link = '<a href="' . admin_url( 'admin.php?page=welcome-pack' ) . '">' . __( 'Settings', 'dpw' ) . '</a>';
+	array_unshift( $links, $settings_link );
+
+	return $links;
+}
+add_filter( 'plugin_action_links', 'dpw_admin_add_action_link', 10, 2 );
 
 /**
  * This function adds a wp-admin menu item under "BuddyPress."
@@ -50,7 +105,7 @@ function dpw_add_admin_menu() {
 	add_action( 'load-buddypress_page_welcome-pack', 'dpw_admin_screen_on_load' );
 	add_action( 'admin_init', 'dpw_admin_register_settings' );
 }
-add_action( 'admin_menu', 'dpw_add_admin_menu' );
+add_action( 'admin_menu', 'dpw_add_admin_menu',12 );
 
 /**
  * The main workhorse where the friends, groups and welcome message features happen.
@@ -119,7 +174,7 @@ function dpw_user_login_redirect( $redirect_to, $not_used, $WP_User ) {
 		return $redirect_to;
 
 	// This is the user's first log in
-	$url = apply_filters( 'dpw_keyword_replacement', $settings['startpagetoggle'] );
+	$url = apply_filters( 'dpw_keyword_replacement', $settings['startpage'] );
 	if ( empty( $url ) )
 		return $redirect_to;
 

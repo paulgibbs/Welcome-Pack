@@ -196,29 +196,6 @@ function dpw_admin_screen_support( $settings ) {
 <?php
 }
 
-function dpw_admin_screen_emailsconfigurationbox( $settings ) {
-	$emails = $settings['emails'];
-	wp_nonce_field( 'dpw-emails', '_ajax_nonce_dpw_emails' );
-?>
-	<div class="setting wide setting-emails <?php if ( !$settings["emailstoggle"] ) echo 'initially-hidden' ?>">
-		<div class="settingname">
-			<p><?php _e( 'Choose an email:', 'dpw' ) ?></p>
-		</div>
-
-		<div class="settingvalue">
-			<select id="emailpicker">
-				<?php for ( $i=0; $i<count( $emails ); $i++ ) : ?>
-				<option value="<?php echo $i ?>"><?php echo apply_filters( 'dpw_admin_settings_email_name', $emails[$i]['name'] ) ?></option>
-				<?php endfor; ?>
-			</select>
-		</div>
-		<div style="clear: left"></div>
-
-		<div id="email"></div>
-	</div>
-<?php
-}
-
 /* TODO: need to figure out how to dynamically set bottom-margin = 0 of the last div.setting-group */
 function dpw_admin_screen_configurationbox( $settings ) {
 	global $bp, $wpdb;

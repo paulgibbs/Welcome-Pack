@@ -3,9 +3,9 @@ Contributors: DJPaul
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=P3K7Z7NHWZ5CL&lc=GB&item_name=B%2eY%2eO%2eT%2eO%2eS%20%2d%20BuddyPress%20plugins&currency_code=GBP&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted
 Tags: buddypress,friend,group,welcome,default,message,email,customise,customize,initial,redirect,registration,start
 License: General Public License version 2
-Requires at least: WP 2.9.x, BuddyPress 1.2.3
-Tested up to: WP 3.0, BuddyPress 1.2.4.1
-Stable tag: 2.1
+Requires at least: WordPress 3.1, BuddyPress 1.2.8
+Tested up to: WordPress 3.1, BuddyPress 1.2.8
+Stable tag: 2.2
 
 When a user registers on your site, Welcome Pack lets you automatically send them a friend or group invitation, a Welcome Message and can redirect them to a Start Page. You can also customise the default emails sent by BuddyPress to ensure that they match the brand and tone of your site.
 
@@ -23,26 +23,13 @@ Welcome Pack is a BuddyPress plugin that enhances the new user experience. When 
 
 == Upgrade Notice == 
 
-= 2.1 =
-Adds Start Page feature. Compatible with BuddyPress 1.2.4.1.
-
-= 2.0.4 =
-[BuddyPress 1.2.4](http://buddypress.org/2010/05/buddypress-1-2-4/) compatibility.
-
-= 2.0.3 =
-Fixed the welcome message sender receiving a copy of the message.
-
-= 2.0.2 =
-Minor localisation fixes; username and group name lists now sorted alphabetically.
-
-= 2.0.1 =
-Improves memory usage on large sites and fixed email list bug.
-
-= 2.0 =
-Added email customisation options and revamped the admin UI. Configuration page moved to underneath the "BuddyPress" menu. You will need to re-enter all of your settings.
+= 2.2 =
+Compatibility update for WordPress 3.1.
 
 == Change Log ==
 
+= 2.2 =
+* Not dead yet! Compatibility release for WordPress 3.1. A significantly overhauled release is coming for BuddyPress 1.3.
 = 2.1 =
 * Adds Start Page feature; use this to redirect users to a link of your choice on the very first time they login to your site.
 = 2.0.3 =

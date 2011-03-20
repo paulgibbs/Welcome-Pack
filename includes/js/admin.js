@@ -1,19 +1,19 @@
-jQuery(document).ready( function() {
+jQuery(document).ready(function($) {
 
-	jq('.if-js-closed').removeClass('if-js-closed').addClass('closed');
+	$('.if-js-closed').removeClass('if-js-closed').addClass('closed');
 
 	if (-1 === window.location.search.indexOf('tab=emails'))
 		postboxes.add_postbox_toggles('buddypress_page_welcome-pack');
 	else
 		postboxes.add_postbox_toggles('buddypress_page_welcome-pack-emails');
 
-	jq('div.initially-hidden').each( function() { 
-		jq(this).hide();
+	$('div.initially-hidden').each( function() { 
+		$(this).hide();
 	});
 
-	jq('#dpw-admin-metaboxes-general input').click( function() {
-		var button = jq(this);
-		var config = jq('div.setting-' + button.attr('class'));
+	$('#dpw-admin-metaboxes-general input').click( function() {
+		var button = $(this);
+		var config = $('div.setting-' + button.attr('class'));
 
 		if ( 1 == button.attr('value') )
 			config.css('background-color', 'rgb(255,255,224)').slideDown('fast').animate( { backgroundColor: 'rgb(255,255,255)' }, 1600);
@@ -21,10 +21,10 @@ jQuery(document).ready( function() {
 			config.stop(true).slideUp();
 	});
 
-	jq('#emailpicker').change( function() {
+	$('#emailpicker').change( function() {
 		var index = this.selectedIndex;
 		if ( 0 == index ) {
-			jq('#email').hide().empty();
+			$('#email').hide().empty();
 			return;
 		}
 
@@ -39,7 +39,7 @@ jQuery(document).ready( function() {
 			if ( response[0] + response[1] == '-1' )
 				return;
 
-			jq('#email').html(response.substr(0, response.length-1)).show();
+			$('#email').html(response.substr(0, response.length-1)).show();
 		});
 	});
 

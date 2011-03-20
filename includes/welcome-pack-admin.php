@@ -55,7 +55,7 @@ function dpw_admin_add_action_link( $links, $file ) {
 	if ( 'welcome-pack/loader.php' != $file )
 		return $links;
 
-	$settings_link = '<a href="' . admin_url( 'admin.php?page=welcome-pack' ) . '">' . __( 'Settings', 'dpw' ) . '</a>';
+	$settings_link = '<a href="' . network_admin_url( 'admin.php?page=welcome-pack' ) . '">' . __( 'Settings', 'dpw' ) . '</a>';
 	array_unshift( $links, $settings_link );
 
 	return $links;

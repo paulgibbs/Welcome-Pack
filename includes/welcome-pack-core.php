@@ -28,7 +28,7 @@ function dpw_add_admin_menu() {
 	add_action( 'load-buddypress_page_welcome-pack', 'dpw_admin_screen_on_load' );
 	add_action( 'admin_init', 'dpw_admin_register_settings' );
 }
-add_action( 'admin_menu', 'dpw_add_admin_menu' );
+add_action( is_multisite() ? 'network_admin_menu' : 'admin_menu', 'dpw_add_admin_menu' );
 
 function dpw_on_user_registration( $user_id ) {
 	$settings = maybe_unserialize( get_blog_option( BP_ROOT_BLOG, 'welcomepack' ) );

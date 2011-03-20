@@ -386,7 +386,7 @@ function dpw_admin_validate( $input ) {
 		unset( $input['email'] );
 	}
 
-	return serialize( wp_parse_args( $input, $current_settings ) );
+	return wp_parse_args( $input, $current_settings );
 }
 
 
@@ -406,6 +406,18 @@ function dpw_admin_screen() {
 	$is_email_tab = false;
 	if ( isset( $_GET['tab'] ) && 'emails' == $_GET['tab'] )
 		$is_email_tab = true;
+
+	// Get the proper URL for submitting the settings form. (Settings API workaround)
+	$url_base = network_admin_url( 'admin.php?page=welcome-pack' );
+
+	// Catch and store settings being saved (Settings API workaround for multisite in WP 3.1)
+	if ( !empty( $_POST['welcome-pack-submit'] ) && !empty( $_POST['welcomepack'] ) ) {
+		check_admin_referer( 'dpw-settings-group-options' );
+
+		update_blog_option( BP_ROOT_BLOG, 'welcomepack', dpw_admin_validate( $_POST['welcomepack'] ) );
+		$settings = maybe_unserialize( get_blog_option( BP_ROOT_BLOG, 'welcomepack' ) );
+		$_GET['updated'] = true;
+	}
 ?>
 <div id="bp-admin">
 <div id="dpw-admin-metaboxes-general" class="wrap">
@@ -436,7 +448,7 @@ function dpw_admin_screen() {
 	<?php endif; ?>
 	</div>
 
-	<form method="post" action="options.php" id="welcomepack">
+	<form method="post" action="<?php echo $url_base ?>" id="welcomepack">
 		<?php wp_nonce_field( 'closedpostboxes', 'closedpostboxesnonce', false ) ?>
 		<?php wp_nonce_field( 'meta-box-order', 'meta-box-order-nonce', false ) ?>
 		<?php settings_fields( 'dpw-settings-group' ) ?>
@@ -460,7 +472,7 @@ function dpw_admin_screen() {
 					?>
 				</div>
 
-				<p><input type="submit" class="button-primary" value="<?php _e( 'Save Welcome Pack Settings', 'dpw' ) ?>" /></p>
+				<p><input type="submit" class="button-primary" name="welcome-pack-submit" id="welcome-pack-submit" value="<?php _e( 'Save Welcome Pack Settings', 'dpw' ) ?>" /></p>
 			</div>
 		</div>
 

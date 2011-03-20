@@ -429,8 +429,8 @@ function dpw_admin_screen() {
 
 	<div id="bp-admin-nav">
 		<ol>
-			<li <?php if ( !$is_email_tab ) echo 'class="current"' ?>><a href="<?php echo site_url('wp-admin/admin.php?page=welcome-pack', 'admin') ?>"><?php _e( 'Friends, Groups <span class="ampersand">&amp;</span> Welcome Message', 'dpw' ) ?></a></li>
-			<li <?php if ( $is_email_tab ) echo 'class="current"' ?>><a href="<?php echo site_url('wp-admin/admin.php?page=welcome-pack&amp;tab=emails', 'admin') ?>"><?php _e( 'Emails', 'dpw' ) ?></a></li>
+			<li <?php if ( !$is_email_tab ) echo 'class="current"' ?>><a href="<?php echo network_admin_url( 'admin.php?page=welcome-pack', 'admin' ) ?>"><?php _e( 'Friends, Groups <span class="ampersand">&amp;</span> Welcome Message', 'dpw' ) ?></a></li>
+			<li <?php if ( $is_email_tab ) echo 'class="current"' ?>><a href="<?php echo network_admin_url( 'admin.php?page=welcome-pack&amp;tab=emails', 'admin' ) ?>"><?php _e( 'Emails', 'dpw' ) ?></a></li>
 		</ol>
 	</div>
 

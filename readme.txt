@@ -6,7 +6,7 @@ Requires at least: WordPress 3.2, BuddyPress 1.5
 Tested up to: WP 3.2, BuddyPress 1.5
 Stable tag: 3.0
 
-When a user registers on your site, Welcome Pack lets you automatically send them a friend or group invitation, a Welcome Message, and it can redirect them to a Start Page. You can also customise the emails sent by BuddyPress so that they match the brand of your site.
+Automatically send friend/group invites and a welcome message to new users, and redirect them to a custom page. Also provides email customisation options.
 
 == Description ==
 

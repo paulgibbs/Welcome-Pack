@@ -40,27 +40,6 @@ function dpw_register_post_types() {
 }
 add_action( 'init', 'dpw_register_post_types' );
 
-
-/**
- * This function adds a wp-admin menu item under "BuddyPress."
- *
- * @global object $bp BuddyPress global settings
- * @since 2.0
- */
-function dpw_add_admin_menu() {
-	global $bp;
-
-	if ( !$bp->loggedin_user->is_super_admin )
-		return false;
-
-	// This file holds everything that goes into /wp-admin/
-	require ( dirname( __FILE__ ) . '/welcome-pack-admin.php' );
-
-	add_submenu_page( 'bp-general-settings', __( 'Welcome Pack', 'dpw' ), __( 'Welcome Pack', 'dpw' ), 'manage_options', 'welcome-pack', 'dpw_admin_screen' );
-	add_action( 'load-buddypress_page_welcome-pack', 'dpw_admin_screen_on_load' );
-	add_action( 'admin_init', 'dpw_admin_register_settings' );
-}
-
 /**
  * The main workhorse where the friends, groups and welcome message features happen.
  *

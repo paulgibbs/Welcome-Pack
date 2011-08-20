@@ -65,11 +65,11 @@ if ( !defined( 'WELCOME_PACK_AUTOACCEPT_INVITATIONS' ) )
  *
  * @since 3.0
  */
-class Welcome_Pack {
+class DP_Welcome_Pack {
 	/**
-	 * Creates an instance of the Welcome_Pack class, and loads i18n.
+	 * Creates an instance of the DP_Welcome_Pack class, and loads i18n.
 	 *
-	 * @return Welcome_Pack object
+	 * @return DP_Welcome_Pack object
 	 * @since 3.0
 	 * @static
 	 */
@@ -78,7 +78,7 @@ class Welcome_Pack {
 
 		if ( !$instance ) {
 			load_plugin_textdomain( 'dpw', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
-			$instance = new Welcome_Pack;
+			$instance = new DP_Welcome_Pack;
 		}
 
 		return $instance;
@@ -108,7 +108,7 @@ class Welcome_Pack {
 			return;
 
 		require( dirname( __FILE__ ) . '/welcome-pack-admin.php' );
-		do_action( 'welcome_pack_admin_menu' );
+		do_action( 'dpw_admin_menu' );
 	}
 
 	/**
@@ -123,7 +123,7 @@ class Welcome_Pack {
 			return $links;
 
 		array_unshift( $links, sprintf( '<a href="%s">%s</a>', admin_url( 'admin.php?page=welcome-pack' ), __( 'Settings', 'dpw' ) ); );
-		do_action( 'welcome_pack_add_settings_link' );
+		do_action( 'dpw_add_settings_link' );
 
 		return $links;
 	}
@@ -138,5 +138,5 @@ class Welcome_Pack {
 		//return get_site_option( '', array() );
 	}
 }
-add_action( 'bp_include', array( 'Welcome_Pack', 'init' ) );
+add_action( 'bp_include', array( 'DP_Welcome_Pack', 'init' ) );
 ?>

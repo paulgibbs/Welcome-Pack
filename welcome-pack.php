@@ -93,7 +93,22 @@ class Welcome_Pack {
 	 * @since 3.0
 	 */
 	public function __construct() {
-		add_filter( 'plugin_action_links', array( $this, '_add_settings_link' ), 10, 2 );
+		add_action( 'admin_menu', 'admin_menu' );
+
+		add_filter( 'plugin_action_links', array( $this, 'add_settings_link' ), 10, 2 );
+	}
+
+	/**
+	 * Load the admin menu if current user is an admin
+	 *
+	 * @since 3.0
+	 */
+	public function admin_menu() {
+		if ( !is_admin() || ( !is_user_logged_in() || !is_super_admin() ) )
+			return;
+
+		require( dirname( __FILE__ ) . '/welcome-pack-admin.php' );
+		do_action( 'welcome_pack_admin_menu' );
 	}
 
 	/**
@@ -103,11 +118,13 @@ class Welcome_Pack {
 	 * @param string $file Plugin's file name
 	 * @since 3.0
 	 */
-	public function _add_settings_link( $links, $file ) {
+	public function add_settings_link( $links, $file ) {
 		if ( 'welcome-pack/welcome-pack.php' != $file )
 			return $links;
 
 		array_unshift( $links, sprintf( '<a href="%s">%s</a>', admin_url( 'admin.php?page=welcome-pack' ), __( 'Settings', 'dpw' ) ); );
+		do_action( 'welcome_pack_add_settings_link' );
+
 		return $links;
 	}
 

@@ -60,7 +60,6 @@ function dpw_add_admin_menu() {
 	add_action( 'load-buddypress_page_welcome-pack', 'dpw_admin_screen_on_load' );
 	add_action( 'admin_init', 'dpw_admin_register_settings' );
 }
-add_action( 'admin_menu', 'dpw_add_admin_menu',12 );
 
 /**
  * The main workhorse where the friends, groups and welcome message features happen.

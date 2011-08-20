@@ -39,13 +39,87 @@
 if ( !defined( 'ABSPATH' ) )
 	exit;
 
+
 /**
- * Only load the component if BuddyPress is loaded and initialised.
- *
- * @since 1.0
+ * Version number
  */
-function dpw_init() {
-	require( dirname( __FILE__ ) . '/includes/welcome-pack-core.php' );
+define ( 'WELCOME_PACK_VERSION', 3.0 );
+
+/**
+ * Constant for third-party plugins to check if Welcome Pack is active (for backpat - deprecated).
+ *
+ * @deprecated 3.0
+ */
+define( 'WELCOME_PACK_IS_INSTALLED', 1 );
+
+/**
+ * Set this to true to automatically accept friend and group invitations on behalf of the user
+ *
+ * @since 2.0
+ */
+if ( !defined( 'WELCOME_PACK_AUTOACCEPT_INVITATIONS' ) )
+	define( 'WELCOME_PACK_AUTOACCEPT_INVITATIONS', false );
+
+/**
+ * Where the magic happens
+ *
+ * @since 3.0
+ */
+class Welcome_Pack {
+	/**
+	 * Creates an instance of the Welcome_Pack class, and loads i18n.
+	 *
+	 * @return Welcome_Pack object
+	 * @since 3.0
+	 * @static
+	 */
+	public static function &init() {
+		static $instance = false;
+
+		if ( !$instance ) {
+			load_plugin_textdomain( 'dpw', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
+			$instance = new Welcome_Pack;
+		}
+
+		return $instance;
+	}
+
+	/**
+	 * Constructor.
+	 *
+	 * Include experiments and set up the admin screen.
+	 *
+	 * @global object $bp BuddyPress global settings
+	 * @since 3.0
+	 */
+	public function __construct() {
+		add_filter( 'plugin_action_links', array( $this, '_add_settings_link' ), 10, 2 );
+	}
+
+	/**
+	 * Add link to settings screen on the WP Admin 'plugins' page
+	 *
+	 * @param array $links Item links
+	 * @param string $file Plugin's file name
+	 * @since 3.0
+	 */
+	public function _add_settings_link( $links, $file ) {
+		if ( 'welcome-pack/welcome-pack.php' != $file )
+			return $links;
+
+		array_unshift( $links, sprintf( '<a href="%s">%s</a>', admin_url( 'admin.php?page=welcome-pack' ), __( 'Settings', 'dpw' ) ); );
+		return $links;
+	}
+
+	/**
+	 * Convenience function to retrieve the plugin's setting
+	 *
+	 * @since 3.0
+	 * @static
+	 */
+	public static function get_settings() {
+		//return get_site_option( '', array() );
+	}
 }
-add_action( 'bp_include', 'dpw_init' );
+add_action( 'bp_include', array( 'Welcome_Pack', 'init' ) );
 ?>

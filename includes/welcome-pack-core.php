@@ -1,36 +1,4 @@
 <?php
-/**
- * This file is included when BuddyPress is active, and after the plugins_loaded action.
- *
- * @author Paul Gibbs <paul@byotos.com>
- * @package Welcome Pack
- * @subpackage core
- *
- * $Id$
- */
-
-// Exit if accessed directly
-if ( !defined( 'ABSPATH' ) )
-	exit;
-
-/**
- * Constant for third-party plugins to check if Welcome Pack is active
- */
-define( 'WELCOME_PACK_IS_INSTALLED', 1 );
-
-/**
- * Set this to automatically accept friend and group invitations on behalf of the user
- */
-if ( !defined( 'WELCOME_PACK_AUTOACCEPT_INVITATIONS' ) )
-	define( 'WELCOME_PACK_AUTOACCEPT_INVITATIONS', false );
-
-load_plugin_textdomain( 'dpw', false, '/welcome-pack/includes/languages/' );
-
-// The cssjs file sets up and enqueue all CSS and JS files
-require ( dirname( __FILE__ ) . '/welcome-pack-cssjs.php' );
-
-// The filters file creates and apply filters to component output functions
-require ( dirname( __FILE__ ) . '/welcome-pack-filters.php' );
 
 /**
  * Register email post type
@@ -72,23 +40,6 @@ function dpw_register_post_types() {
 }
 add_action( 'init', 'dpw_register_post_types' );
 
-/**
- * Add "Settings" link on plugins menu
- *
- * @param array $links
- * @param string $file Name of main plugin file
- * @since 2.0
- */
-function dpw_admin_add_action_link( $links, $file ) {
-	if ( 'welcome-pack/loader.php' != $file )
-		return $links;
-
-	$settings_link = '<a href="' . admin_url( 'admin.php?page=welcome-pack' ) . '">' . __( 'Settings', 'dpw' ) . '</a>';
-	array_unshift( $links, $settings_link );
-
-	return $links;
-}
-add_filter( 'plugin_action_links', 'dpw_admin_add_action_link', 10, 2 );
 
 /**
  * This function adds a wp-admin menu item under "BuddyPress."

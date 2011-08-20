@@ -1,48 +1,33 @@
 === Welcome Pack ===
 Contributors: DJPaul
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=P3K7Z7NHWZ5CL&lc=GB&item_name=B%2eY%2eO%2eT%2eO%2eS%20%2d%20BuddyPress%20plugins&currency_code=GBP&bn=PP%2dDon
-Tags: buddypress,friend,group,welcome,default,message,email,customise,customize,initial,redirect,registration,start
-License: General Public License version 2
-Requires at least: WordPress 3.1, BuddyPress 1.3
-Tested up to: WP 3.1, BuddyPress 1.3
-Stable tag: 2.2-alpha
+Tags: buddypress,friend,group,welcome,message,email,customise,customize,initial,redirect,registration,start
+Requires at least: WordPress 3.2, BuddyPress 1.5
+Tested up to: WP 3.2, BuddyPress 1.5
+Stable tag: 3.0
 
-When a user registers on your site, Welcome Pack lets you automatically send them a friend or group invitation, a Welcome Message and can redirect them to a Start Page. You can also customise the default emails sent by BuddyPress to ensure that they match the brand and tone of your site.
+When a user registers on your site, Welcome Pack lets you automatically send them a friend or group invitation, a Welcome Message, and it can redirect them to a Start Page. You can also customise the emails sent by BuddyPress so that they match the brand of your site.
 
 == Description ==
 
-Welcome Pack is a BuddyPress plugin that enhances the new user experience. When a user registers on your site, Welcome Pack lets you automatically send them a friend or group invitation, a Welcome Message and can redirect them to a Start Page. You can also customise the default emails sent by BuddyPress to ensure that they match the brand and tone of your site.
+Welcome Pack is a BuddyPress plugin that enhances the new user experience. When a user registers on your site, Welcome Pack lets you automatically send them a friend or group invitation, a Welcome Message, and it can redirect them to a Start Page. You can also customise the emails sent by BuddyPress so that they match the brand of your site.
 
 [vimeo http://vimeo.com/12514248]
 
 == Installation ==
 
-1. Install via WordPress Plugins administration page.
-1. Activate the plugin on the blog running BuddyPress.
-1. Visit the BuddyPress > Welcome Pack menu to configure.
+1. Place this plugin in the `/wp-content/plugins/` directory
+1. Activate the plugin through the 'Plugins' menu in WordPress
 
 == Upgrade Notice == 
 
-= 2.1 =
-Adds Start Page feature. Compatible with BuddyPress 1.2.4.1.
+= 3.0 =
+Updated for BuddyPress 1.5 and WordPress 3.2. Revamped email customisations options and admin area. Contains 47% more awesome.
 
-= 2.0.4 =
-[BuddyPress 1.2.4](http://buddypress.org/2010/05/buddypress-1-2-4/) compatibility.
+== Changelog ==
 
-= 2.0.3 =
-Fixed the welcome message sender receiving a copy of the message.
-
-= 2.0.2 =
-Minor localisation fixes; username and group name lists now sorted alphabetically.
-
-= 2.0.1 =
-Improves memory usage on large sites and fixed email list bug.
-
-= 2.0 =
-Added email customisation options and revamped the admin UI. Configuration page moved to underneath the "BuddyPress" menu. You will need to re-enter all of your settings.
-
-== Change Log ==
-
+= 3.0 =
+* Rewrite for BuddyPress 1.5 and WordPress 3.2. Revamped email customisations options and admin area. Contains 47% more awesome.
 = 2.1 =
 * Adds Start Page feature; use this to redirect users to a link of your choice on the very first time they log in to your site.
 = 2.0.3 =
@@ -87,18 +72,7 @@ Added email customisation options and revamped the admin UI. Configuration page 
 * Initial release.
 
 == Frequently Asked Questions ==
-On the Welcome Pack admin pages, be sure to visit the "Help" button near the top-right of the screen; this sections contains handy hints and tips.
 
-= Thanks =
-* Thanks to [SlaFFik](http://cosydale.com/), Arthur Freitas and Luca Camellini for translations in v2.1.
-* Added Russian language file in v2.0.2, thank you [SlaFFik](http://cosydale.com/).
-* Added French and Brazilian Portuguese in v2.0.1, thank you Arthur Freitas.
-* Thanks to Luca Camellini for the Italian translation in v2.0.
-* Social Network Icon Pack by Rogie King is licensed under a Creative Commons Attribution-Share Alike 3.0 Unported License - komodomedia.com.
-* The idea of using meta boxes on the admin page came from [Joost de Valk](http://yoast.com/), your one stop-shop for a wide range of WordPress plugins and SEO advice.
-* The implementation of the above is credited to http://www.code-styling.de/english/how-to-use-wordpress-metaboxes-at-own-plugins.
-* I would sincerely like to thank [Dave Carson](http://solopracticeuniversity.com/) for helping me test this throughout early development.
-* Big thanks to [BeLogical](http://buddypress.org/developers/BeLogical/) for his bug reports and time in testing v1.2.
-* Thanks to Jason DeVelvis for reporting bugs in v1.22.
-* Thanks to [SlaFFik](http://buddypress.org/developers/slaffik/) for providing a Russian translation in v1.3.
-* Thanks to [urband](http://buddypress.org/developers/urband/) for providing a Hungarian translation in v1.4.
+= I need help, or something's not working =
+
+For help, or to report bugs, visit the [support forum](http://buddypress.org/community/groups/welcome-pack/ "support forum").

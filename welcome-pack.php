@@ -39,7 +39,6 @@
 if ( !defined( 'ABSPATH' ) )
 	exit;
 
-
 /**
  * Version number
  */

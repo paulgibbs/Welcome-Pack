@@ -1,26 +1,420 @@
 <?php
 /**
- * The WP Admin area pages for Welcome Pack.
- *
- * @author Paul Gibbs <paul@byotos.com>
- * @package Welcome Pack
- * @see dpw_add_admin_menu()
- * @subpackage admin
- *
  * The idea of using the meta boxes came from Joost de Valk (http://yoast.com).
  * The implementation of the above is credited to http://www.code-styling.de/english/how-to-use-wordpress-metaboxes-at-own-plugins.
- * Big thanks to both!
+ * Thanks to both!
  *
- * $Id$
+ * @package Welcome Pack
+ * @subpackage Administration
  */
 
 // Exit if accessed directly
 if ( !defined( 'ABSPATH' ) )
 	exit;
 
-add_submenu_page( 'bp-general-settings', __( 'Welcome Pack', 'dpw' ), __( 'Welcome Pack', 'dpw' ), 'manage_options', 'welcome-pack', 'dpw_admin_screen' );
-add_action( 'load-buddypress_page_welcome-pack', 'dpw_admin_screen_on_load' );
-add_action( 'admin_init', 'dpw_admin_register_settings' );
+/**
+ * Setting screens and options
+ *
+ * @since 3.0
+ */
+class DP_Welcome_Pack_Admin {
+	/**
+	 * Constructor.
+	 *
+	 * @since 3.0
+	 */
+	public function __construct() {
+		add_action( bp_core_admin_hook(), array( $this, 'setup_menu' ) );
+	}
+
+	/**
+	 * Set up the admin menu
+	 *
+	 * @since 3.0
+	 */
+	public function setup_menu() {
+		add_submenu_page( 'bp-general-settings', __( 'Welcome Pack', 'dpw' ), __( 'Welcome Pack', 'dpw' ), 'manage_options', 'welcome-pack', array( $this, 'admin_page' ) );
+		add_action( 'load-buddypress_page_welcome-pack', array( $this, 'init' ) );
+	}
+
+	/**
+	 * Initialise common elements for all pages of the admin screen.
+	 * Add metaboxes and contextual help to admin screen.
+	 * Add social media button javascript to page footer.
+	 *
+	 * @since 3.0
+	 */
+	public function init() {
+		if ( !empty( $_GET['tab'] ) ) {
+			if ( 'support' == $_GET['tab'] )
+				$tab = 'support';
+			elseif ( 'emails' == $_GET['tab'] )
+				$tab = 'emails';
+
+		}	else {
+			$tab = 'settings';
+		}
+
+		add_screen_option( 'layout_columns', array( 'max' => 2 ) );
+
+		// Support tab
+		if ( 'support' == $tab )
+			add_meta_box( 'dpw-helpushelpyou', __( 'Help Me Help You', 'dpw' ), array( $this, 'helpushelpyou'), 'buddypress_page_welcome-pack', 'side', 'high' );
+		else
+			add_meta_box( 'dpw-likethis', __( 'Love BP Labs?', 'dpw' ), array( $this, 'like_this_plugin' ), 'buddypress_page_welcome-pack', 'side', 'default' );
+
+		// All tabs
+		add_meta_box( 'dpw-paypal', __( 'Give Kudos', 'dpw' ), array( $this, '_paypal' ), 'buddypress_page_welcome-pack', 'side', 'default' );
+		add_meta_box( 'dpw-latest', __( 'Latest News', 'dpw' ), array( $this, 'metabox_latest_news' ), 'buddypress_page_welcome-pack', 'side', 'default' );
+
+		wp_enqueue_script( 'postbox' );
+		wp_enqueue_script( 'dashboard' );
+		?>
+
+			<script type="text/javascript" src="https://apis.google.com/js/plusone.js">
+			  {parsetags: 'explicit'}
+			</script>
+			<script type="text/javascript">gapi.plusone.go();</script>
+
+		<?php
+	}
+
+	/**
+	 * Outputs admin page HTML
+	 *
+	 * @global int $screen_layout_columns Number of columns shown on this admin page
+	 * @since 1.1
+	 */
+	public function admin_page() {
+		global $screen_layout_columns;
+
+		if ( !empty( $_GET['tab'] ) ) {
+			if ( 'support' == $_GET['tab'] )
+				$tab = 'support';
+			elseif ( 'activity' == $_GET['tab'] && class_exists( 'BP_Component' ) )
+				$tab = 'activity';
+
+		}	else {
+			$tab = 'settings';
+		}
+
+		$updated  = $this->maybe_save();
+		$url      = network_admin_url( 'admin.php?page=bplabs' );
+		$settings = BPLabs::get_settings();
+	?>
+
+		<style type="text/css">
+		#dpw-helpushelpyou ul {
+			list-style: disc;
+			padding-left: 2em;
+		}
+		#dpw-likethis #___plusone_0,
+		#dpw-likethis .fb {
+			max-width: 49% !important;
+			width: 49% !important;
+		}
+		#dpw-likethis .fb {
+			height: 20px;
+		}
+		#dpw-paypal .inside {
+			text-align: center;
+		}
+		.bpl_autosuggest,
+		.bpl_quickadmin,
+		.bpl_akismet {
+			margin-right: 2em;
+		}
+		</style>
+
+		<div class="wrap">
+			<?php screen_icon( 'options-general' ); ?>
+
+			<h2 class="nav-tab-wrapper">
+				<a href="<?php echo esc_attr( $url ); ?>"                       class="nav-tab <?php if ( 'settings' == $tab )  : ?>nav-tab-active<?php endif; ?>"><?php _e( 'BP Labs', 'dpw' );     ?></a>
+				<a href="<?php echo esc_attr( $url . '&amp;tab=activity' ); ?>" class="nav-tab <?php if ( 'activity' == $tab  ) : ?>nav-tab-active<?php endif; ?>"><?php _e( 'Activity Stream Spam', 'dpw' ); ?></a>
+				<a href="<?php echo esc_attr( $url . '&amp;tab=support' ); ?>"  class="nav-tab <?php if ( 'support'  == $tab  ) : ?>nav-tab-active<?php endif; ?>"><?php _e( 'Get Support', 'dpw' ); ?></a>
+			</h2>
+
+			<div id="poststuff" class="metabox-holder<?php echo 2 == $screen_layout_columns ? ' has-right-sidebar' : ''; ?>">
+				<div id="side-info-column" class="inner-sidebar">
+					<?php do_meta_boxes( 'buddypress_page_welcome-pack', 'side', $settings ); ?>
+				</div>
+
+				<div id="post-body" class="has-sidebar">
+					<div id="post-body-content" class="has-sidebar-content">
+						<?php
+						if ( 'support' == $tab )
+							$this->admin_page_support();
+						elseif ( 'activity' == $tab )
+							$this->admin_page_activity();
+						else
+							$this->admin_page_settings( $settings, $updated );
+						?>
+					</div><!-- #post-body-content -->
+				</div><!-- #post-body -->
+
+			</div><!-- #poststuff -->
+		</div><!-- .wrap -->
+
+	<?php
+	}
+
+	/**
+	 * Support tab content for the admin page
+	 *
+	 * @since 1.1
+	 */
+	protected function admin_page_support() {
+	?>
+
+		<p><?php printf( __( "All of BP Labs' experiments are in <a href='%s'>beta</a>, and come with no guarantees. They work best with the latest versions of WordPress and BuddyPress.", 'dpw' ), 'http://en.wikipedia.org/wiki/Software_release_life_cycle#Beta' ); ?></p>
+		<p><?php printf( __( 'If you have problems with this plugin or find a bug, please contact me by leaving a message on the <a href="%s">support forums</a>.', 'dpw' ), 'http://buddypress.org/community/groups/bp-labs/' ); ?></p>
+
+	<?php
+	}
+
+	/**
+	 * Main tab's content for the admin page
+	 *
+	 * @param array $settings Plugin settings (from DB)
+	 * @param bool $updated Have settings been updated on the previous page submission?
+	 * @since 1.1
+	 */
+	protected function admin_page_settings( $settings, $updated ) {
+	?>
+		<?php if ( $updated ) : ?>
+			<div id="message" class="updated below-h2"><p><?php _e( 'Your preferences have been updated.', 'dpw' ); ?></p></div>
+		<?php endif; ?>
+
+		<form method="post" action="admin.php?page=bplabs" id="bpl-labs-form">
+			<?php wp_nonce_field( 'closedpostboxes', 'closedpostboxesnonce', false ); ?>
+			<?php wp_nonce_field( 'meta-box-order', 'meta-box-order-nonce', false ); ?>
+			<?php wp_nonce_field( 'bpl-admin', 'bpl-admin-nonce', false ); ?>
+
+			<p><?php _e( 'BP Labs contains unofficial BuddyPress experiments which I am making available for testing, feedback, and to give people new shiny toys for their websites.', 'dpw' ); ?></p>
+
+			<h4><?php _e( '@mentions autosuggest', 'dpw' ); ?></h4>
+			<p><?php _e( '@mentions autosuggest requires the Activity Stream component, and extends its @messaging feature to help you find the short name of a user. It is integrated into comments, the "What\'s New" activity status box, Private Messaging (body) and bbPress forums. To trigger the autosuggest, type an @ followed by at least one other letter.', 'dpw' ); ?></p>
+			<label><?php _e( 'On', 'dpw' ); ?> <input type="radio" name="bpl_autosuggest" class="bpl_autosuggest" value="on" <?php checked( $settings['autosuggest'] ); ?>/></label>
+			<label><?php _e( 'Off', 'dpw' ); ?> <input type="radio" name="bpl_autosuggest" class="bpl_autosuggest" value="off" <?php checked( $settings['autosuggest'], false ); ?>/></label>
+
+			<h4><?php _e( 'Quick Admin', 'dpw' ); ?></h4>
+			<p><?php _e( 'Quick Admin requires Groups, and affects the group directory. Designed to help speed up accessing admin screens for each group, hovering over each group in the directory will reveal links to the admin screens for that group.', 'dpw' ); ?></p>
+			<label><?php _e( 'On', 'dpw' ); ?> <input type="radio" name="bpl_quickadmin" class="bpl_quickadmin" value="on" <?php checked( $settings['quickadmin'] ); ?>/></label>
+			<label><?php _e( 'Off', 'dpw' ); ?> <input type="radio" name="bpl_quickadmin" class="bpl_quickadmin" value="off" <?php checked( $settings['quickadmin'], false ); ?>/></label>
+
+			<h4><?php _e( 'Activity Stream Spam', 'dpw' ); ?></h4>
+			<p><?php printf( __( "Keep your Activity Stream minty-fresh with Automattic's Akismet spam filtering service; requires the <a href='%s'>Akismet WordPress plugin</a> and version 1.5 of BuddyPress.", 'dpw' ), 'http://wordpress.org/extend/plugins/akismet/' ); ?></p>
+			<label><?php _e( 'On', 'dpw' ); ?> <input type="radio" name="bpl_akismet" class="bpl_akismet" value="on" <?php checked( $settings['akismet'] ); ?>/></label>
+			<label><?php _e( 'Off', 'dpw' ); ?> <input type="radio" name="bpl_akismet" class="bpl_akismet" value="off" <?php checked( $settings['akismet'], false ); ?>/></label>
+
+			<p><input type="submit" class="button-primary" value="<?php _e( 'Update Settings', 'dpw' ); ?>" /></p>
+		</form>
+
+	<?php
+	}
+
+	/**
+	 * Check for and handle form submission.
+	 *
+	 * @return bool Have settings been updated?
+	 * @since 1.1
+	 * @static
+	 */
+	protected static function maybe_save() {
+		$settings = $existing_settings = BPLabs::get_settings();
+		$updated  = false;
+
+		if ( !empty( $_POST['bpl_autosuggest'] ) ) {
+			if ( 'on' == $_POST['bpl_autosuggest'] )
+				$settings['autosuggest'] = true;
+			else
+				$settings['autosuggest'] = false;
+		}
+
+		if ( !empty( $_POST['bpl_quickadmin'] ) ) {
+			if ( 'on' == $_POST['bpl_quickadmin'] )
+				$settings['quickadmin'] = true;
+			else
+				$settings['quickadmin'] = false;
+		}
+
+		if ( !empty( $_POST['bpl_akismet'] ) ) {
+			if ( 'on' == $_POST['bpl_akismet'] )
+				$settings['akismet'] = true;
+			else
+				$settings['akismet'] = false;
+		}
+
+		if ( $settings != $existing_settings ) {
+			check_admin_referer( 'bpl-admin', 'bpl-admin-nonce' );
+			update_site_option( 'bplabs', $settings );
+			$updated = true;
+		}
+
+		return $updated;
+	}
+
+	/**
+	 * Latest news metabox
+	 *
+	 * @param array $settings Plugin settings (from DB)
+	 * @since 3.0
+	 */
+	public function metabox_latest_news( $settings) {
+		$rss = fetch_feed( 'http://feeds.feedburner.com/BYOTOS' );
+		if ( !is_wp_error( $rss ) ) {
+			$content = '<ul>';
+			$items = $rss->get_items( 0, $rss->get_item_quantity( 3 ) );
+
+			foreach ( $items as $item )
+				$content .= '<li><p><a href="' . esc_url( $item->get_permalink(), null, 'display' ) . '">' . apply_filters( 'dpw_admin_metabox_latest_news', stripslashes( $item->get_title() ) ) . '</a></p></li>';
+
+			echo $content;
+
+		} else {
+			echo '<ul><li class="rss">' . __( 'No news; check back later.', 'dpw' ) . '</li></ul>';
+		}
+	}
+
+	/**
+	 * "Help Me Help You" metabox
+	 *
+	 * @global wpdb $wpdb WordPress database object
+	 * @global string $wp_version WordPress version number
+	 * @global WP_Rewrite $wp_rewrite WordPress Rewrite object for creating pretty URLs
+	 * @global object $wp_rewrite
+	 * @param array $settings Plugin settings (from DB)
+	 * @since 3.0
+	 */
+	public function helpushelpyou( $settings ) {
+		global $wpdb, $wp_rewrite, $wp_version;
+
+		$active_plugins = array();
+		$all_plugins    = apply_filters( 'all_plugins', get_plugins() );
+
+		foreach ( $all_plugins as $filename => $plugin ) {
+			if ( 'Welcome Pack' != $plugin['Name'] && 'BuddyPress' != $plugin['Name'] && is_plugin_active( $filename ) )
+				$active_plugins[] = $plugin['Name'] . ': ' . $plugin['Version'];
+		}
+		natcasesort( $active_plugins );
+
+		if ( !$active_plugins )
+			$active_plugins[] = __( 'No other plugins are active', 'dpw' );
+
+		if ( is_multisite() ) {
+			if ( is_subdomain_install() )
+				$is_multisite = __( 'subdomain', 'dpw' );
+			else
+				$is_multisite = __( 'subdirectory', 'dpw' );
+
+		} else {
+			$is_multisite = __( 'no', 'dpw' );
+		}
+
+		if ( 1 == constant( 'BP_ROOT_BLOG' ) )
+			$is_bp_root_blog = __( 'standard', 'dpw' );
+		else
+			$is_bp_root_blog = __( 'non-standard', 'dpw' );
+
+		$is_bp_default_child_theme = __( 'no', 'dpw' );
+		$theme = current_theme_info();
+
+		if ( 'BuddyPress Default' == $theme->parent_theme )
+			$is_bp_default_child_theme = __( 'yes', 'dpw' );
+
+		if ( 'BuddyPress Default' == $theme->name )
+			$is_bp_default_child_theme = __( 'n/a', 'dpw' );
+
+	  if ( empty( $wp_rewrite->permalink_structure ) )
+			$custom_permalinks = __( 'default', 'dpw' );
+		else
+			if ( strpos( $wp_rewrite->permalink_structure, 'index.php' ) )
+				$custom_permalinks = __( 'almost', 'dpw' );
+			else
+				$custom_permalinks = __( 'custom', 'dpw' );
+	?>
+
+		<p><?php _e( "If you have trouble, a little information about your site goes a long way.", 'dpw' ); ?></p>
+
+		<h4><?php _e( 'Versions', 'dpw' ); ?></h4>
+		<ul>
+			<li><?php printf( __( 'Welcome Pack: %s', 'dpw' ), BP_LABS_VERSION ); ?></li>
+			<li><?php printf( __( 'BP_ROOT_BLOG: %s', 'dpw' ), $is_bp_root_blog ); ?></li>
+			<li><?php printf( __( 'BuddyPress: %s', 'dpw' ), BP_VERSION ); ?></li>
+			<li><?php printf( __( 'MySQL: %s', 'dpw' ), $wpdb->db_version() ); ?></li>
+			<li><?php printf( __( 'Permalinks: %s', 'dpw' ), $custom_permalinks ); ?></li>
+			<li><?php printf( __( 'PHP: %s', 'dpw' ), phpversion() ); ?></li>
+			<li><?php printf( __( 'WordPress: %s', 'dpw' ), $wp_version ); ?></li>
+			<li><?php printf( __( 'WordPress multisite: %s', 'dpw' ), $is_multisite ); ?></li>
+		</ul>
+
+		<h4><?php _e( 'Theme', 'dpw' ); ?></h4>
+		<ul>
+			<li><?php printf( __( 'BP-Default child theme: %s', 'dpw' ), $is_bp_default_child_theme ); ?></li>
+			<li><?php printf( __( 'Current theme: %s', 'dpw' ), $theme->name ); ?></li>
+		</ul>
+
+		<h4><?php _e( 'Active Plugins', 'dpw' ); ?></h4>
+		<ul>
+			<?php foreach ( $active_plugins as $plugin ) : ?>
+				<li><?php echo esc_html( $plugin ); ?></li>
+			<?php endforeach; ?>
+		</ul>
+
+	<?php
+	}
+
+	/**
+	 * Social media sharing metabox
+	 *
+	 * @since 3.0
+	 * @param array $settings Plugin settings (from DB)
+	 */
+	public function like_this_plugin( $settings ) {
+	?>
+
+		<p><?php _e( 'Why not do any or all of the following:', 'dpw' ) ?></p>
+		<ul>
+			<li><p><a href="http://wordpress.org/extend/plugins/welcome-pack/"><?php _e( 'Give it a five star rating on WordPress.org.', 'dpw' ) ?></a></p></li>
+			<li><p><a href="http://buddypress.org/community/groups/welcome-pack/reviews/"><?php _e( 'Write a review on BuddyPress.org.', 'dpw' ) ?></a></p></li>
+			<li><p><a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&amp;business=P3K7Z7NHWZ5CL&amp;lc=GB&amp;item_name=B%2eY%2eO%2eT%2eO%2eS%20%2d%20BuddyPress%20plugins&amp;currency_code=GBP&amp;bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted"><?php _e( 'Fund development.', 'dpw' ) ?></a></p></li>
+			<li>
+				<g:plusone size="medium" href="http://wordpress.org/extend/plugins/welcome-pack/"></g:plusone>
+				<iframe class="fb" allowTransparency="true" frameborder="0" scrolling="no" src="http://www.facebook.com/plugins/like.php?href=http://wordpress.org/extend/plugins/welcome-pack/&amp;send=false&amp;layout=button_count&amp;width=90&amp;show_faces=false&amp;action=recommend&amp;colorscheme=light&amp;font=arial"></iframe>
+			</li>
+		</ul>
+
+	<?php
+	}
+
+	/**
+	 * Paypal donate button metabox
+	 *
+	 * @since 3.0
+	 * @param array $settings Plugin settings (from DB)
+	 */ 
+	function _paypal( $settings ) {
+	?>
+
+		<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+			<input type="hidden" name="cmd" value="_s-xclick">
+			<input type="hidden" name="encrypted" value="-----BEGIN PKCS7-----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-----END PKCS7-----">
+			<input type="image" src="https://www.paypalobjects.com/en_US/GB/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="<?php esc_attr_e( 'PayPal', 'dpw' ); ?>">
+			<img alt="" border="0" src="https://www.paypalobjects.com/en_GB/i/scr/pixel.gif" width="1" height="1" />
+		</form>
+
+	<?php
+	}
+}
+new DP_Welcome_Pack_Admin();
+
+
+
+
+
+
+
 
 /**
  * Produces the main admin page (/admin.php?page=welcome-pack)
@@ -81,126 +475,6 @@ function dpw_admin_screen() {
 
 	</div><!-- #dpw-admin-metaboxes-general -->
 </div><!-- #bp-admin -->
-<?php
-}
-
-/**
- * Tell admin.php that this page supports multiple columns
- *
- * @param array $columns
- * @param string $screen Internal name of the page
- * @since 2.0
- */
-function dpw_admin_screen_layout_columns( $columns, $screen ) {
-	if ( 'buddypress_page_welcome-pack' == $screen )
-		$columns['buddypress_page_welcome-pack'] = 2;
-
-	return $columns;
-}
-add_filter( 'screen_layout_columns', 'dpw_admin_screen_layout_columns', 10, 2 );
-
-/**
- * This function is hooked in to an action that fires near the top of admin.php, giving a convenient location
- * in which to set the contextual help and other defaults.
- *
- * @see dpw_add_admin_menu()
- * @since 2.0
- */
-function dpw_admin_screen_on_load() {
-	add_meta_box( 'dpw-admin-metaboxes-sidebox-1',        __( 'Like this plugin?', 'dpw' ),           'dpw_admin_screen_socialmedia',      'buddypress_page_welcome-pack', 'side',   'core' );
-	add_meta_box( 'dpw-admin-metaboxes-sidebox-2',        __( 'Need support?', 'dpw' ),               'dpw_admin_screen_support',          'buddypress_page_welcome-pack', 'side',   'core' );
-	add_meta_box( 'dpw-admin-metaboxes-sidebox-3',        __( 'Latest news from the author', 'dpw' ), 'dpw_admin_screen_news',             'buddypress_page_welcome-pack', 'side',   'core' );
-	add_meta_box( 'dpw-admin-metaboxes-settingsbox',      __( 'Settings', 'dpw' ),                    'dpw_admin_screen_settingsbox',      'buddypress_page_welcome-pack', 'normal', 'core' );
-	add_meta_box( 'dpw-admin-metaboxes-configurationbox', __( 'Configuration', 'dpw' ),               'dpw_admin_screen_configurationbox', 'buddypress_page_welcome-pack', 'normal', 'core' );
-
-	$help  = '<p>' . __( 'If you are changing a setting that allows text entry, you can use the following placeholder tags:', 'dpw' ) . '</p>';
-	$help .= '<dl>';
-	$help .= "<dt>USERNAME</dt><dd>" . __( "Replaced with the person's username.", 'dpw' ) . "</dd>";
-	$help .= "<dt>NICKNAME</dt><dd>" . __( "Replaced with the person's name from their user profile.", 'dpw' ) . "</dd>";
-	$help .= "<dt>USER_URL</dt><dd>" . __( "Replaced with the link to their user profile.", 'dpw' ) . "</dd>";
-	$help .= '</dl><br />';
-	$help .= '<p>' . __( "The default behaviour for Friends and Groups is for invitations to be sent. If you would prefer to suppress those invitations and have them automatically accepted on the user's behalf, set <code>define( 'WELCOME_PACK_AUTOACCEPT_INVITATIONS', true );</code> in wp-config.php.", 'dpw' ) .'</p><br />';
-
-	add_contextual_help( 'buddypress_page_welcome-pack', $help );
-	add_filter( 'default_contextual_help', 'dpw_admin_screen_contextual_help' );
-}
-
-/**
- * Replace the default contextual help text.
- *
- * @param string $default_text
- * @since 2.0
- */
-function dpw_admin_screen_contextual_help( $default_text ) {
-	return '<a href="http://buddypress.org/community/groups/welcome-pack/">' . __( 'Support forum', 'dpw' ) . '</a>';
-}
-
-/**
- * Tells the options.php settings API that we have a variable in the database
- * and what validation function to use with it.
- *
- * @see dpw_add_admin_menu()
- */
-function dpw_admin_register_settings() {
-	register_setting( 'dpw-settings-group', 'welcomepack', 'dpw_admin_validate' );
-}
-
-/**
- * Social media metabox
- *
- * @param array $settings get_site_option( 'welcomepack' )
- * @since 2.0
- */
-function dpw_admin_screen_socialmedia( $settings ) {
-?>
-<p><?php _e( 'Why not do any or all of the following:', 'dpw' ) ?></p>
-<ul>
-	<li><p><?php _e( 'Tell your friends!', 'dpw' ) ?></a></p></li>
-	<li><p><a href="http://wordpress.org/extend/plugins/welcome-pack/"><?php _e( 'Give it a good rating on WordPress.org', 'dpw' ) ?></a>.</p></li>
-	<li><p><a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&amp;business=P3K7Z7NHWZ5CL&amp;lc=GB&amp;item_name=B%2eY%2eO%2eT%2eO%2eS%20%2d%20BuddyPress%20plugins&amp;currency_code=GBP&amp;bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted"><?php _e( 'Thank me by donating towards future development', 'dpw' ) ?></a>.</p></li>
-	<li><p><a href="mailto:paul@byotos.com"><?php _e( 'Hire me to create a custom plugin for your site.', 'dpw' ) ?></a></p></li>
-</ul>
-<p><?php _e( 'Or share on one of these social networks:', 'dpw' ) ?></p>
-<ul class="menu">
-	<li><a href="http://twitter.com/home?status=Check%20out%20Welcome%20Pack%20for%20%23buddypress%20http://wordpress.org/extend/plugins/welcome-pack/"><img src="<?php echo plugins_url( '/images/twitter_32.png', __FILE__ ) ?>" alt="<?php _e( 'Twitter', 'dpw' ) ?>" /></a></li>
-	<li><a href="http://www.facebook.com/sharer.php?u=http://wordpress.org/extend/plugins/welcome-pack/"><img src="<?php echo plugins_url( '/images/facebook_32.png', __FILE__ ) ?>" alt="<?php _e( 'Facebook', 'dpw' ) ?>" /></a></li>
-	<li><a href="http://del.icio.us/post?url=http://wordpress.org/extend/plugins/welcome-pack/&amp;title=Welcome%20Pack%20is%20a%20BuddyPress%20plugin%20that%20enhances%20the%20new%20user%20experience.%20When%20a%20user%20registers%20on%20your%20site,%20Welcome%20Pack%20lets%20you%20automatically%20send%20them%20a%20friend%20or%20group%20invitation,%20or%20a%20welcome%20message.%20You%20can%20also%20customise%20the%20default%20emails%20sent%20by%20BuddyPress%20to%20ensure%20that%20they%20match%20the%20brand%20and%20tone%20of%20your%20site."><img src="<?php echo plugins_url( '/images/delicious_32.png', __FILE__ ) ?>" alt="<?php _e( 'Delicious - social bookmarking', 'dpw' ) ?>" /></a></li>
-	<li><a href="http://www.stumbleupon.com/submit?url=http://wordpress.org/extend/plugins/welcome-pack/&amp;title=Welcome%20Pack%20is%20a%20BuddyPress%20plugin%20that%20enhances%20the%20new%20user%20experience.%20When%20a%20user%20registers%20on%20your%20site,%20Welcome%20Pack%20lets%20you%20automatically%20send%20them%20a%20friend%20or%20group%20invitation,%20or%20a%20welcome%20message.%20You%20can%20also%20customise%20the%20default%20emails%20sent%20by%20BuddyPress%20to%20ensure%20that%20they%20match%20the%20brand%20and%20tone%20of%20your%20site."><img src="<?php echo plugins_url( '/images/stumbleupon_32.png', __FILE__ ) ?>" alt="<?php _e( 'Stumble Upon', 'dpw' ) ?>" /></a></li>
-</ul>
-<?php
-}
-
-/**
- * RSS news metabox
- *
- * @param array $settings get_site_option( 'welcomepack' )
- * @since 2.0
- */
-function dpw_admin_screen_news( $settings ) {
-	$rss = fetch_feed( 'http://feeds.feedburner.com/BYOTOS' );
-	if ( !is_wp_error( $rss ) ) {
-		$content = '<ul>';
-		$items = $rss->get_items( 0, $rss->get_item_quantity( 3 ) );
-
-		foreach ( $items as $item )
-			$content .= '<li><p><a href="' . esc_url( $item->get_permalink(), null, 'display' ) . '">' . apply_filters( 'dpw_admin_rss_feed', $item->get_title() ) . '</a></p></li>';
-
-		$content .= '<li class="rss"><p><a href="http://feeds.feedburner.com/BYOTOS">' . __( 'Subscribe with RSS', 'dpw' ) . '</a></p></li></ul>';
-		echo $content;
-	} else {
-		echo '<ul><li>' . __( 'No news!', 'dpw' ) . '</li></ul>';
-	}
-}
-
-/**
- * Support metabox
- *
- * @param array $settings get_site_option( 'welcomepack' )
- * @since 2.0
- */
-function dpw_admin_screen_support( $settings ) {
-?>
-	<p><?php printf( __( "If you need help and support using this plugin, or have ideas for new features, please visit the <a href='%s'>support forums</a>.", 'dpw' ), 'http://buddypress.org/community/groups/welcome-pack/' ) ?></p>
 <?php
 }
 

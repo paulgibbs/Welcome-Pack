@@ -93,7 +93,7 @@ class DP_Welcome_Pack {
 	 * @since 3.0
 	 */
 	public function __construct() {
-		add_action( 'admin_menu', 'admin_menu' );
+		add_action( 'admin_menu', array( $this, 'admin_menu' ) );
 
 		add_filter( 'plugin_action_links', array( $this, 'add_settings_link' ), 10, 2 );
 	}

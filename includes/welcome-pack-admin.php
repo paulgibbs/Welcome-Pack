@@ -14,6 +14,10 @@
  * $Id$
  */
 
+// Exit if accessed directly
+if ( !defined( 'ABSPATH' ) )
+	exit;
+
 /**
  * Produces the main admin page (/admin.php?page=welcome-pack)
  *

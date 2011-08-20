@@ -35,6 +35,10 @@
  * @package Welcome Pack
  */
 
+// Exit if accessed directly
+if ( !defined( 'ABSPATH' ) )
+	exit;
+
 /**
  * Only load the component if BuddyPress is loaded and initialised.
  *

@@ -9,6 +9,10 @@
  * $Id$
  */
 
+// Exit if accessed directly
+if ( !defined( 'ABSPATH' ) )
+	exit;
+
 /**
  * Constant for third-party plugins to check if Welcome Pack is active
  */

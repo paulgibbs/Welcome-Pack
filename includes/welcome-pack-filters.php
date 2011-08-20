@@ -1,4 +1,8 @@
 <?php
+// Exit if accessed directly
+if ( !defined( 'ABSPATH' ) )
+	exit;
+
  /**
   * Some WP filters you may want to use:
   *  - wp_filter_kses() VERY IMPORTANT see below.

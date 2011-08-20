@@ -1,4 +1,8 @@
 <?php
+// Exit if accessed directly
+if ( !defined( 'ABSPATH' ) )
+	exit;
+
 function dpw_admin_add_css_js() {
 	wp_enqueue_script( 'common' );
 	wp_enqueue_script( 'wp-lists' );

@@ -39,8 +39,6 @@ class DP_Welcome_Pack_Admin {
 
 	/**
 	 * Initialise common elements for all pages of the admin screen.
-	 * Add metaboxes and contextual help to admin screen.
-	 * Add social media button javascript to page footer.
 	 *
 	 * @since 3.0
 	 */
@@ -55,18 +53,20 @@ class DP_Welcome_Pack_Admin {
 			$tab = 'settings';
 		}
 
+		// How many columns does this page have by default?
 		add_screen_option( 'layout_columns', array( 'max' => 2 ) );
 
 		// Support tab
 		if ( 'support' == $tab )
-			add_meta_box( 'dpw-helpushelpyou', __( 'Help Me Help You', 'dpw' ), array( $this, 'helpushelpyou'), 'settings_page_welcome-pack', 'side', 'high' );
+			add_meta_box( 'dpw-helpushelpyou', __( 'Help Us Help You', 'dpw' ), array( $this, 'helpushelpyou'), 'settings_page_welcome-pack', 'side', 'high' );
 		else
-			add_meta_box( 'dpw-likethis', __( 'Love BP Labs?', 'dpw' ), array( $this, 'like_this_plugin' ), 'settings_page_welcome-pack', 'side', 'default' );
+			add_meta_box( 'dpw-likethis', __( 'Love Welcome Pack?', 'dpw' ), array( $this, 'like_this_plugin' ), 'settings_page_welcome-pack', 'side', 'default' );
 
 		// All tabs
 		add_meta_box( 'dpw-paypal', __( 'Give Kudos', 'dpw' ), array( $this, 'paypal' ), 'settings_page_welcome-pack', 'side', 'default' );
 		add_meta_box( 'dpw-latest', __( 'Latest News', 'dpw' ), array( $this, 'metabox_latest_news' ), 'settings_page_welcome-pack', 'side', 'default' );
 
+		// Javascripts for meta box
 		wp_enqueue_script( 'postbox' );
 		wp_enqueue_script( 'dashboard' );
 		?>
@@ -114,6 +114,14 @@ class DP_Welcome_Pack_Admin {
 		#dpw-paypal .inside {
 			text-align: center;
 		}
+		#dpw_contact_form,
+		#dpw_contact_form .button-primary {
+			margin-top: 2em;
+		}
+		#dpw_contact_form textarea,
+		#dpw_contact_form input[type="text"]  {
+			width: 100%;
+		}
 		.dpw_friends,
 		.dpw_groups,
 		.dpw_startpage,
@@ -153,16 +161,48 @@ class DP_Welcome_Pack_Admin {
 	}
 
 	/**
-	 * Support tab content for the admin page
+	 * Support tab content for the admin page.
+	 * Also handles contact form submission.
 	 *
 	 * @since 3.0
 	 */
 	protected function admin_page_support() {
+		// Email contact form
+		if ( !empty( $_POST['contact_body'] ) && !empty( $_POST['contact_type'] ) && !empty( $_POST['contact_email'] ) ) {
+			$body  = force_balance_tags( wp_filter_kses( stripslashes( $_POST['contact_body'] ) ) );
+			$type  = force_balance_tags( wp_filter_kses( stripslashes( $_POST['contact_type'] ) ) );
+			$email = sanitize_email( force_balance_tags( wp_filter_kses( stripslashes( $_POST['contact_email'] ) ) ) );
+
+			if ( $body && $type && $email && is_email( $email ) )
+				$email_sent = wp_mail( array( 'paul@byotos.com', $email ), "Welcome Pack support request: " . $type, $body );
+		}
 	?>
 
-		<p><?php printf( __( "All of BP Labs' experiments are in <a href='%s'>beta</a>, and come with no guarantees. They work best with the latest versions of WordPress and BuddyPress.", 'dpw' ), 'http://en.wikipedia.org/wiki/Software_release_life_cycle#Beta' ); ?></p>
-		<p><?php printf( __( 'If you have problems with this plugin or find a bug, please contact me by leaving a message on the <a href="%s">support forums</a>.', 'dpw' ), 'http://buddypress.org/community/groups/bp-labs/' ); ?></p>
+		<p><?php printf( __( "Have you found a bug or do you have a great idea for the next release? Please make a report on <a href='%s'>BuddyPress.org</a>, or use the form below to get in contact. We're listening.", 'dpw' ), 'http://buddypress.org/community/groups/welcome-pack/forum/' ); ?></p>	
 
+		<?php if ( isset( $email_sent ) ) : ?>
+			<div class="welcomepack updated below-h2">
+				<p><?php _e( "Thanks, we've received your message and have emailed you a copy for your records. We'll be in touch soon!", 'dpw' ); ?></p>
+			</div>
+		<?php endif; ?>
+
+		<form id="dpw_contact_form" name="contact_form" method="post" action="<?php echo admin_url( 'options-general.php?page=welcome-pack&amp;tab=support' ); ?>">
+			<p><?php _e( "What type of request do you have?", 'dpw' ); ?></p>
+			<select name="contact_type">
+				<option value="bug" selected="selected"><?php _e( "Bug report", 'dpw' ); ?></option>
+				<option value="idea"><?php _e( "Idea", 'dpw' ); ?></option>
+				<option value="suggestion"><?php _e( "Other support request", 'dpw' ); ?></option>
+			</select>
+
+			<p><?php _e( "How can we help?", 'dpw' ); ?></p>
+			<textarea id="contact_body" name="contact_body"></textarea>
+
+			<p><?php _e( "What's your email address?", 'dpw' ); ?></p>
+			<input type="text" name="contact_email" />
+			<br />
+
+			<input type="submit" class="button-primary" value="<?php _e( 'Send', 'dpw' ); ?>" />
+		</form>
 	<?php
 	}
 
@@ -179,7 +219,7 @@ class DP_Welcome_Pack_Admin {
 			<div id="message" class="updated below-h2"><p><?php _e( 'Your preferences have been updated.', 'dpw' ); ?></p></div>
 		<?php endif; ?>
 
-		<form method="post" action="options-general.php?page=welcome-pack" id="dpw-form">
+		<form method="post" action="<?php echo admin_url( 'options-general.php?page=welcome-pack' ); ?>" id="dpw-form">
 			<?php wp_nonce_field( 'closedpostboxes', 'closedpostboxesnonce', false ); ?>
 			<?php wp_nonce_field( 'meta-box-order', 'meta-box-order-nonce', false ); ?>
 			<?php wp_nonce_field( 'dpw-admin', 'dpw-admin-nonce', false ); ?>
@@ -344,7 +384,7 @@ class DP_Welcome_Pack_Admin {
 
 		<h4><?php _e( 'Versions', 'dpw' ); ?></h4>
 		<ul>
-			<li><?php printf( __( 'Welcome Pack: %s', 'dpw' ), BP_LABS_VERSION ); ?></li>
+			<li><?php printf( __( 'Welcome Pack: %s', 'dpw' ), WELCOME_PACK_VERSION ); ?></li>
 			<li><?php printf( __( 'BP_ROOT_BLOG: %s', 'dpw' ), $is_bp_root_blog ); ?></li>
 			<li><?php printf( __( 'BuddyPress: %s', 'dpw' ), BP_VERSION ); ?></li>
 			<li><?php printf( __( 'MySQL: %s', 'dpw' ), $wpdb->db_version() ); ?></li>
@@ -373,17 +413,17 @@ class DP_Welcome_Pack_Admin {
 	/**
 	 * Social media sharing metabox
 	 *
-	 * @since 3.0
 	 * @param array $settings Plugin settings (from DB)
+	 * @since 3.0
 	 */
 	public function like_this_plugin( $settings ) {
 	?>
 
-		<p><?php _e( 'Why not do any or all of the following:', 'dpw' ) ?></p>
+		<p><?php _e( 'Why not do any or all of the following:', 'dpw' ); ?></p>
 		<ul>
-			<li><p><a href="http://wordpress.org/extend/plugins/welcome-pack/"><?php _e( 'Give it a five star rating on WordPress.org.', 'dpw' ) ?></a></p></li>
-			<li><p><a href="http://buddypress.org/community/groups/welcome-pack/reviews/"><?php _e( 'Write a review on BuddyPress.org.', 'dpw' ) ?></a></p></li>
-			<li><p><a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&amp;business=P3K7Z7NHWZ5CL&amp;lc=GB&amp;item_name=B%2eY%2eO%2eT%2eO%2eS%20%2d%20BuddyPress%20plugins&amp;currency_code=GBP&amp;bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted"><?php _e( 'Fund development.', 'dpw' ) ?></a></p></li>
+			<li><p><a href="http://wordpress.org/extend/plugins/welcome-pack/"><?php _e( 'Give it a five star rating on WordPress.org.', 'dpw' ); ?></a></p></li>
+			<li><p><a href="http://buddypress.org/community/groups/welcome-pack/reviews/"><?php _e( 'Write a review on BuddyPress.org.', 'dpw' ); ?></a></p></li>
+			<li><p><a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&amp;business=P3K7Z7NHWZ5CL&amp;lc=GB&amp;item_name=B%2eY%2eO%2eT%2eO%2eS%20%2d%20BuddyPress%20plugins&amp;currency_code=GBP&amp;bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted"><?php _e( 'Fund development.', 'dpw' ); ?></a></p></li>
 			<li>
 				<g:plusone size="medium" href="http://wordpress.org/extend/plugins/welcome-pack/"></g:plusone>
 				<iframe class="fb" allowTransparency="true" frameborder="0" scrolling="no" src="http://www.facebook.com/plugins/like.php?href=http://wordpress.org/extend/plugins/welcome-pack/&amp;send=false&amp;layout=button_count&amp;width=90&amp;show_faces=false&amp;action=recommend&amp;colorscheme=light&amp;font=arial"></iframe>
@@ -396,8 +436,8 @@ class DP_Welcome_Pack_Admin {
 	/**
 	 * Paypal donate button metabox
 	 *
-	 * @since 3.0
 	 * @param array $settings Plugin settings (from DB)
+	 * @since 3.0
 	 */ 
 	public function paypal( $settings ) {
 	?>
@@ -437,43 +477,43 @@ function dpw_admin_screen() {
 	<div id="dpw-admin-metaboxes-general" class="wrap">
 
 		<div id="bp-admin-header">
-			<h3><?php _e( 'BuddyPress', 'dpw' ) ?></h3>
-			<h4><?php _e( 'Welcome Pack', 'dpw' ) ?></h4>
+			<h3><?php _e( 'BuddyPress', 'dpw' ); ?></h3>
+			<h4><?php _e( 'Welcome Pack', 'dpw' ); ?></h4>
 		</div>
 
 		<div id="bp-admin-nav">
 			<ol>
-				<li <?php echo 'class="current"' ?>><a href="<?php echo admin_url( 'options-general.php?page=welcome-pack' ) ?>"><?php _e( 'Friends, Groups <span class="ampersand">&amp;</span> Welcome Message', 'dpw' ) ?></a></li>
-				<li><a href="<?php echo admin_url( 'edit.php?post_type=dpw_email' ) ?>"><?php _e( 'Emails', 'dpw' ) ?></a></li>
+				<li <?php echo 'class="current"' ?>><a href="<?php echo admin_url( 'options-general.php?page=welcome-pack' ); ?>"><?php _e( 'Friends, Groups <span class="ampersand">&amp;</span> Welcome Message', 'dpw' ); ?></a></li>
+				<li><a href="<?php echo admin_url( 'edit.php?post_type=dpw_email' ); ?>"><?php _e( 'Emails', 'dpw' ); ?></a></li>
 			</ol>
 		</div>
 
 		<?php if ( isset( $_GET['updated'] ) ) : ?>
 			<div id="message" class="updated">
-				<p><?php _e( 'Your Welcome Pack settings have been saved.', 'dpw' ) ?></p>
+				<p><?php _e( 'Your Welcome Pack settings have been saved.', 'dpw' ); ?></p>
 			</div>
 		<?php endif; ?>
 
 		<div class="dpw-spacer">
-			<p><?php _e( 'When a user registers on your site, Welcome Pack lets you automatically send them a friend or group invitation, a Welcome Message and can redirect them to a Start Page.', 'dpw' ) ?></p>
+			<p><?php _e( 'When a user registers on your site, Welcome Pack lets you automatically send them a friend or group invitation, a Welcome Message and can redirect them to a Start Page.', 'dpw' ); ?></p>
 		</div>
 
 		<form method="post" action="options.php" id="welcomepack">
-			<?php wp_nonce_field( 'closedpostboxes', 'closedpostboxesnonce', false ) ?>
-			<?php wp_nonce_field( 'meta-box-order', 'meta-box-order-nonce', false ) ?>
-			<?php settings_fields( 'dpw-settings-group' ) ?>
+			<?php wp_nonce_field( 'closedpostboxes', 'closedpostboxesnonce', false ); ?>
+			<?php wp_nonce_field( 'meta-box-order', 'meta-box-order-nonce', false ); ?>
+			<?php settings_fields( 'dpw-settings-group' ); ?>
 
 			<div id="poststuff" class="metabox-holder<?php echo ( 2 == $screen_layout_columns ) ? ' has-right-sidebar' : '' ?>">
 				<div id="side-info-column" class="inner-sidebar">
-					<?php do_meta_boxes( 'settings_page_welcome-pack', 'side', $settings ) ?>
+					<?php do_meta_boxes( 'settings_page_welcome-pack', 'side', $settings ); ?>
 				</div>
 
 				<div id="post-body" class="has-sidebar">
 					<div id="post-body-content" class="has-sidebar-content">
-						<?php do_meta_boxes( 'settings_page_welcome-pack', 'normal', $settings ) ?>
+						<?php do_meta_boxes( 'settings_page_welcome-pack', 'normal', $settings ); ?>
 					</div>
 
-					<p><input type="submit" class="button-primary" value="<?php _e( 'Save Welcome Pack Settings', 'dpw' ) ?>" /></p>
+					<p><input type="submit" class="button-primary" value="<?php _e( 'Save Welcome Pack Settings', 'dpw' ); ?>" /></p>
 				</div>
 			</div><!-- #poststuff -->
 		</form>
@@ -522,12 +562,12 @@ function dpw_admin_screen_configurationbox( $settings ) {
 	<?php if ( bp_is_active( 'friends' ) ) : ?>
 		<div class="setting setting-group setting-friends <?php if ( !$friendstoggle ) echo 'initially-hidden' ?>">
 			<div class="settingname">
-				<p><?php _e( 'Invite the new user to become friends with these people:', 'dpw' ) ?></p>
+				<p><?php _e( 'Invite the new user to become friends with these people:', 'dpw' ); ?></p>
 			</div>
 			<div class="settingvalue">
 				<select multiple="multiple" name="welcomepack[friends][]" style="overflow-y: hidden">
 				<?php foreach ( (array)$members as $member ) : ?>
-					<option value="<?php echo esc_attr( apply_filters( 'bp_get_member_user_id', $member->ID ) ) ?>"<?php foreach ( (array)$friends as $id ) { if ( $member->ID == $id ) echo " selected='selected'"; } ?>><?php echo apply_filters( 'bp_core_get_user_displayname', $member->display_name, $member->ID ) ?></option>
+					<option value="<?php echo esc_attr( apply_filters( 'bp_get_member_user_id', $member->ID ) ); ?>"<?php foreach ( (array)$friends as $id ) { if ( $member->ID == $id ) echo " selected='selected'"; } ?>><?php echo apply_filters( 'bp_core_get_user_displayname', $member->display_name, $member->ID ); ?></option>
 				<?php endforeach; ?>
 				</select>
 			</div>
@@ -538,12 +578,12 @@ function dpw_admin_screen_configurationbox( $settings ) {
 	<?php if ( bp_is_active( 'groups' ) ) : ?>
 		<div class="setting setting-group setting-groups <?php if ( !$groupstoggle ) echo 'initially-hidden' ?>">
 			<div class="settingname">
-				<p><?php _e( "Ask the new user if they'd like to join these groups:", 'dpw' ) ?></p>
+				<p><?php _e( "Ask the new user if they'd like to join these groups:", 'dpw' ); ?></p>
 			</div>
 			<div class="settingvalue">
 				<select multiple="multiple" name="welcomepack[groups][]">
 				<?php foreach( (array)$groups as $group ) : ?>
-					<option value="<?php echo esc_attr( apply_filters( 'bp_get_group_id', $group->id ) ) ?>"<?php foreach ( (array)$groups as $id ) { if ( $group->id == $id ) echo " selected='selected'"; } ?>><?php echo apply_filters( 'bp_get_group_name', $group->name ) ?></option>
+					<option value="<?php echo esc_attr( apply_filters( 'bp_get_group_id', $group->id ) ); ?>"<?php foreach ( (array)$groups as $id ) { if ( $group->id == $id ) echo " selected='selected'"; } ?>><?php echo apply_filters( 'bp_get_group_name', $group->name ); ?></option>
 				<?php endforeach; ?>
 				</select>
 			</div>
@@ -554,10 +594,10 @@ function dpw_admin_screen_configurationbox( $settings ) {
 	<div class="setting-group setting-startpage <?php if ( !$startpagetoggle ) echo 'initially-hidden' ?>">
 		<div class="setting wide">
 			<div class="settingname">
-				<p><?php _e( "When the new user logs into your site for the very first time, redirect them to this URL:", 'dpw' ) ?></p>
+				<p><?php _e( "When the new user logs into your site for the very first time, redirect them to this URL:", 'dpw' ); ?></p>
 			</div>
 			<div class="settingvalue">
-				<input type="url" name="welcomepack[startpage]" value="<?php echo esc_attr( apply_filters( 'dpw_admin_settings_startpage', $startpage ) ) ?>" />
+				<input type="url" name="welcomepack[startpage]" value="<?php echo esc_attr( apply_filters( 'dpw_admin_settings_startpage', $startpage ) ); ?>" />
 			</div>
 			<div style="clear: left"></div>
 		</div>
@@ -567,32 +607,32 @@ function dpw_admin_screen_configurationbox( $settings ) {
 		<div class="setting-welcomemsg setting-group <?php if ( !$welcomemsgtoggle ) echo 'initially-hidden' ?>">
 			<div class="setting wide">
 				<div class="settingname">
-					<p><?php _e( 'Send the new user a Welcome Message&hellip;', 'dpw' ) ?></p>
+					<p><?php _e( 'Send the new user a Welcome Message&hellip;', 'dpw' ); ?></p>
 				</div>
 				<div class="settingvalue">
-					<textarea name="welcomepack[welcomemsg]"><?php echo apply_filters( 'dpw_admin_settings_welcomemsg', $welcomemsg ) ?></textarea>
+					<textarea name="welcomepack[welcomemsg]"><?php echo apply_filters( 'dpw_admin_settings_welcomemsg', $welcomemsg ); ?></textarea>
 				</div>
 				<div style="clear: left"></div>
 			</div>
 
 			<div class="setting">
 				<div class="settingname">
-					<p><?php _e( '&hellip;with this subject:', 'dpw' ) ?></p>
+					<p><?php _e( '&hellip;with this subject:', 'dpw' ); ?></p>
 				</div>
 				<div class="settingvalue">
-					<input type="text" name="welcomepack[welcomemsgsubject]" value="<?php echo esc_attr( apply_filters( 'dpw_admin_settings_welcomemsg_subject', $welcomemsgsubject ) ) ?>" />
+					<input type="text" name="welcomepack[welcomemsgsubject]" value="<?php echo esc_attr( apply_filters( 'dpw_admin_settings_welcomemsg_subject', $welcomemsgsubject ) ); ?>" />
 				</div>
 				<div style="clear: left"></div>
 			</div>
 
 			<div class="setting">
 				<div class="settingname">
-					<p><?php _e( '&hellip;from this user:', 'dpw' ) ?></p>
+					<p><?php _e( '&hellip;from this user:', 'dpw' ); ?></p>
 				</div>
 				<div class="settingvalue">
 					<select name="welcomepack[welcomemsgsender]">
 					<?php foreach ( (array)$members as $member ) : ?>
-						<option value="<?php echo esc_attr( apply_filters( 'bp_get_member_user_id', $member->ID ) ) ?>"<?php if ( $welcomemsgsender && $member->ID == $welcomemsgsender ) echo " selected='selected'"; ?>><?php echo apply_filters( 'bp_core_get_user_displayname', $member->display_name, $member->ID ) ?></option>
+						<option value="<?php echo esc_attr( apply_filters( 'bp_get_member_user_id', $member->ID ) ); ?>"<?php if ( $welcomemsgsender && $member->ID == $welcomemsgsender ) echo " selected='selected'"; ?>><?php echo apply_filters( 'bp_core_get_user_displayname', $member->display_name, $member->ID ); ?></option>
 					<?php endforeach; ?>
 					</select>
 				</div>

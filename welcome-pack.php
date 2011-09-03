@@ -92,8 +92,7 @@ class DP_Welcome_Pack {
 	 * @since 3.0
 	 */
 	public function __construct() {
-		add_action( 'admin_menu', array( $this, 'admin_menu' ) );
-
+		add_action( bp_core_admin_hook(), array( $this, 'setup_admin_menu' ) );
 		add_filter( 'plugin_action_links', array( $this, 'add_settings_link' ), 10, 2 );
 	}
 
@@ -102,7 +101,7 @@ class DP_Welcome_Pack {
 	 *
 	 * @since 3.0
 	 */
-	public function admin_menu() {
+	public function setup_admin_menu() {
 		if ( !is_admin() || ( !is_user_logged_in() || !is_super_admin() ) )
 			return;
 
@@ -121,7 +120,7 @@ class DP_Welcome_Pack {
 		if ( 'welcome-pack/welcome-pack.php' != $file )
 			return $links;
 
-		array_unshift( $links, sprintf( '<a href="%s">%s</a>', admin_url( 'admin.php?page=welcome-pack' ), __( 'Settings', 'dpw' ) ); );
+		array_unshift( $links, sprintf( '<a href="%s">%s</a>', admin_url( 'options-general.php?page=welcome-pack' ), __( 'Settings', 'dpw' ) ) );
 		do_action( 'dpw_add_settings_link' );
 
 		return $links;
@@ -134,7 +133,7 @@ class DP_Welcome_Pack {
 	 * @static
 	 */
 	public static function get_settings() {
-		//return get_site_option( '', array() );
+		return get_site_option( 'welcomepack', array( 'dpw_welcomemsgtoggle' => false, 'dpw_friendstoggle' => false, 'dpw_groupstoggle' => false, 'dpw_startpagetoggle' => false, 'dpw_startpagetoggle' => false ) );
 	}
 }
 add_action( 'bp_include', array( 'DP_Welcome_Pack', 'init' ) );

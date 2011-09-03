@@ -24,7 +24,7 @@ class DP_Welcome_Pack_Admin {
 	 * @since 3.0
 	 */
 	public function __construct() {
-		add_action( bp_core_admin_hook(), array( $this, 'setup_menu' ) );
+		$this->setup_menu();
 	}
 
 	/**
@@ -32,9 +32,9 @@ class DP_Welcome_Pack_Admin {
 	 *
 	 * @since 3.0
 	 */
-	public function setup_menu() {
-		add_submenu_page( 'bp-general-settings', __( 'Welcome Pack', 'dpw' ), __( 'Welcome Pack', 'dpw' ), 'manage_options', 'welcome-pack', array( $this, 'admin_page' ) );
-		add_action( 'load-buddypress_page_welcome-pack', array( $this, 'init' ) );
+	protected function setup_menu() {
+		add_options_page( __( 'Welcome Pack', 'dpw' ), __( 'Welcome Pack', 'dpw' ), 'manage_options', 'welcome-pack', array( $this, 'admin_page' ) );
+		add_action( 'load-settings_page_welcome-pack', array( $this, 'init' ) );
 	}
 
 	/**
@@ -59,13 +59,13 @@ class DP_Welcome_Pack_Admin {
 
 		// Support tab
 		if ( 'support' == $tab )
-			add_meta_box( 'dpw-helpushelpyou', __( 'Help Me Help You', 'dpw' ), array( $this, 'helpushelpyou'), 'buddypress_page_welcome-pack', 'side', 'high' );
+			add_meta_box( 'dpw-helpushelpyou', __( 'Help Me Help You', 'dpw' ), array( $this, 'helpushelpyou'), 'settings_page_welcome-pack', 'side', 'high' );
 		else
-			add_meta_box( 'dpw-likethis', __( 'Love BP Labs?', 'dpw' ), array( $this, 'like_this_plugin' ), 'buddypress_page_welcome-pack', 'side', 'default' );
+			add_meta_box( 'dpw-likethis', __( 'Love BP Labs?', 'dpw' ), array( $this, 'like_this_plugin' ), 'settings_page_welcome-pack', 'side', 'default' );
 
 		// All tabs
-		add_meta_box( 'dpw-paypal', __( 'Give Kudos', 'dpw' ), array( $this, '_paypal' ), 'buddypress_page_welcome-pack', 'side', 'default' );
-		add_meta_box( 'dpw-latest', __( 'Latest News', 'dpw' ), array( $this, 'metabox_latest_news' ), 'buddypress_page_welcome-pack', 'side', 'default' );
+		add_meta_box( 'dpw-paypal', __( 'Give Kudos', 'dpw' ), array( $this, 'paypal' ), 'settings_page_welcome-pack', 'side', 'default' );
+		add_meta_box( 'dpw-latest', __( 'Latest News', 'dpw' ), array( $this, 'metabox_latest_news' ), 'settings_page_welcome-pack', 'side', 'default' );
 
 		wp_enqueue_script( 'postbox' );
 		wp_enqueue_script( 'dashboard' );
@@ -83,24 +83,19 @@ class DP_Welcome_Pack_Admin {
 	 * Outputs admin page HTML
 	 *
 	 * @global int $screen_layout_columns Number of columns shown on this admin page
-	 * @since 1.1
+	 * @since 3.0
 	 */
 	public function admin_page() {
 		global $screen_layout_columns;
 
-		if ( !empty( $_GET['tab'] ) ) {
-			if ( 'support' == $_GET['tab'] )
-				$tab = 'support';
-			elseif ( 'activity' == $_GET['tab'] && class_exists( 'BP_Component' ) )
-				$tab = 'activity';
-
-		}	else {
+		if ( !empty( $_GET['tab'] ) && 'support' == $_GET['tab'] )
+			$tab = 'support';
+		else
 			$tab = 'settings';
-		}
 
 		$updated  = $this->maybe_save();
-		$url      = network_admin_url( 'admin.php?page=bplabs' );
-		$settings = BPLabs::get_settings();
+		$url      = network_admin_url( 'options-general.php?page=welcome-pack' );
+		$settings = DP_Welcome_Pack::get_settings();
 	?>
 
 		<style type="text/css">
@@ -119,9 +114,10 @@ class DP_Welcome_Pack_Admin {
 		#dpw-paypal .inside {
 			text-align: center;
 		}
-		.bpl_autosuggest,
-		.bpl_quickadmin,
-		.bpl_akismet {
+		.dpw_friends,
+		.dpw_groups,
+		.dpw_startpage,
+		.dpw_welcomemsg {
 			margin-right: 2em;
 		}
 		</style>
@@ -130,14 +126,13 @@ class DP_Welcome_Pack_Admin {
 			<?php screen_icon( 'options-general' ); ?>
 
 			<h2 class="nav-tab-wrapper">
-				<a href="<?php echo esc_attr( $url ); ?>"                       class="nav-tab <?php if ( 'settings' == $tab )  : ?>nav-tab-active<?php endif; ?>"><?php _e( 'BP Labs', 'dpw' );     ?></a>
-				<a href="<?php echo esc_attr( $url . '&amp;tab=activity' ); ?>" class="nav-tab <?php if ( 'activity' == $tab  ) : ?>nav-tab-active<?php endif; ?>"><?php _e( 'Activity Stream Spam', 'dpw' ); ?></a>
+				<a href="<?php echo esc_attr( $url ); ?>"                       class="nav-tab <?php if ( 'settings' == $tab )  : ?>nav-tab-active<?php endif; ?>"><?php _e( 'Welcome Pack', 'dpw' );     ?></a>
 				<a href="<?php echo esc_attr( $url . '&amp;tab=support' ); ?>"  class="nav-tab <?php if ( 'support'  == $tab  ) : ?>nav-tab-active<?php endif; ?>"><?php _e( 'Get Support', 'dpw' ); ?></a>
 			</h2>
 
 			<div id="poststuff" class="metabox-holder<?php echo 2 == $screen_layout_columns ? ' has-right-sidebar' : ''; ?>">
 				<div id="side-info-column" class="inner-sidebar">
-					<?php do_meta_boxes( 'buddypress_page_welcome-pack', 'side', $settings ); ?>
+					<?php do_meta_boxes( 'settings_page_welcome-pack', 'side', $settings ); ?>
 				</div>
 
 				<div id="post-body" class="has-sidebar">
@@ -145,8 +140,6 @@ class DP_Welcome_Pack_Admin {
 						<?php
 						if ( 'support' == $tab )
 							$this->admin_page_support();
-						elseif ( 'activity' == $tab )
-							$this->admin_page_activity();
 						else
 							$this->admin_page_settings( $settings, $updated );
 						?>
@@ -162,7 +155,7 @@ class DP_Welcome_Pack_Admin {
 	/**
 	 * Support tab content for the admin page
 	 *
-	 * @since 1.1
+	 * @since 3.0
 	 */
 	protected function admin_page_support() {
 	?>
@@ -178,7 +171,7 @@ class DP_Welcome_Pack_Admin {
 	 *
 	 * @param array $settings Plugin settings (from DB)
 	 * @param bool $updated Have settings been updated on the previous page submission?
-	 * @since 1.1
+	 * @since 3.0
 	 */
 	protected function admin_page_settings( $settings, $updated ) {
 	?>
@@ -186,27 +179,32 @@ class DP_Welcome_Pack_Admin {
 			<div id="message" class="updated below-h2"><p><?php _e( 'Your preferences have been updated.', 'dpw' ); ?></p></div>
 		<?php endif; ?>
 
-		<form method="post" action="admin.php?page=bplabs" id="bpl-labs-form">
+		<form method="post" action="options-general.php?page=welcome-pack" id="dpw-form">
 			<?php wp_nonce_field( 'closedpostboxes', 'closedpostboxesnonce', false ); ?>
 			<?php wp_nonce_field( 'meta-box-order', 'meta-box-order-nonce', false ); ?>
-			<?php wp_nonce_field( 'bpl-admin', 'bpl-admin-nonce', false ); ?>
+			<?php wp_nonce_field( 'dpw-admin', 'dpw-admin-nonce', false ); ?>
 
-			<p><?php _e( 'BP Labs contains unofficial BuddyPress experiments which I am making available for testing, feedback, and to give people new shiny toys for their websites.', 'dpw' ); ?></p>
+			<p><?php _e( 'When a user registers on your site, Welcome Pack lets you automatically send them a friend or group invitation, a Welcome Message and can redirect them to a Start Page.', 'dpw' ); ?></p>
 
-			<h4><?php _e( '@mentions autosuggest', 'dpw' ); ?></h4>
-			<p><?php _e( '@mentions autosuggest requires the Activity Stream component, and extends its @messaging feature to help you find the short name of a user. It is integrated into comments, the "What\'s New" activity status box, Private Messaging (body) and bbPress forums. To trigger the autosuggest, type an @ followed by at least one other letter.', 'dpw' ); ?></p>
-			<label><?php _e( 'On', 'dpw' ); ?> <input type="radio" name="bpl_autosuggest" class="bpl_autosuggest" value="on" <?php checked( $settings['autosuggest'] ); ?>/></label>
-			<label><?php _e( 'Off', 'dpw' ); ?> <input type="radio" name="bpl_autosuggest" class="bpl_autosuggest" value="off" <?php checked( $settings['autosuggest'], false ); ?>/></label>
+			<h4><?php _e( 'Friends', 'dpw' ); ?></h4>
+			<p><?php _e( "Invite the new user to become friends with certain members. It's a great way of teaching people how the friend acceptance process works on your site, and how they can use friendships to filter activity streams.", 'dpw' ); ?></p>
+			<label><?php _e( 'On', 'dpw' ); ?> <input type="radio" name="dpw_friendstoggle" class="dpw_friends" value="on" <?php checked( $settings['dpw_friendstoggle'] ); ?>/></label>
+			<label><?php _e( 'Off', 'dpw' ); ?> <input type="radio" name="dpw_friendstoggle" class="dpw_friends" value="off" <?php checked( $settings['dpw_friendstoggle'], false ); ?>/></label>
 
-			<h4><?php _e( 'Quick Admin', 'dpw' ); ?></h4>
-			<p><?php _e( 'Quick Admin requires Groups, and affects the group directory. Designed to help speed up accessing admin screens for each group, hovering over each group in the directory will reveal links to the admin screens for that group.', 'dpw' ); ?></p>
-			<label><?php _e( 'On', 'dpw' ); ?> <input type="radio" name="bpl_quickadmin" class="bpl_quickadmin" value="on" <?php checked( $settings['quickadmin'] ); ?>/></label>
-			<label><?php _e( 'Off', 'dpw' ); ?> <input type="radio" name="bpl_quickadmin" class="bpl_quickadmin" value="off" <?php checked( $settings['quickadmin'], false ); ?>/></label>
+			<h4><?php _e( 'Groups', 'dpw' ); ?></h4>
+			<p><?php _e( "Ask the new user if they'd like to join a group. You could use this to invite all new users on your site to join a support group, to keep all of your frequently asked questions in the same place.", 'dpw' ); ?></p>
+			<label><?php _e( 'On', 'dpw' ); ?> <input type="radio" name="dpw_groupstoggle" class="dpw_groups" value="on" <?php checked( $settings['dpw_groupstoggle'] ); ?>/></label>
+			<label><?php _e( 'Off', 'dpw' ); ?> <input type="radio" name="dpw_groupstoggle" class="dpw_groups" value="off" <?php checked( $settings['dpw_groupstoggle'], false ); ?>/></label>
 
-			<h4><?php _e( 'Activity Stream Spam', 'dpw' ); ?></h4>
-			<p><?php printf( __( "Keep your Activity Stream minty-fresh with Automattic's Akismet spam filtering service; requires the <a href='%s'>Akismet WordPress plugin</a> and version 1.5 of BuddyPress.", 'dpw' ), 'http://wordpress.org/extend/plugins/akismet/' ); ?></p>
-			<label><?php _e( 'On', 'dpw' ); ?> <input type="radio" name="bpl_akismet" class="bpl_akismet" value="on" <?php checked( $settings['akismet'] ); ?>/></label>
-			<label><?php _e( 'Off', 'dpw' ); ?> <input type="radio" name="bpl_akismet" class="bpl_akismet" value="off" <?php checked( $settings['akismet'], false ); ?>/></label>
+			<h4><?php _e( 'Start Page', 'dpw' ); ?></h4>
+			<p><?php _e( "When the new user logs into your site for the very first time, use Start Page to redirect them anywhere you'd like. This complements the Welcome Message fantastically; create a page or blog post which showcases the features of your site.", 'dpw' ); ?></p>
+			<label><?php _e( 'On', 'dpw' ); ?> <input type="radio" name="dpw_startpagetoggle" class="dpw_startpage" value="on" <?php checked( $settings['dpw_startpagetoggle'] ); ?>/></label>
+			<label><?php _e( 'Off', 'dpw' ); ?> <input type="radio" name="dpw_startpagetoggle" class="dpw_startpage" value="off" <?php checked( $settings['dpw_startpagetoggle'], false ); ?>/></label>
+
+			<h4><?php _e( 'Welcome Message', 'dpw' ); ?></h4>
+			<p><?php _e( "Send the newly-registered user a private message; use this to welcome people to your site and help them get started.", 'dpw' ); ?></p>
+			<label><?php _e( 'On', 'dpw' ); ?> <input type="radio" name="dpw_welcomemsgtoggle" class="dpw_welcomemsg" value="on" <?php checked( $settings['dpw_welcomemsgtoggle'] ); ?>/></label>
+			<label><?php _e( 'Off', 'dpw' ); ?> <input type="radio" name="dpw_welcomemsgtoggle" class="dpw_welcomemsg" value="off" <?php checked( $settings['dpw_welcomemsgtoggle'], false ); ?>/></label>
 
 			<p><input type="submit" class="button-primary" value="<?php _e( 'Update Settings', 'dpw' ); ?>" /></p>
 		</form>
@@ -222,33 +220,40 @@ class DP_Welcome_Pack_Admin {
 	 * @static
 	 */
 	protected static function maybe_save() {
-		$settings = $existing_settings = BPLabs::get_settings();
+		$settings = $existing_settings = DP_Welcome_Pack::get_settings();
 		$updated  = false;
 
-		if ( !empty( $_POST['bpl_autosuggest'] ) ) {
-			if ( 'on' == $_POST['bpl_autosuggest'] )
-				$settings['autosuggest'] = true;
+		if ( !empty( $_POST['dpw_friendstoggle'] ) ) {
+			if ( 'on' == $_POST['dpw_friendstoggle'] )
+				$settings['dpw_friendstoggle'] = true;
 			else
-				$settings['autosuggest'] = false;
+				$settings['dpw_friendstoggle'] = false;
 		}
 
-		if ( !empty( $_POST['bpl_quickadmin'] ) ) {
-			if ( 'on' == $_POST['bpl_quickadmin'] )
-				$settings['quickadmin'] = true;
+		if ( !empty( $_POST['dpw_groupstoggle'] ) ) {
+			if ( 'on' == $_POST['dpw_groupstoggle'] )
+				$settings['dpw_groupstoggle'] = true;
 			else
-				$settings['quickadmin'] = false;
+				$settings['dpw_groupstoggle'] = false;
 		}
 
-		if ( !empty( $_POST['bpl_akismet'] ) ) {
-			if ( 'on' == $_POST['bpl_akismet'] )
-				$settings['akismet'] = true;
+		if ( !empty( $_POST['dpw_startpagetoggle'] ) ) {
+			if ( 'on' == $_POST['dpw_startpagetoggle'] )
+				$settings['dpw_startpagetoggle'] = true;
 			else
-				$settings['akismet'] = false;
+				$settings['dpw_startpagetoggle'] = false;
+		}
+
+		if ( !empty( $_POST['dpw_welcomemsgtoggle'] ) ) {
+			if ( 'on' == $_POST['dpw_welcomemsgtoggle'] )
+				$settings['dpw_welcomemsgtoggle'] = true;
+			else
+				$settings['dpw_welcomemsgtoggle'] = false;
 		}
 
 		if ( $settings != $existing_settings ) {
-			check_admin_referer( 'bpl-admin', 'bpl-admin-nonce' );
-			update_site_option( 'bplabs', $settings );
+			check_admin_referer( 'dpw-admin', 'dpw-admin-nonce' );
+			update_site_option( 'welcomepack', $settings );
 			$updated = true;
 		}
 
@@ -394,7 +399,7 @@ class DP_Welcome_Pack_Admin {
 	 * @since 3.0
 	 * @param array $settings Plugin settings (from DB)
 	 */ 
-	function _paypal( $settings ) {
+	public function paypal( $settings ) {
 	?>
 
 		<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
@@ -417,7 +422,7 @@ new DP_Welcome_Pack_Admin();
 
 
 /**
- * Produces the main admin page (/admin.php?page=welcome-pack)
+ * Produces the main admin page (/options-general.php?page=welcome-pack)
  *
  * @global int $screen_layout_columns Number of columns to display
  * @see dpw_add_admin_menu()
@@ -438,7 +443,7 @@ function dpw_admin_screen() {
 
 		<div id="bp-admin-nav">
 			<ol>
-				<li <?php echo 'class="current"' ?>><a href="<?php echo admin_url( 'admin.php?page=welcome-pack' ) ?>"><?php _e( 'Friends, Groups <span class="ampersand">&amp;</span> Welcome Message', 'dpw' ) ?></a></li>
+				<li <?php echo 'class="current"' ?>><a href="<?php echo admin_url( 'options-general.php?page=welcome-pack' ) ?>"><?php _e( 'Friends, Groups <span class="ampersand">&amp;</span> Welcome Message', 'dpw' ) ?></a></li>
 				<li><a href="<?php echo admin_url( 'edit.php?post_type=dpw_email' ) ?>"><?php _e( 'Emails', 'dpw' ) ?></a></li>
 			</ol>
 		</div>
@@ -460,12 +465,12 @@ function dpw_admin_screen() {
 
 			<div id="poststuff" class="metabox-holder<?php echo ( 2 == $screen_layout_columns ) ? ' has-right-sidebar' : '' ?>">
 				<div id="side-info-column" class="inner-sidebar">
-					<?php do_meta_boxes( 'buddypress_page_welcome-pack', 'side', $settings ) ?>
+					<?php do_meta_boxes( 'settings_page_welcome-pack', 'side', $settings ) ?>
 				</div>
 
 				<div id="post-body" class="has-sidebar">
 					<div id="post-body-content" class="has-sidebar-content">
-						<?php do_meta_boxes( 'buddypress_page_welcome-pack', 'normal', $settings ) ?>
+						<?php do_meta_boxes( 'settings_page_welcome-pack', 'normal', $settings ) ?>
 					</div>
 
 					<p><input type="submit" class="button-primary" value="<?php _e( 'Save Welcome Pack Settings', 'dpw' ) ?>" /></p>
@@ -595,110 +600,5 @@ function dpw_admin_screen_configurationbox( $settings ) {
 			</div>
 		</div>
 	<?php endif;
-}
-
-function dpw_admin_screen_settingsbox( $settings ) {
-?>
-<div class="component">
-	<h5><?php _e( "Friends", 'dpw' ) ?>
-		<div class="radio">
-			<?php dpw_admin_settings_toggle( 'friends', $settings ) ?>
-		</div>
-	</h5>
-
-	<p><?php _e( "Invite the new user to become friends with certain members. It's a great way of teaching people how the friend acceptance process works on your site, and how they can use friendships to filter activity streams.", 'dpw' ) ?></p>
-</div>
-
-<div class="component">
-	<h5><?php _e( "Groups", 'dpw' ) ?>
-		<div class="radio">
-			<?php dpw_admin_settings_toggle( 'groups', $settings ) ?>
-		</div>
-	</h5>
-
-	<p><?php _e( "Ask the new user if they'd like to join a group. You could use this to invite all new users on your site to join a support group, to keep all of your frequently asked questions in the same place.", 'dpw' ) ?></p>
-</div>
-
-<div class="component">
-	<h5><?php _e( "Start Page", 'dpw' ) ?>
-		<div class="radio">
-			<?php dpw_admin_settings_toggle( 'startpage', $settings ) ?>
-		</div>
-	</h5>
-	<p><?php _e( "When the new user logs into your site for the very first time, use Start Page to redirect them anywhere you'd like. This complements the Welcome Message fantastically; create a page or blog post which showcases the features of your site.", 'dpw' ) ?></p>
-</div>
-
-<div class="component">
-	<h5><?php _e( "Welcome Message", 'dpw' ) ?>
-		<div class="radio">
-			<?php dpw_admin_settings_toggle( 'welcomemsg', $settings ) ?>
-		</div>
-	</h5>
-	<p><?php _e( "Send the newly-registered user a private message; use this to welcome people to your site and help them get started.", 'dpw' ) ?></p>
-</div>
-<?php
-}
-
-/**
- * Convenience function for the main settings panel for the friends, groups, start page and welcome message toggle boxes.
- *
- * @param string $name Name of the current option
- * @param array $settings get_site_option( 'welcomepack' )
- * @since 2.0
- */
-function dpw_admin_settings_toggle( $name, $settings ) {
-	$checked = ( !empty( $settings["{$name}toggle"] ) ) ? $settings["{$name}toggle"] : false;
-?>
-	<input type="radio" class="<?php echo esc_attr( $name ) ?>" name="welcomepack[<?php echo esc_attr( $name ) ?>toggle]" value="1" <?php if (  $checked ) echo 'checked="checked" ' ?>/> <?php _e( 'Enabled', 'dpw' ) ?> &nbsp;
-	<input type="radio" class="<?php echo esc_attr( $name ) ?>" name="welcomepack[<?php echo esc_attr( $name ) ?>toggle]" value="0" <?php if ( !$checked ) echo 'checked="checked" ' ?>/> <?php _e( 'Disabled', 'dpw' ) ?>
-<?php
-}
-
-/**
- * Validation function for the options.php settings API.
- *
- * @param array $input form input
- * @see dpw_admin_register_settings()
- * @since 2.0
- */
-function dpw_admin_validate( $input ) {
-	$current_settings = get_site_option( 'welcomepack' );
-
-	if ( is_string( $input ) )  // wpmu-edit.php
-		return $current_settings;
-
-	if ( isset( $input['friends'] ) )
-		foreach ( (array)$input['friends'] as $friend_id )
-			$friend_id = apply_filters( 'dpw_admin_validate_friend_id', $friend_id );
-
-	if ( isset( $input['groups'] ) )
-		foreach ( (array)$input['groups'] as $group_id )
-			$group_id = apply_filters( 'dpw_admin_validate_group_id', $group_id );
-
-	if ( isset( $input['startpage'] ) )
-		$input['startpage'] = esc_url_raw( apply_filters( 'dpw_admin_settings_startpage', $input['startpage'] ) );
-
-	if ( isset( $input['welcomemsg'] ) )
-		$input['welcomemsg'] = apply_filters( 'dpw_admin_settings_welcomemsg', $input['welcomemsg'] );
-
-	if ( isset( $input['welcomemsgsubject'] ) )
-		$input['welcomemsgsubject'] = apply_filters( 'dpw_admin_settings_welcomemsg_subject', $input['welcomemsgsubject'] );
-
-	if ( isset( $input['welcomemsgsender'] ) )
-		$input['welcomemsgsender'] = apply_filters( 'dpw_admin_validate_sender_id', $input['welcomemsgsender'] );
-
-	if ( isset( $input['groupstoggle'] ) )
-		$input['groupstoggle'] = ( $input['groupstoggle'] ) ? true : false;
-
-	if ( isset( $input['friendstoggle'] ) )
-		$input['friendstoggle'] = ( $input['friendstoggle'] ) ? true : false;
-
-	if ( isset( $input['startpagetoggle'] ) )
-		$input['startpagetoggle'] = ( $input['startpagetoggle'] ) ? true : false;
-
-	if ( isset( $input['welcomemsgtoggle'] ) )
-		$input['welcomemsgtoggle'] = ( $input['welcomemsgtoggle'] ) ? true : false;
-
-	return wp_parse_args( $input, $current_settings );
 }
 ?>

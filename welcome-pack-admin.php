@@ -262,7 +262,7 @@ class DP_Welcome_Pack_Admin {
 	 * Check for and handle form submission.
 	 *
 	 * @return bool Have settings been updated?
-	 * @since 1.1
+	 * @since 3.0
 	 * @static
 	 */
 	protected static function maybe_save() {

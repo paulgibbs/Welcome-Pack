@@ -88,10 +88,33 @@ class DP_Welcome_Pack_Admin {
 	public function admin_page() {
 		global $screen_layout_columns;
 
-		if ( !empty( $_GET['tab'] ) && 'support' == $_GET['tab'] )
-			$tab = 'support';
-		else
+		if ( !empty( $_GET['tab'] ) ) {
+			switch ( $_GET['tab'] ) {
+				default:
+				case 'support':
+					$tab = 'support';
+				break;
+
+				case 'groups':
+					$tab = 'groups';
+				break;
+
+				case 'members':
+					$tab = 'members';
+				break;
+
+				case 'startpage':
+					$tab = 'startpage';
+				break;
+
+				case 'welcomemessage':
+					$tab = 'welcomemessage';
+				break;
+			}
+
+		} else {
 			$tab = 'settings';
+		}
 
 		$updated  = $this->maybe_save();
 		$url      = network_admin_url( 'options-general.php?page=welcome-pack' );
@@ -135,8 +158,25 @@ class DP_Welcome_Pack_Admin {
 			<?php screen_icon( 'options-general' ); ?>
 
 			<h2 class="nav-tab-wrapper">
-				<a href="<?php echo esc_attr( $url ); ?>"                       class="nav-tab <?php if ( 'settings' == $tab )  : ?>nav-tab-active<?php endif; ?>"><?php _e( 'Components', 'dpw' );     ?></a>
-				<a href="<?php echo esc_attr( $url . '&amp;tab=support' ); ?>"  class="nav-tab <?php if ( 'support'  == $tab  ) : ?>nav-tab-active<?php endif; ?>"><?php _e( 'Get Support', 'dpw' ); ?></a>
+				<a href="<?php echo esc_attr( $url ); ?>" class="nav-tab <?php if ( 'settings' == $tab )  : ?>nav-tab-active<?php endif; ?>"><?php _e( 'Settings', 'dpw' );    ?></a>
+
+				<?php if ( $settings['dpw_friendstoggle'] ) : ?>
+					<a href="<?php echo esc_attr( $url . '&amp;tab=members' ); ?>" class="nav-tab <?php if ( 'members'  == $tab  ) : ?>nav-tab-active<?php endif; ?>"><?php _e( 'Friends', 'dpw' ); ?></a>
+				<?php endif; ?>
+
+				<?php if ( $settings['dpw_groupstoggle'] ) : ?>
+					<a href="<?php echo esc_attr( $url . '&amp;tab=groups' ); ?>" class="nav-tab <?php if ( 'groups'  == $tab  ) : ?>nav-tab-active<?php endif; ?>"><?php _e( 'Groups', 'dpw' ); ?></a>
+				<?php endif; ?>
+
+				<?php if ( $settings['dpw_startpagetoggle'] ) : ?>
+					<a href="<?php echo esc_attr( $url . '&amp;tab=startpage' ); ?>" class="nav-tab <?php if ( 'startpage'  == $tab  ) : ?>nav-tab-active<?php endif; ?>"><?php _e( 'Start Page', 'dpw' ); ?></a>
+				<?php endif; ?>
+
+				<?php if ( $settings['dpw_welcomemsgtoggle'] ) : ?>
+					<a href="<?php echo esc_attr( $url . '&amp;tab=welcomemessage' ); ?>" class="nav-tab <?php if ( 'welcomemessage'  == $tab  ) : ?>nav-tab-active<?php endif; ?>"><?php _e( 'Welcome Message', 'dpw' ); ?></a>
+				<?php endif; ?>
+
+				<a href="<?php echo esc_attr( $url . '&amp;tab=support' ); ?>" class="nav-tab <?php if ( 'support'  == $tab  ) : ?>nav-tab-active<?php endif; ?>"><?php _e( 'Get Support', 'dpw' ); ?></a>
 			</h2>
 
 			<div id="poststuff" class="metabox-holder<?php echo 2 == $screen_layout_columns ? ' has-right-sidebar' : ''; ?>">
@@ -149,8 +189,10 @@ class DP_Welcome_Pack_Admin {
 						<?php
 						if ( 'support' == $tab )
 							$this->admin_page_support();
-						else
+						elseif ( 'settings' == $tab )
 							$this->admin_page_settings( $settings, $updated );
+						else
+							$this->admin_page_component( $tab, $settings, $updated );
 						?>
 					</div><!-- #post-body-content -->
 				</div><!-- #post-body -->
@@ -228,7 +270,7 @@ class DP_Welcome_Pack_Admin {
 			<p style="margin-bottom: 2em;"><?php _e( 'When a user registers on your site, Welcome Pack lets you automatically send them a friend or group invitation, a Welcome Message and can redirect them to a Start Page. You can also customise the emails sent by BuddyPress so that they match your site\'s brand, in plain text or rich HTML versions.', 'dpw' ); ?></p>
 
 			<h4><?php _e( 'Email Customisation (NEW)', 'dpw' ); ?></h4>
-			<p><?php printf( __( "Customise the emails sent by BuddyPress, either in plain text or rich HTML versions. To change the emails, visit the <a href='%s'>Settings > Emails</a> page.", 'dpw' ), 's' ); ?></p>
+			<p><?php printf( __( "Customise the emails sent by BuddyPress, either in plain text or rich HTML versions. <strong>To change the emails, visit the <a href='%s'>Settings > Emails</a> page.</strong>", 'dpw' ), 's' ); ?></p>
 			<label><?php _e( 'On', 'dpw' ); ?> <input type="radio" name="dpw_emailtoggle" class="dpw_emailtoggle" value="on" <?php checked( $settings['dpw_emailtoggle'] ); ?>/></label>
 			<label><?php _e( 'Off', 'dpw' ); ?> <input type="radio" name="dpw_emailtoggle" class="dpw_emailtoggle" value="off" <?php checked( $settings['dpw_emailtoggle'], false ); ?>/></label>
 
@@ -257,6 +299,21 @@ class DP_Welcome_Pack_Admin {
 
 	<?php
 	}
+
+	/**
+	 * Generic method to produce the admin page for a specific component of Welcome Pack (friends, groups, welcome message, and so on)
+	 *
+	 *
+	 *
+	 * @param string $tab Name of the component (groups, members, welcomemessage, startpage)
+	 * @param array $settings Plugin settings (from DB)
+	 * @param bool $updated Have settings been updated on the previous page submission?
+	 * @since 3.0
+	 */
+	protected function admin_page_component( $tab, $settings, $updated ) {
+		
+	}
+	
 
 	/**
 	 * Check for and handle form submission.

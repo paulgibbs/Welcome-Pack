@@ -134,7 +134,7 @@ class DP_Welcome_Pack_Admin {
 			<?php screen_icon( 'options-general' ); ?>
 
 			<h2 class="nav-tab-wrapper">
-				<a href="<?php echo esc_attr( $url ); ?>"                       class="nav-tab <?php if ( 'settings' == $tab )  : ?>nav-tab-active<?php endif; ?>"><?php _e( 'Welcome Pack', 'dpw' );     ?></a>
+				<a href="<?php echo esc_attr( $url ); ?>"                       class="nav-tab <?php if ( 'settings' == $tab )  : ?>nav-tab-active<?php endif; ?>"><?php _e( 'Components', 'dpw' );     ?></a>
 				<a href="<?php echo esc_attr( $url . '&amp;tab=support' ); ?>"  class="nav-tab <?php if ( 'support'  == $tab  ) : ?>nav-tab-active<?php endif; ?>"><?php _e( 'Get Support', 'dpw' ); ?></a>
 			</h2>
 

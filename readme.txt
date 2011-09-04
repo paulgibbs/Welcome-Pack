@@ -10,7 +10,7 @@ Automatically send friend/group invites and a welcome message to new users, and 
 
 == Description ==
 
-Welcome Pack is a BuddyPress plugin that enhances the new user experience. When a user registers on your site, Welcome Pack lets you automatically send them a friend or group invitation, a Welcome Message, and it can redirect them to a Start Page. You can also customise the emails sent by BuddyPress so that they match the brand of your site.
+Welcome Pack is a BuddyPress plugin that enhances the new user experience. When a user registers on your site, Welcome Pack lets you automatically send them a friend or group invitation, a Welcome Message, and it can redirect them to a Start Page. You can also customise the emails sent by BuddyPress so that they match your site's brand, in plain text or rich HTML versions.
 
 [vimeo http://vimeo.com/12514248]
 

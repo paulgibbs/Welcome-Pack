@@ -125,7 +125,8 @@ class DP_Welcome_Pack_Admin {
 		.dpw_friends,
 		.dpw_groups,
 		.dpw_startpage,
-		.dpw_welcomemsg {
+		.dpw_welcomemsg,
+		.dpw_emailtoggle {
 			margin-right: 2em;
 		}
 		</style>
@@ -224,7 +225,12 @@ class DP_Welcome_Pack_Admin {
 			<?php wp_nonce_field( 'meta-box-order', 'meta-box-order-nonce', false ); ?>
 			<?php wp_nonce_field( 'dpw-admin', 'dpw-admin-nonce', false ); ?>
 
-			<p><?php _e( 'When a user registers on your site, Welcome Pack lets you automatically send them a friend or group invitation, a Welcome Message and can redirect them to a Start Page.', 'dpw' ); ?></p>
+			<p style="margin-bottom: 2em;"><?php _e( 'When a user registers on your site, Welcome Pack lets you automatically send them a friend or group invitation, a Welcome Message and can redirect them to a Start Page. You can also customise the emails sent by BuddyPress so that they match your site\'s brand, in plain text or rich HTML versions.', 'dpw' ); ?></p>
+
+			<h4><?php _e( 'Email Customisation (NEW)', 'dpw' ); ?></h4>
+			<p><?php printf( __( "Customise the emails sent by BuddyPress, either in plain text or rich HTML versions. To change the emails, visit the <a href='%s'>Settings > Emails</a> page.", 'dpw' ), 's' ); ?></p>
+			<label><?php _e( 'On', 'dpw' ); ?> <input type="radio" name="dpw_emailtoggle" class="dpw_emailtoggle" value="on" <?php checked( $settings['dpw_emailtoggle'] ); ?>/></label>
+			<label><?php _e( 'Off', 'dpw' ); ?> <input type="radio" name="dpw_emailtoggle" class="dpw_emailtoggle" value="off" <?php checked( $settings['dpw_emailtoggle'], false ); ?>/></label>
 
 			<h4><?php _e( 'Friends', 'dpw' ); ?></h4>
 			<p><?php _e( "Invite the new user to become friends with certain members. It's a great way of teaching people how the friend acceptance process works on your site, and how they can use friendships to filter activity streams.", 'dpw' ); ?></p>
@@ -289,6 +295,13 @@ class DP_Welcome_Pack_Admin {
 				$settings['dpw_welcomemsgtoggle'] = true;
 			else
 				$settings['dpw_welcomemsgtoggle'] = false;
+		}
+
+		if ( !empty( $_POST['dpw_emailtoggle'] ) ) {
+			if ( 'on' == $_POST['dpw_emailtoggle'] )
+				$settings['dpw_emailtoggle'] = true;
+			else
+				$settings['dpw_emailtoggle'] = false;
 		}
 
 		if ( $settings != $existing_settings ) {

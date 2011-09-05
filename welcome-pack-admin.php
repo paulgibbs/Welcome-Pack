@@ -46,8 +46,8 @@ class DP_Welcome_Pack_Admin {
 		if ( !empty( $_GET['tab'] ) ) {
 			if ( 'support' == $_GET['tab'] )
 				$tab = 'support';
-			elseif ( 'emails' == $_GET['tab'] )
-				$tab = 'emails';
+			else
+				$tab = 'settings';  // No need to case all tabs here
 
 		}	else {
 			$tab = 'settings';
@@ -88,6 +88,8 @@ class DP_Welcome_Pack_Admin {
 	public function admin_page() {
 		global $screen_layout_columns;
 
+		$settings = DP_Welcome_Pack::get_settings();
+
 		if ( !empty( $_GET['tab'] ) ) {
 			switch ( $_GET['tab'] ) {
 				default:
@@ -116,9 +118,19 @@ class DP_Welcome_Pack_Admin {
 			$tab = 'settings';
 		}
 
+		// Check that the specified component is active (and, if applicable, its corresponding BuddyPress component)
+		if ( 'groups' == $tab && ( !bp_is_active( 'groups' ) || !$settings['dpw_friendstoggle'] ) ||
+			'members' == $tab && ( !bp_is_active( 'friends' ) || !$settings['dpw_groupstoggle'] ) ||
+			'welcomemessage' == $tab && ( !bp_is_active( 'messages' ) || !$settings['dpw_welcomemsgtoggle'] ) ||
+			'startpage' == $tab && !$settings['dpw_welcomemsgtoggle'] )
+			$tab = 'settings';
+
 		$updated  = $this->maybe_save();
 		$url      = network_admin_url( 'options-general.php?page=welcome-pack' );
-		$settings = DP_Welcome_Pack::get_settings();
+
+		// Update settings if they've just been updated in the database
+		if ( $updated )
+			$settings = DP_Welcome_Pack::get_settings();
 	?>
 
 		<style type="text/css">
@@ -160,11 +172,11 @@ class DP_Welcome_Pack_Admin {
 			<h2 class="nav-tab-wrapper">
 				<a href="<?php echo esc_attr( $url ); ?>" class="nav-tab <?php if ( 'settings' == $tab )  : ?>nav-tab-active<?php endif; ?>"><?php _e( 'Settings', 'dpw' );    ?></a>
 
-				<?php if ( $settings['dpw_friendstoggle'] ) : ?>
+				<?php if ( $settings['dpw_friendstoggle'] && bp_is_active( 'friends' ) ) : ?>
 					<a href="<?php echo esc_attr( $url . '&amp;tab=members' ); ?>" class="nav-tab <?php if ( 'members'  == $tab  ) : ?>nav-tab-active<?php endif; ?>"><?php _e( 'Friends', 'dpw' ); ?></a>
 				<?php endif; ?>
 
-				<?php if ( $settings['dpw_groupstoggle'] ) : ?>
+				<?php if ( $settings['dpw_groupstoggle'] && bp_is_active( 'groups' ) ) : ?>
 					<a href="<?php echo esc_attr( $url . '&amp;tab=groups' ); ?>" class="nav-tab <?php if ( 'groups'  == $tab  ) : ?>nav-tab-active<?php endif; ?>"><?php _e( 'Groups', 'dpw' ); ?></a>
 				<?php endif; ?>
 
@@ -172,7 +184,7 @@ class DP_Welcome_Pack_Admin {
 					<a href="<?php echo esc_attr( $url . '&amp;tab=startpage' ); ?>" class="nav-tab <?php if ( 'startpage'  == $tab  ) : ?>nav-tab-active<?php endif; ?>"><?php _e( 'Start Page', 'dpw' ); ?></a>
 				<?php endif; ?>
 
-				<?php if ( $settings['dpw_welcomemsgtoggle'] ) : ?>
+				<?php if ( $settings['dpw_welcomemsgtoggle'] && bp_is_active( 'members' ) ) : ?>
 					<a href="<?php echo esc_attr( $url . '&amp;tab=welcomemessage' ); ?>" class="nav-tab <?php if ( 'welcomemessage'  == $tab  ) : ?>nav-tab-active<?php endif; ?>"><?php _e( 'Welcome Message', 'dpw' ); ?></a>
 				<?php endif; ?>
 
@@ -303,15 +315,69 @@ class DP_Welcome_Pack_Admin {
 	/**
 	 * Generic method to produce the admin page for a specific component of Welcome Pack (friends, groups, welcome message, and so on)
 	 *
-	 *
-	 *
+	 * @global object $bp BuddyPress settings object
+	 * @global wpdb $wpdb WordPress database object
 	 * @param string $tab Name of the component (groups, members, welcomemessage, startpage)
 	 * @param array $settings Plugin settings (from DB)
 	 * @param bool $updated Have settings been updated on the previous page submission?
 	 * @since 3.0
 	 */
 	protected function admin_page_component( $tab, $settings, $updated ) {
-		
+		global $bp, $wpdb;
+
+		//	$r = wp_parse_args( $settings, $defaults );
+		//	extract( $r );
+		$data = array();
+
+		if ( 'groups' == $tab )
+			$data = $wpdb->get_results( $wpdb->prepare( "SELECT id, name FROM {$bp->groups->table_name} ORDER BY name ASC" ) );
+		elseif ( 'members' == $tab || 'welcomemessage' == $tab )
+			$data = get_users( array( 'fields' => array( 'ID', 'display_name' ), 'orderby' => 'display_name' ) );
+		?>
+
+		<!-- Friends -->
+		<?php if ( 'members' == $tab ) : ?>
+			<p><?php _e( 'Invite the new user to become friends with these people:', 'dpw' ); ?></p>
+
+			<select multiple="multiple" name="welcomepack[friends][]" style="overflow-y: hidden">
+				<?php foreach ( (array) $data as $member ) : ?>
+					<option value="<?php echo esc_attr( $member->ID ); ?>"<?php foreach ( (array) $settings['friends'] as $id ) { if ( $member->ID == $id ) echo " selected='selected'"; } ?>><?php echo apply_filters( 'bp_core_get_user_displayname', $member->display_name, $member->ID ); ?></option>
+				<?php endforeach; ?>
+			</select>
+
+		<!-- Groups -->
+		<?php elseif ( 'groups' == $tab ) : ?>
+			<p><?php _e( "Ask the new user if they'd like to join these groups:", 'dpw' ); ?></p>
+
+			<select multiple="multiple" name="welcomepack[groups][]">
+				<?php foreach( (array) $data as $group ) : ?>
+					<option value="<?php echo esc_attr( $group->id ); ?>"<?php foreach ( (array) $settings['groups'] as $id ) { if ( $group->id == $id ) echo " selected='selected'"; } ?>><?php echo apply_filters( 'bp_get_group_name', $group->name ); ?></option>
+				<?php endforeach; ?>
+			</select>
+
+		<!-- Start Page -->
+		<?php elseif ( 'startpage' == $tab ) : ?>
+
+			<p><?php _e( "When the new user logs into your site for the very first time, redirect them to this URL:", 'dpw' ); ?></p>
+			<input type="url" name="welcomepack[startpage]" value="<?php echo esc_attr( $settings['startpage'] ); ?>" />
+
+		<!-- Welcome Message -->
+		<?php elseif ( 'welcomemessage' == $tab ) : ?>
+
+			<p><?php _e( 'Send the new user a Welcome Message&hellip;', 'dpw' ); ?></p>
+			<textarea name="welcomepack[welcomemsg]"><?php echo esc_textarea( $settings['welcomemsg'] ); ?></textarea>
+
+			<p><?php _e( '&hellip;with this subject:', 'dpw' ); ?></p>
+			<input type="text" name="welcomepack[welcomemsgsubject]" value="<?php echo esc_attr( $settings['welcomemsgsubject'] ); ?>" />
+
+			<p><?php _e( '&hellip;from this user:', 'dpw' ); ?></p>
+			<select name="welcomepack[welcomemsgsender]">
+				<?php foreach ( (array) $data as $member ) : ?>
+					<option value="<?php echo esc_attr( $member->ID ); ?>"<?php if ( (int) $settings['welcomemsgsender'] && $member->ID == (int) $settings['welcomemsgsender'] ) echo " selected='selected'"; ?>><?php echo apply_filters( 'bp_core_get_user_displayname', $member->display_name, $member->ID ); ?></option>
+				<?php endforeach; ?>
+			</select>
+
+		<?php endif;
 	}
 	
 
@@ -523,192 +589,4 @@ class DP_Welcome_Pack_Admin {
 	}
 }
 new DP_Welcome_Pack_Admin();
-
-
-
-
-
-
-
-
-/**
- * Produces the main admin page (/options-general.php?page=welcome-pack)
- *
- * @global int $screen_layout_columns Number of columns to display
- * @see dpw_add_admin_menu()
- * @since 2.0
- */
-function dpw_admin_screen() {
-	global $screen_layout_columns;
-
-	$settings = get_site_option( 'welcomepack' );
-?>
-<div id="bp-admin">
-	<div id="dpw-admin-metaboxes-general" class="wrap">
-
-		<div id="bp-admin-header">
-			<h3><?php _e( 'BuddyPress', 'dpw' ); ?></h3>
-			<h4><?php _e( 'Welcome Pack', 'dpw' ); ?></h4>
-		</div>
-
-		<div id="bp-admin-nav">
-			<ol>
-				<li <?php echo 'class="current"' ?>><a href="<?php echo admin_url( 'options-general.php?page=welcome-pack' ); ?>"><?php _e( 'Friends, Groups <span class="ampersand">&amp;</span> Welcome Message', 'dpw' ); ?></a></li>
-				<li><a href="<?php echo admin_url( 'edit.php?post_type=dpw_email' ); ?>"><?php _e( 'Emails', 'dpw' ); ?></a></li>
-			</ol>
-		</div>
-
-		<?php if ( isset( $_GET['updated'] ) ) : ?>
-			<div id="message" class="updated">
-				<p><?php _e( 'Your Welcome Pack settings have been saved.', 'dpw' ); ?></p>
-			</div>
-		<?php endif; ?>
-
-		<div class="dpw-spacer">
-			<p><?php _e( 'When a user registers on your site, Welcome Pack lets you automatically send them a friend or group invitation, a Welcome Message and can redirect them to a Start Page.', 'dpw' ); ?></p>
-		</div>
-
-		<form method="post" action="options.php" id="welcomepack">
-			<?php wp_nonce_field( 'closedpostboxes', 'closedpostboxesnonce', false ); ?>
-			<?php wp_nonce_field( 'meta-box-order', 'meta-box-order-nonce', false ); ?>
-			<?php settings_fields( 'dpw-settings-group' ); ?>
-
-			<div id="poststuff" class="metabox-holder<?php echo ( 2 == $screen_layout_columns ) ? ' has-right-sidebar' : '' ?>">
-				<div id="side-info-column" class="inner-sidebar">
-					<?php do_meta_boxes( 'settings_page_welcome-pack', 'side', $settings ); ?>
-				</div>
-
-				<div id="post-body" class="has-sidebar">
-					<div id="post-body-content" class="has-sidebar-content">
-						<?php do_meta_boxes( 'settings_page_welcome-pack', 'normal', $settings ); ?>
-					</div>
-
-					<p><input type="submit" class="button-primary" value="<?php _e( 'Save Welcome Pack Settings', 'dpw' ); ?>" /></p>
-				</div>
-			</div><!-- #poststuff -->
-		</form>
-
-	</div><!-- #dpw-admin-metaboxes-general -->
-</div><!-- #bp-admin -->
-<?php
-}
-
-/* TODO: need to figure out how to dynamically set bottom-margin = 0 of the last div.setting-group */
-function dpw_admin_screen_configurationbox( $settings ) {
-	global $bp, $wpdb;
-
-	$defaults = array(
-		'friends'           => array(),
-		'friendstoggle'     => false,
-
-		'groups'            => array(),
-		'groupstoggle'      => false,
-
-		'startpage'         => '',
-		'startpagetoggle'   => false,
-
-		'welcomemsg'        => '',
-		'welcomemsgsender'  => 0,
-		'welcomemsgsubject' => '',
-		'welcomemsgtoggle'  => false
-	);
-
-	$r = wp_parse_args( $settings, $defaults );
-	extract( $r );
-
-	$members = array();
-	if ( bp_is_active( 'friends' ) || bp_is_active( 'messages' ) ) {
-		if ( is_multisite() )
-			$column = "spam";
-		else
-			$column = "user_status";
-
-		$members = $wpdb->get_results( $wpdb->prepare( "SELECT ID, display_name FROM $wpdb->users WHERE $column = 0 ORDER BY display_name ASC" ) );
-	}
-
-	if ( bp_is_active( 'groups' ) )
-		$groups = $wpdb->get_results( $wpdb->prepare( "SELECT id, name FROM {$bp->groups->table_name} ORDER BY name ASC" ) );
-?>
-	<?php if ( bp_is_active( 'friends' ) ) : ?>
-		<div class="setting setting-group setting-friends <?php if ( !$friendstoggle ) echo 'initially-hidden' ?>">
-			<div class="settingname">
-				<p><?php _e( 'Invite the new user to become friends with these people:', 'dpw' ); ?></p>
-			</div>
-			<div class="settingvalue">
-				<select multiple="multiple" name="welcomepack[friends][]" style="overflow-y: hidden">
-				<?php foreach ( (array)$members as $member ) : ?>
-					<option value="<?php echo esc_attr( apply_filters( 'bp_get_member_user_id', $member->ID ) ); ?>"<?php foreach ( (array)$friends as $id ) { if ( $member->ID == $id ) echo " selected='selected'"; } ?>><?php echo apply_filters( 'bp_core_get_user_displayname', $member->display_name, $member->ID ); ?></option>
-				<?php endforeach; ?>
-				</select>
-			</div>
-			<div style="clear: left"></div>
-		</div>
-	<?php endif ?>
-
-	<?php if ( bp_is_active( 'groups' ) ) : ?>
-		<div class="setting setting-group setting-groups <?php if ( !$groupstoggle ) echo 'initially-hidden' ?>">
-			<div class="settingname">
-				<p><?php _e( "Ask the new user if they'd like to join these groups:", 'dpw' ); ?></p>
-			</div>
-			<div class="settingvalue">
-				<select multiple="multiple" name="welcomepack[groups][]">
-				<?php foreach( (array)$groups as $group ) : ?>
-					<option value="<?php echo esc_attr( apply_filters( 'bp_get_group_id', $group->id ) ); ?>"<?php foreach ( (array)$groups as $id ) { if ( $group->id == $id ) echo " selected='selected'"; } ?>><?php echo apply_filters( 'bp_get_group_name', $group->name ); ?></option>
-				<?php endforeach; ?>
-				</select>
-			</div>
-			<div style="clear: left"></div>
-		</div>
-	<?php endif ?>
-
-	<div class="setting-group setting-startpage <?php if ( !$startpagetoggle ) echo 'initially-hidden' ?>">
-		<div class="setting wide">
-			<div class="settingname">
-				<p><?php _e( "When the new user logs into your site for the very first time, redirect them to this URL:", 'dpw' ); ?></p>
-			</div>
-			<div class="settingvalue">
-				<input type="url" name="welcomepack[startpage]" value="<?php echo esc_attr( apply_filters( 'dpw_admin_settings_startpage', $startpage ) ); ?>" />
-			</div>
-			<div style="clear: left"></div>
-		</div>
-	</div>
-
-	<?php if ( bp_is_active( 'messages' ) ) : ?>
-		<div class="setting-welcomemsg setting-group <?php if ( !$welcomemsgtoggle ) echo 'initially-hidden' ?>">
-			<div class="setting wide">
-				<div class="settingname">
-					<p><?php _e( 'Send the new user a Welcome Message&hellip;', 'dpw' ); ?></p>
-				</div>
-				<div class="settingvalue">
-					<textarea name="welcomepack[welcomemsg]"><?php echo apply_filters( 'dpw_admin_settings_welcomemsg', $welcomemsg ); ?></textarea>
-				</div>
-				<div style="clear: left"></div>
-			</div>
-
-			<div class="setting">
-				<div class="settingname">
-					<p><?php _e( '&hellip;with this subject:', 'dpw' ); ?></p>
-				</div>
-				<div class="settingvalue">
-					<input type="text" name="welcomepack[welcomemsgsubject]" value="<?php echo esc_attr( apply_filters( 'dpw_admin_settings_welcomemsg_subject', $welcomemsgsubject ) ); ?>" />
-				</div>
-				<div style="clear: left"></div>
-			</div>
-
-			<div class="setting">
-				<div class="settingname">
-					<p><?php _e( '&hellip;from this user:', 'dpw' ); ?></p>
-				</div>
-				<div class="settingvalue">
-					<select name="welcomepack[welcomemsgsender]">
-					<?php foreach ( (array)$members as $member ) : ?>
-						<option value="<?php echo esc_attr( apply_filters( 'bp_get_member_user_id', $member->ID ) ); ?>"<?php if ( $welcomemsgsender && $member->ID == $welcomemsgsender ) echo " selected='selected'"; ?>><?php echo apply_filters( 'bp_core_get_user_displayname', $member->display_name, $member->ID ); ?></option>
-					<?php endforeach; ?>
-					</select>
-				</div>
-				<div style="clear: left"></div>
-			</div>
-		</div>
-	<?php endif;
-}
 ?>

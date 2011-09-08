@@ -164,6 +164,12 @@ class DP_Welcome_Pack_Admin {
 		.dpw_emailtoggle {
 			margin-right: 2em;
 		}
+		.welcomepack select {
+			width: 250px;
+		}
+		.welcomepack input[type="url"] {
+			width: 400px;
+		}
 		</style>
 
 		<div class="wrap">
@@ -184,7 +190,7 @@ class DP_Welcome_Pack_Admin {
 					<a href="<?php echo esc_attr( $url . '&amp;tab=startpage' ); ?>" class="nav-tab <?php if ( 'startpage'  == $tab  ) : ?>nav-tab-active<?php endif; ?>"><?php _e( 'Start Page', 'dpw' ); ?></a>
 				<?php endif; ?>
 
-				<?php if ( $settings['dpw_welcomemsgtoggle'] && bp_is_active( 'members' ) ) : ?>
+				<?php if ( $settings['dpw_welcomemsgtoggle'] && bp_is_active( 'messages' ) ) : ?>
 					<a href="<?php echo esc_attr( $url . '&amp;tab=welcomemessage' ); ?>" class="nav-tab <?php if ( 'welcomemessage'  == $tab  ) : ?>nav-tab-active<?php endif; ?>"><?php _e( 'Welcome Message', 'dpw' ); ?></a>
 				<?php endif; ?>
 
@@ -197,7 +203,7 @@ class DP_Welcome_Pack_Admin {
 				</div>
 
 				<div id="post-body" class="has-sidebar">
-					<div id="post-body-content" class="has-sidebar-content">
+					<div id="post-body-content" class="has-sidebar-content welcomepack">
 						<?php
 						if ( 'support' == $tab )
 							$this->admin_page_support();
@@ -281,20 +287,28 @@ class DP_Welcome_Pack_Admin {
 
 			<p style="margin-bottom: 2em;"><?php _e( 'When a user registers on your site, Welcome Pack lets you automatically send them a friend or group invitation, a Welcome Message and can redirect them to a Start Page. You can also customise the emails sent by BuddyPress so that they match your site\'s brand, in plain text or rich HTML versions.', 'dpw' ); ?></p>
 
-			<h4><?php _e( 'Email Customisation (NEW)', 'dpw' ); ?></h4>
+			<h4><?php _e( 'Email Customisation', 'dpw' ); ?></h4>
 			<p><?php printf( __( "Customise the emails sent by BuddyPress, either in plain text or rich HTML versions. <strong>To change the emails, visit the <a href='%s'>Settings > Emails</a> page.</strong>", 'dpw' ), 's' ); ?></p>
 			<label><?php _e( 'On', 'dpw' ); ?> <input type="radio" name="dpw_emailtoggle" class="dpw_emailtoggle" value="on" <?php checked( $settings['dpw_emailtoggle'] ); ?>/></label>
 			<label><?php _e( 'Off', 'dpw' ); ?> <input type="radio" name="dpw_emailtoggle" class="dpw_emailtoggle" value="off" <?php checked( $settings['dpw_emailtoggle'], false ); ?>/></label>
 
 			<h4><?php _e( 'Friends', 'dpw' ); ?></h4>
-			<p><?php _e( "Invite the new user to become friends with certain members. It's a great way of teaching people how the friend acceptance process works on your site, and how they can use friendships to filter activity streams.", 'dpw' ); ?></p>
-			<label><?php _e( 'On', 'dpw' ); ?> <input type="radio" name="dpw_friendstoggle" class="dpw_friends" value="on" <?php checked( $settings['dpw_friendstoggle'] ); ?>/></label>
-			<label><?php _e( 'Off', 'dpw' ); ?> <input type="radio" name="dpw_friendstoggle" class="dpw_friends" value="off" <?php checked( $settings['dpw_friendstoggle'], false ); ?>/></label>
+			<?php if ( bp_is_active( 'friends' ) ) : ?>
+				<p><?php _e( "Invite the new user to become friends with certain members. It's a great way of teaching people how the friend acceptance process works on your site, and how they can use friendships to filter activity streams.", 'dpw' ); ?></p>
+				<label><?php _e( 'On', 'dpw' ); ?> <input type="radio" name="dpw_friendstoggle" class="dpw_friends" value="on" <?php checked( $settings['dpw_friendstoggle'] ); ?>/></label>
+				<label><?php _e( 'Off', 'dpw' ); ?> <input type="radio" name="dpw_friendstoggle" class="dpw_friends" value="off" <?php checked( $settings['dpw_friendstoggle'], false ); ?>/></label>
+			<?php else: ?>
+				<p><?php _e( "BuddyPress' Friend Connections component needs to be enabled for this option to be active.", 'dpa' ); ?></p>
+			<?php endif; ?>
 
 			<h4><?php _e( 'Groups', 'dpw' ); ?></h4>
-			<p><?php _e( "Ask the new user if they'd like to join a group. You could use this to invite all new users on your site to join a support group, to keep all of your frequently asked questions in the same place.", 'dpw' ); ?></p>
-			<label><?php _e( 'On', 'dpw' ); ?> <input type="radio" name="dpw_groupstoggle" class="dpw_groups" value="on" <?php checked( $settings['dpw_groupstoggle'] ); ?>/></label>
-			<label><?php _e( 'Off', 'dpw' ); ?> <input type="radio" name="dpw_groupstoggle" class="dpw_groups" value="off" <?php checked( $settings['dpw_groupstoggle'], false ); ?>/></label>
+			<?php if ( bp_is_active( 'groups' ) ) : ?>
+				<p><?php _e( "Ask the new user if they'd like to join a group. You could use this to invite all new users on your site to join a support group, to keep all of your frequently asked questions in the same place.", 'dpw' ); ?></p>
+				<label><?php _e( 'On', 'dpw' ); ?> <input type="radio" name="dpw_groupstoggle" class="dpw_groups" value="on" <?php checked( $settings['dpw_groupstoggle'] ); ?>/></label>
+				<label><?php _e( 'Off', 'dpw' ); ?> <input type="radio" name="dpw_groupstoggle" class="dpw_groups" value="off" <?php checked( $settings['dpw_groupstoggle'], false ); ?>/></label>
+			<?php else: ?>
+				<p><?php _e( "BuddyPress' User Groups component needs to be enabled for this option to be active.", 'dpa' ); ?></p>
+			<?php endif; ?>
 
 			<h4><?php _e( 'Start Page', 'dpw' ); ?></h4>
 			<p><?php _e( "When the new user logs into your site for the very first time, use Start Page to redirect them anywhere you'd like. This complements the Welcome Message fantastically; create a page or blog post which showcases the features of your site.", 'dpw' ); ?></p>
@@ -302,9 +316,13 @@ class DP_Welcome_Pack_Admin {
 			<label><?php _e( 'Off', 'dpw' ); ?> <input type="radio" name="dpw_startpagetoggle" class="dpw_startpage" value="off" <?php checked( $settings['dpw_startpagetoggle'], false ); ?>/></label>
 
 			<h4><?php _e( 'Welcome Message', 'dpw' ); ?></h4>
-			<p><?php _e( "Send the newly-registered user a private message; use this to welcome people to your site and help them get started.", 'dpw' ); ?></p>
-			<label><?php _e( 'On', 'dpw' ); ?> <input type="radio" name="dpw_welcomemsgtoggle" class="dpw_welcomemsg" value="on" <?php checked( $settings['dpw_welcomemsgtoggle'] ); ?>/></label>
-			<label><?php _e( 'Off', 'dpw' ); ?> <input type="radio" name="dpw_welcomemsgtoggle" class="dpw_welcomemsg" value="off" <?php checked( $settings['dpw_welcomemsgtoggle'], false ); ?>/></label>
+			<?php if ( bp_is_active( 'messages' ) ) : ?>
+				<p><?php _e( "Send the newly-registered user a private message; use this to welcome people to your site and help them get started.", 'dpw' ); ?></p>
+				<label><?php _e( 'On', 'dpw' ); ?> <input type="radio" name="dpw_welcomemsgtoggle" class="dpw_welcomemsg" value="on" <?php checked( $settings['dpw_welcomemsgtoggle'] ); ?>/></label>
+				<label><?php _e( 'Off', 'dpw' ); ?> <input type="radio" name="dpw_welcomemsgtoggle" class="dpw_welcomemsg" value="off" <?php checked( $settings['dpw_welcomemsgtoggle'], false ); ?>/></label>
+			<?php else: ?>
+				<p><?php _e( "BuddyPress' Private Messaging component needs to be enabled for this option to be active.", 'dpa' ); ?></p>
+			<?php endif; ?>
 
 			<p><input type="submit" class="button-primary" value="<?php _e( 'Update Settings', 'dpw' ); ?>" /></p>
 		</form>
@@ -325,18 +343,16 @@ class DP_Welcome_Pack_Admin {
 	protected function admin_page_component( $tab, $settings, $updated ) {
 		global $bp, $wpdb;
 
-		//	$r = wp_parse_args( $settings, $defaults );
-		//	extract( $r );
 		$data = array();
 
-		if ( 'groups' == $tab )
+		if ( 'groups' == $tab && bp_is_active( 'groups' ) )
 			$data = $wpdb->get_results( $wpdb->prepare( "SELECT id, name FROM {$bp->groups->table_name} ORDER BY name ASC" ) );
-		elseif ( 'members' == $tab || 'welcomemessage' == $tab )
+		elseif ( ( 'members' == $tab && bp_is_active( 'friends' ) ) || ( 'welcomemessage' == $tab && bp_is_active( 'messages' ) ) )
 			$data = get_users( array( 'fields' => array( 'ID', 'display_name' ), 'orderby' => 'display_name' ) );
 		?>
 
 		<!-- Friends -->
-		<?php if ( 'members' == $tab ) : ?>
+		<?php if ( 'members' == $tab && bp_is_active( 'friends' ) ) : ?>
 			<p><?php _e( 'Invite the new user to become friends with these people:', 'dpw' ); ?></p>
 
 			<select multiple="multiple" name="welcomepack[friends][]" style="overflow-y: hidden">
@@ -346,7 +362,7 @@ class DP_Welcome_Pack_Admin {
 			</select>
 
 		<!-- Groups -->
-		<?php elseif ( 'groups' == $tab ) : ?>
+		<?php elseif ( 'groups' == $tab && bp_is_active( 'groups' ) ) : ?>
 			<p><?php _e( "Ask the new user if they'd like to join these groups:", 'dpw' ); ?></p>
 
 			<select multiple="multiple" name="welcomepack[groups][]">
@@ -362,7 +378,7 @@ class DP_Welcome_Pack_Admin {
 			<input type="url" name="welcomepack[startpage]" value="<?php echo esc_attr( $settings['startpage'] ); ?>" />
 
 		<!-- Welcome Message -->
-		<?php elseif ( 'welcomemessage' == $tab ) : ?>
+		<?php elseif ( 'welcomemessage' == $tab && bp_is_active( 'messages' ) ) : ?>
 
 			<p><?php _e( 'Send the new user a Welcome Message&hellip;', 'dpw' ); ?></p>
 			<textarea name="welcomepack[welcomemsg]"><?php echo esc_textarea( $settings['welcomemsg'] ); ?></textarea>
@@ -377,7 +393,9 @@ class DP_Welcome_Pack_Admin {
 				<?php endforeach; ?>
 			</select>
 
-		<?php endif;
+		<?php endif; ?>
+			<p><input type="submit" class="button-primary" value="<?php _e( 'Update Settings', 'dpw' ); ?>" /></p>
+		<?php
 	}
 	
 

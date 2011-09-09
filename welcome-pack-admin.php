@@ -69,14 +69,6 @@ class DP_Welcome_Pack_Admin {
 		// Javascripts for meta box
 		wp_enqueue_script( 'postbox' );
 		wp_enqueue_script( 'dashboard' );
-		?>
-
-			<script type="text/javascript" src="https://apis.google.com/js/plusone.js">
-			  {parsetags: 'explicit'}
-			</script>
-			<script type="text/javascript">gapi.plusone.go();</script>
-
-		<?php
 	}
 
 	/**
@@ -133,6 +125,11 @@ class DP_Welcome_Pack_Admin {
 			$settings = DP_Welcome_Pack::get_settings();
 	?>
 
+		<script type="text/javascript" src="https://apis.google.com/js/plusone.js">
+		  {parsetags: 'explicit'}
+		</script>
+		<script type="text/javascript">gapi.plusone.go();</script>
+
 		<style type="text/css">
 		#dpw-helpushelpyou ul {
 			list-style: disc;
@@ -164,10 +161,14 @@ class DP_Welcome_Pack_Admin {
 		.dpw_emailtoggle {
 			margin-right: 2em;
 		}
-		.welcomepack select {
+		#wpcontent .welcomepack select {
+			height: auto;
 			width: 250px;
 		}
-		.welcomepack input[type="url"] {
+		#wpcontent .welcomepack input[type="url"],
+		#wpcontent .welcomepack input[type="text"],
+		#wpcontent .welcomepack select,
+		#wpcontent .welcomepack textarea {
 			width: 400px;
 		}
 		</style>
@@ -204,6 +205,10 @@ class DP_Welcome_Pack_Admin {
 
 				<div id="post-body" class="has-sidebar">
 					<div id="post-body-content" class="has-sidebar-content welcomepack">
+						<?php if ( $updated ) : ?>
+							<div id="message" class="updated below-h2"><p><?php _e( 'Your preferences have been updated.', 'dpw' ); ?></p></div>
+						<?php endif; ?>
+
 						<?php
 						if ( 'support' == $tab )
 							$this->admin_page_support();
@@ -238,6 +243,10 @@ class DP_Welcome_Pack_Admin {
 				$email_sent = wp_mail( array( 'paul@byotos.com', $email ), "Welcome Pack support request: " . $type, $body );
 		}
 	?>
+
+		<?php wp_nonce_field( 'closedpostboxes', 'closedpostboxesnonce', false ); ?>
+		<?php wp_nonce_field( 'meta-box-order', 'meta-box-order-nonce', false ); ?>
+		<?php wp_nonce_field( 'dpw-admin', 'dpw-admin-nonce', false ); ?>
 
 		<p><?php printf( __( "Have you found a bug or do you have a great idea for the next release? Please make a report on <a href='%s'>BuddyPress.org</a>, or use the form below to get in contact. We're listening.", 'dpw' ), 'http://buddypress.org/community/groups/welcome-pack/forum/' ); ?></p>	
 
@@ -276,10 +285,6 @@ class DP_Welcome_Pack_Admin {
 	 */
 	protected function admin_page_settings( $settings, $updated ) {
 	?>
-		<?php if ( $updated ) : ?>
-			<div id="message" class="updated below-h2"><p><?php _e( 'Your preferences have been updated.', 'dpw' ); ?></p></div>
-		<?php endif; ?>
-
 		<form method="post" action="<?php echo admin_url( 'options-general.php?page=welcome-pack' ); ?>" id="dpw-form">
 			<?php wp_nonce_field( 'closedpostboxes', 'closedpostboxesnonce', false ); ?>
 			<?php wp_nonce_field( 'meta-box-order', 'meta-box-order-nonce', false ); ?>
@@ -351,50 +356,59 @@ class DP_Welcome_Pack_Admin {
 			$data = get_users( array( 'fields' => array( 'ID', 'display_name' ), 'orderby' => 'display_name' ) );
 		?>
 
-		<!-- Friends -->
-		<?php if ( 'members' == $tab && bp_is_active( 'friends' ) ) : ?>
-			<p><?php _e( 'Invite the new user to become friends with these people:', 'dpw' ); ?></p>
+		<form method="post" action="<?php echo admin_url( 'options-general.php?page=welcome-pack&tab=' . esc_attr( $tab ) ); ?>" id="dpw-form">
+			<?php wp_nonce_field( 'closedpostboxes', 'closedpostboxesnonce', false ); ?>
+			<?php wp_nonce_field( 'meta-box-order', 'meta-box-order-nonce', false ); ?>
+			<?php wp_nonce_field( 'dpw-admin', 'dpw-admin-nonce', false ); ?>
 
-			<select multiple="multiple" name="welcomepack[friends][]" style="overflow-y: hidden">
-				<?php foreach ( (array) $data as $member ) : ?>
-					<option value="<?php echo esc_attr( $member->ID ); ?>"<?php foreach ( (array) $settings['friends'] as $id ) { if ( $member->ID == $id ) echo " selected='selected'"; } ?>><?php echo apply_filters( 'bp_core_get_user_displayname', $member->display_name, $member->ID ); ?></option>
-				<?php endforeach; ?>
-			</select>
+			<!-- Friends -->
+			<?php if ( 'members' == $tab && bp_is_active( 'friends' ) ) : ?>
+				<p><?php _e( 'Invite the new user to become friends with these people:', 'dpw' ); ?></p>
 
-		<!-- Groups -->
-		<?php elseif ( 'groups' == $tab && bp_is_active( 'groups' ) ) : ?>
-			<p><?php _e( "Ask the new user if they'd like to join these groups:", 'dpw' ); ?></p>
+				<select multiple="multiple" name="friends[]" style="overflow-y: hidden">
+					<?php foreach ( (array) $data as $member ) : ?>
+						<option value="<?php echo esc_attr( $member->ID ); ?>"<?php foreach ( (array) $settings['friends'] as $id ) { if ( $member->ID == $id ) echo " selected='selected'"; } ?>><?php echo apply_filters( 'bp_core_get_user_displayname', $member->display_name, $member->ID ); ?></option>
+					<?php endforeach; ?>
+				</select>
 
-			<select multiple="multiple" name="welcomepack[groups][]">
-				<?php foreach( (array) $data as $group ) : ?>
-					<option value="<?php echo esc_attr( $group->id ); ?>"<?php foreach ( (array) $settings['groups'] as $id ) { if ( $group->id == $id ) echo " selected='selected'"; } ?>><?php echo apply_filters( 'bp_get_group_name', $group->name ); ?></option>
-				<?php endforeach; ?>
-			</select>
+			<!-- Groups -->
+			<?php elseif ( 'groups' == $tab && bp_is_active( 'groups' ) ) : ?>
+				<p><?php _e( "Ask the new user if they'd like to join these groups:", 'dpw' ); ?></p>
 
-		<!-- Start Page -->
-		<?php elseif ( 'startpage' == $tab ) : ?>
+				<select multiple="multiple" name="groups[]">
+					<?php foreach( (array) $data as $group ) : ?>
+						<option value="<?php echo esc_attr( $group->id ); ?>"<?php foreach ( (array) $settings['groups'] as $id ) { if ( $group->id == $id ) echo " selected='selected'"; } ?>><?php echo apply_filters( 'bp_get_group_name', $group->name ); ?></option>
+					<?php endforeach; ?>
+				</select>
 
-			<p><?php _e( "When the new user logs into your site for the very first time, redirect them to this URL:", 'dpw' ); ?></p>
-			<input type="url" name="welcomepack[startpage]" value="<?php echo esc_attr( $settings['startpage'] ); ?>" />
+			<!-- Start Page -->
+			<?php elseif ( 'startpage' == $tab ) : ?>
 
-		<!-- Welcome Message -->
-		<?php elseif ( 'welcomemessage' == $tab && bp_is_active( 'messages' ) ) : ?>
+				<p><?php _e( "When the new user logs into your site for the very first time, redirect them to this URL:", 'dpw' ); ?></p>
+				<input type="url" name="startpage" value="<?php echo esc_attr( $settings['startpage'] ); ?>" />
 
-			<p><?php _e( 'Send the new user a Welcome Message&hellip;', 'dpw' ); ?></p>
-			<textarea name="welcomepack[welcomemsg]"><?php echo esc_textarea( $settings['welcomemsg'] ); ?></textarea>
+			<!-- Welcome Message -->
+			<?php elseif ( 'welcomemessage' == $tab && bp_is_active( 'messages' ) ) : ?>
 
-			<p><?php _e( '&hellip;with this subject:', 'dpw' ); ?></p>
-			<input type="text" name="welcomepack[welcomemsgsubject]" value="<?php echo esc_attr( $settings['welcomemsgsubject'] ); ?>" />
+				<p><?php _e( 'Send the new user a Welcome Message&hellip;', 'dpw' ); ?></p>
+				<textarea name="welcomemsg"><?php echo esc_textarea( $settings['welcomemsg'] ); ?></textarea>
 
-			<p><?php _e( '&hellip;from this user:', 'dpw' ); ?></p>
-			<select name="welcomepack[welcomemsgsender]">
-				<?php foreach ( (array) $data as $member ) : ?>
-					<option value="<?php echo esc_attr( $member->ID ); ?>"<?php if ( (int) $settings['welcomemsgsender'] && $member->ID == (int) $settings['welcomemsgsender'] ) echo " selected='selected'"; ?>><?php echo apply_filters( 'bp_core_get_user_displayname', $member->display_name, $member->ID ); ?></option>
-				<?php endforeach; ?>
-			</select>
+				<p><?php _e( '&hellip;with this subject:', 'dpw' ); ?></p>
+				<input type="text" name="welcomemsgsubject" value="<?php echo esc_attr( $settings['welcomemsgsubject'] ); ?>" />
 
-		<?php endif; ?>
-			<p><input type="submit" class="button-primary" value="<?php _e( 'Update Settings', 'dpw' ); ?>" /></p>
+				<p><?php _e( '&hellip;from this user:', 'dpw' ); ?></p>
+				<select name="welcomemsgsender">
+					<?php foreach ( (array) $data as $member ) : ?>
+						<option value="<?php echo esc_attr( $member->ID ); ?>"<?php if ( (int) $settings['welcomemsgsender'] && $member->ID == (int) $settings['welcomemsgsender'] ) echo " selected='selected'"; ?>><?php echo apply_filters( 'bp_core_get_user_displayname', $member->display_name, $member->ID ); ?></option>
+					<?php endforeach; ?>
+				</select>
+
+			<?php endif; ?>
+				<p><input type="submit" class="button-primary" value="<?php _e( 'Update Settings', 'dpw' ); ?>" /></p>
+			<?php
+		?>
+
+		</form>
 		<?php
 	}
 	
@@ -444,6 +458,24 @@ class DP_Welcome_Pack_Admin {
 			else
 				$settings['dpw_emailtoggle'] = false;
 		}
+
+		if ( !empty( $_POST['friends'] ) )
+			$settings['friends'] = array_map( 'absint', (array) $_POST['friends'] );
+
+		if ( !empty( $_POST['groups'] ) )
+			$settings['groups'] = array_map( 'absint', (array) $_POST['groups'] );
+
+		if ( !empty( $_POST['startpage'] ) )
+			$settings['startpage'] = esc_url_raw( sanitize_text_field( wp_kses_data( $_POST['startpage'] ) ) );
+
+		if ( !empty( $_POST['welcomemsg'] ) )
+			$settings['welcomemsg'] = stripslashes( wp_filter_kses( $_POST['welcomemsg'] ) );
+
+		if ( !empty( $_POST['welcomemsgsubject'] ) )
+			$settings['welcomemsgsubject'] = stripslashes( sanitize_text_field( wp_filter_kses( $_POST['welcomemsgsubject'] ) ) );
+
+		if ( !empty( $_POST['welcomemsgsender'] ) )
+			$settings['welcomemsgsender'] = absint( $_POST['welcomemsgsender'] );
 
 		if ( $settings != $existing_settings ) {
 			check_admin_referer( 'dpw-admin', 'dpw-admin-nonce' );

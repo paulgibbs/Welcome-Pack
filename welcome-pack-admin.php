@@ -48,15 +48,50 @@ class DP_Welcome_Pack_Admin {
 	 * @since 3.0
 	 */
 	public function init() {
-		if ( !empty( $_GET['tab'] ) ) {
-			if ( 'support' == $_GET['tab'] )
-				$tab = 'support';
-			else
-				$tab = 'settings';  // No need to case all tabs here
+		// Get Welcome Pack's setttings
+		$settings = DP_Welcome_Pack::get_settings();
 
-		}	else {
-			$tab = 'settings';
+		// Which tab have we been asked to load?
+		if ( !empty( $_GET['tab'] ) ) {
+			switch ( $_GET['tab'] ) {
+				default:
+				case 'support':
+					$tab       = 'support';
+					$help_text = '';
+				break;
+
+				case 'groups':
+					$tab       = 'groups';
+					$help_text = '<p>' . __( 'Choose groups to invite the new user to. You can select as many groups as you want.', 'dpw' ) . '</p>';
+				break;
+
+				case 'members':
+					$tab       = 'members';
+					$help_text = '<p>' . __( 'Choose which members will send a friend invitation to the new user. You can select as many people as you want.', 'dpw' ) . '</p>';
+				break;
+
+				case 'startpage':
+					$tab       = 'startpage';
+					$help_text = '<p>' . __( "When a user logs in to your site for the first time, they'll be redirected to this URL. If you want to take them to their user profile, enter <em>USER_URL</em>.", 'dpw' ) . '</p>';
+				break;
+
+				case 'welcomemessage':
+					$tab       = 'welcomemessage';
+					$help_text = '<p>' . __( 'The subject, sender and message details are mandatory. You can personalise the message by including their <em>NICKNAME</em> or their <em>USERNAME</em> in the subject or message.', 'dpw' ) . '</p>';
+				break;
+			}
+
+		} else {
+			$tab       = 'settings';
+			$help_text = '<p>' . __( 'This screen explains the features in Welcome Pack, and lets you enable them individually. Check the boxes, and then save changes.', 'dpw' ) . '</p>';
 		}
+
+		// Check that the specified component is active (and, if applicable, its corresponding BuddyPress component)
+		if ( 'groups' == $tab && ( !bp_is_active( 'groups' ) || !$settings['dpw_groupstoggle'] ) ||
+			'members' == $tab && ( !bp_is_active( 'friends' ) || !$settings['dpw_friendstoggle'] ) ||
+			'welcomemessage' == $tab && ( !bp_is_active( 'messages' ) || !$settings['dpw_welcomemsgtoggle'] ) ||
+			'startpage' == $tab && !$settings['dpw_startpagetoggle'] )
+			$tab = 'settings';
 
 		// How many columns does this page have by default?
 		add_screen_option( 'layout_columns', array( 'max' => 2 ) );
@@ -76,6 +111,13 @@ class DP_Welcome_Pack_Admin {
 		// Javascripts for meta box drag-and-drop
 		wp_enqueue_script( 'postbox' );
 		wp_enqueue_script( 'dashboard' );
+
+		// Put the help text into the WordPress help tab
+		add_contextual_help( 'settings_page_welcome-pack',
+			$help_text .
+			'<p><strong>' . __( 'For more information:' ) . '</strong></p>' .
+			'<p>' . __( '<a href="http://buddypress.org/community/groups/welcome-pack/" target="_blank">Support Forum</a>', 'dpw' ) . '</p>'
+		);
 	}
 
 	/**

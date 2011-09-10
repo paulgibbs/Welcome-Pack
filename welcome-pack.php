@@ -95,7 +95,12 @@ class DP_Welcome_Pack {
 		add_action( bp_core_admin_hook(), array( $this, 'setup_admin_menu' ) );
 		add_filter( 'plugin_action_links', array( $this, 'add_settings_link' ), 10, 2 );
 
-		require( dirname( __FILE__ ) . '/welcome-pack-filters.php' );	}
+		// Start page
+		add_filter( 'login_redirect', array( $this, 'redirect_login' ), 20, 3 );
+		add_filter( 'ws_plugin__s2member_fill_login_redirect_rc_vars', 'redirect_s2member_login', 10, 2 );
+
+		require( dirname( __FILE__ ) . '/welcome-pack-filters.php' );
+	}
 
 	/**
 	 * Load the admin menu if current user is an admin
@@ -135,6 +140,54 @@ class DP_Welcome_Pack {
 	 */
 	public static function get_settings() {
 		return get_site_option( 'welcomepack', array( 'dpw_welcomemsgtoggle' => false, 'dpw_friendstoggle' => false, 'dpw_groupstoggle' => false, 'dpw_startpagetoggle' => false, 'dpw_emailtoggle' => false, 'friends' => array(), 'groups' => array(), 'startpage' => '', 'welcomemsg' => '', 'welcomemsgsender' => 0, 'welcomemsgsubject' => '' ) );
+	}
+
+	/**
+	 * Implements the start page feature.
+	 *
+	 * This function detects when the user has logged in to the website after they have activated their
+	 * account by looking for the absence of BuddyPress' last_activity user meta record. If this record
+	 * is present, it means they've previously logged into the site.
+	 *
+	 * @global object $bp BuddyPress global settings
+	 * @param string $redirect_to URL
+	 * @param unknown $not_used unknown
+	 * @param WP_User $user WordPress user object
+	 * @since 3.0
+	 */
+	function redirect_login( $redirect_to, $not_used, $user ) {
+		global $bp;
+
+		if ( empty( $bp->loggedin_user->id ) || is_wp_error( $user ) )
+			return $redirect_to;
+
+		$settings = DP_Welcome_Pack::get_settings();
+		if ( !$settings['dpw_startpagetoggle'] )
+			return $redirect_to;
+
+		// If the last_activity meta is not set, then this is the user's first log in
+		if ( get_user_meta( $bp->loggedin_user->id, 'last_activity', true ) )
+			return $redirect_to;
+
+		$url = apply_filters( 'dpw_keyword_replacement', $settings['startpage'] );
+		if ( empty( $url ) )
+			return $redirect_to;
+
+		return esc_url( apply_filters( 'dpw_redirect_login', $url, $redirect_to, $user ) );
+	}
+
+	/**
+	 * Implements the start page feature for those using the S2Member plugin.
+	 *
+	 * @param string $redirect_to URL
+	 * @param array $login_info See wp_get_current_user()
+	 * @since 3.0
+	 */
+	function redirect_s2member_login( $redirect_to, $login_info ) {
+	  if ( empty( $login_info['current_user'] ) )
+	    return $redirect_to;
+
+	  return apply_filters( 'dpw_redirect_s2member_login', $this->redirect_login( $redirect_to, array(), array() ), $redirect_to, $login_info );
 	}
 }
 add_action( 'bp_include', array( 'DP_Welcome_Pack', 'init' ) );

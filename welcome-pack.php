@@ -173,7 +173,7 @@ class DP_Welcome_Pack {
 		if ( empty( $url ) )
 			return $redirect_to;
 
-		return esc_url( apply_filters( 'dpw_redirect_login', $url, $redirect_to, $user ) );
+		return apply_filters( 'dpw_redirect_login', esc_url( $url ), $url, $redirect_to, $user );
 	}
 
 	/**

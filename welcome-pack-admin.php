@@ -467,7 +467,7 @@ class DP_Welcome_Pack_Admin {
 			$settings['groups'] = array_map( 'absint', (array) $_POST['groups'] );
 
 		if ( !empty( $_POST['startpage'] ) )
-			$settings['startpage'] = esc_url_raw( sanitize_text_field( wp_kses_data( $_POST['startpage'] ) ) );
+			$settings['startpage'] = sanitize_text_field( wp_kses_data( $_POST['startpage'] ) );
 
 		if ( !empty( $_POST['welcomemsg'] ) )
 			$settings['welcomemsg'] = stripslashes( wp_filter_kses( $_POST['welcomemsg'] ) );

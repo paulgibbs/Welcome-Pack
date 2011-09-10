@@ -86,7 +86,7 @@ class DP_Welcome_Pack {
 	/**
 	 * Constructor.
 	 *
-	 * Include experiments and set up the admin screen.
+	 * Register actions and filters, and set up the admin screen.
 	 *
 	 * @global object $bp BuddyPress global settings
 	 * @since 3.0
@@ -94,7 +94,8 @@ class DP_Welcome_Pack {
 	public function __construct() {
 		add_action( bp_core_admin_hook(), array( $this, 'setup_admin_menu' ) );
 		add_filter( 'plugin_action_links', array( $this, 'add_settings_link' ), 10, 2 );
-	}
+
+		require( dirname( __FILE__ ) . '/welcome-pack-filters.php' );	}
 
 	/**
 	 * Load the admin menu if current user is an admin

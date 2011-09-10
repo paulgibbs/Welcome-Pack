@@ -117,6 +117,11 @@ class DP_Welcome_Pack {
 	 * @since 3.0
 	 */
 	function register_post_types() {
+		// Is email customisation enabled?
+		$settings = DP_Welcome_Pack::get_settings();
+		if ( !$settings['dpw_emailtoggle'] )
+			return;
+
 		// Labels
 		$email_labels = array(
 			'name'               => __( 'Emails',                   'dpw' ),

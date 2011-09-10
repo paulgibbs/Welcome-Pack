@@ -61,6 +61,9 @@ class DP_Welcome_Pack_Admin {
 		// How many columns does this page have by default?
 		add_screen_option( 'layout_columns', array( 'max' => 2 ) );
 
+		// All tabs
+		add_meta_box( 'dpw-paypal', __( 'Give Kudos', 'dpw' ), array( $this, 'paypal' ), 'settings_page_welcome-pack', 'side', 'default' );
+
 		// Support tab
 		if ( 'support' == $tab )
 			add_meta_box( 'dpw-helpushelpyou', __( 'Help Us Help You', 'dpw' ), array( $this, 'helpushelpyou'), 'settings_page_welcome-pack', 'side', 'high' );
@@ -68,7 +71,6 @@ class DP_Welcome_Pack_Admin {
 			add_meta_box( 'dpw-likethis', __( 'Love Welcome Pack?', 'dpw' ), array( $this, 'like_this_plugin' ), 'settings_page_welcome-pack', 'side', 'default' );
 
 		// All tabs
-		add_meta_box( 'dpw-paypal', __( 'Give Kudos', 'dpw' ), array( $this, 'paypal' ), 'settings_page_welcome-pack', 'side', 'default' );
 		add_meta_box( 'dpw-latest', __( 'Latest News', 'dpw' ), array( $this, 'metabox_latest_news' ), 'settings_page_welcome-pack', 'side', 'default' );
 
 		// Javascripts for meta box drag-and-drop
@@ -341,7 +343,7 @@ class DP_Welcome_Pack_Admin {
 				<p><?php _e( "BuddyPress' Private Messaging component needs to be enabled for this option to be active.", 'dpa' ); ?></p>
 			<?php endif; ?>
 
-			<p><input type="submit" class="button-primary" value="<?php _e( 'Update Settings', 'dpw' ); ?>" /></p>
+			<p><input type="submit" class="button-primary" value="<?php _e( 'Save Changes', 'dpw' ); ?>" /></p>
 		</form>
 
 	<?php
@@ -417,7 +419,7 @@ class DP_Welcome_Pack_Admin {
 				</select>
 
 			<?php endif; ?>
-				<p><input type="submit" class="button-primary" value="<?php _e( 'Update Settings', 'dpw' ); ?>" /></p>
+				<p><input type="submit" class="button-primary" value="<?php _e( 'Save Changes', 'dpw' ); ?>" /></p>
 			<?php
 		?>
 

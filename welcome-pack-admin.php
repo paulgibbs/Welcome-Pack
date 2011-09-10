@@ -119,7 +119,7 @@ class DP_Welcome_Pack_Admin {
 
 		// Check that the specified component is active (and, if applicable, its corresponding BuddyPress component)
 		if ( 'groups' == $tab && ( !bp_is_active( 'groups' ) || !$settings['dpw_groupstoggle'] ) ||
-			'members' == $tab && ( !bp_is_active( 'friends' ) || !$settings['dpw_friendsstoggle'] ) ||
+			'members' == $tab && ( !bp_is_active( 'friends' ) || !$settings['dpw_friendstoggle'] ) ||
 			'welcomemessage' == $tab && ( !bp_is_active( 'messages' ) || !$settings['dpw_welcomemsgtoggle'] ) ||
 			'startpage' == $tab && !$settings['dpw_startpagetoggle'] )
 			$tab = 'settings';

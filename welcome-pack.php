@@ -93,14 +93,17 @@ class DP_Welcome_Pack {
 	 * @since 3.0
 	 */
 	public function __construct() {
+		require( dirname( __FILE__ ) . '/welcome-pack-filters.php' );
+
 		add_action( bp_core_admin_hook(), array( $this, 'setup_admin_menu' ) );
 		add_filter( 'plugin_action_links', array( $this, 'add_settings_link' ), 10, 2 );
 
 		// Start page
 		add_filter( 'login_redirect', array( $this, 'redirect_login' ), 20, 3 );
-		add_filter( 'ws_plugin__s2member_fill_login_redirect_rc_vars', 'redirect_s2member_login', 10, 2 );
+		add_filter( 'ws_plugin__s2member_fill_login_redirect_rc_vars', array( $this, 'redirect_s2member_login' ), 10, 2 );
 
-		require( dirname( __FILE__ ) . '/welcome-pack-filters.php' );
+		// Things that happen when a user's account is activated
+		add_action( 'bp_core_activated_user', array( $this, 'user_activated' ) );
 	}
 
 	/**
@@ -189,6 +192,46 @@ class DP_Welcome_Pack {
 	    return $redirect_to;
 
 	  return apply_filters( 'dpw_redirect_s2member_login', $this->redirect_login( $redirect_to, array(), array() ), $redirect_to, $login_info );
+	}
+
+	/**
+	 * The main workhorse where the friends, groups and welcome message features happens.
+	 * Triggers when a user account is activated.
+	 *
+	 * @param int $user_id ID of the new user
+	 * @since 3.0
+	 */
+	function user_activated( $user_id ) {
+		$settings = DP_Welcome_Pack::get_settings();
+
+		// Friends
+		if ( !empty( $settings['dpw_friendstoggle'] ) && bp_is_active( 'friends' ) ) {
+			if ( empty( $settings['friends'] ) )
+				break;
+
+			foreach ( (array) $settings['friends'] as $friend_id )
+				friends_add_friend( (int) $friend_id, $user_id, constant( 'WELCOME_PACK_AUTOACCEPT_INVITATIONS' ) );
+		}
+
+		// Groups
+		if ( !empty( $settings['dpw_groupstoggle'] ) && bp_is_active( 'groups' ) ) {
+			if ( empty( $settings['groups'] ) )
+				break;
+
+			foreach ( (array) $settings['groups'] as $group_id ) {
+				$group = new BP_Groups_Group( (int) $group_id );
+				groups_invite_user( array( 'user_id' => $user_id, 'group_id' => (int) $group_id, 'inviter_id' => $group->creator_id, 'is_confirmed' => constant( 'WELCOME_PACK_AUTOACCEPT_INVITATIONS' ) ) );
+				groups_send_invites( $group->creator_id, (int) $group_id );
+			}
+		}
+
+		// Welcome message
+		if ( !empty( $settings['dpw_welcomemsgtoggle'] ) && bp_is_active( 'messages' ) ) {
+			if ( empty( $settings['welcomemsgsender'] ) || empty( $settings['welcomemsgsubject'] ) || empty( $settings['welcomemsg'] ) )
+				break;
+
+			messages_new_message( array( 'sender_id' => $settings['welcomemsgsender'], 'recipients' => $user_id, 'subject' => apply_filters( 'dpw_keyword_replacement', $settings['welcomemsgsubject'], $user_id ), 'content' => apply_filters( 'dpw_keyword_replacement', $settings['welcomemsg'], $user_id ) ) );
+		}
 	}
 }
 add_action( 'bp_include', array( 'DP_Welcome_Pack', 'init' ) );

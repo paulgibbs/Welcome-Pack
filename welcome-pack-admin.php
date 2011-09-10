@@ -115,8 +115,8 @@ class DP_Welcome_Pack_Admin {
 		// Put the help text into the WordPress help tab
 		add_contextual_help( 'settings_page_welcome-pack',
 			$help_text .
-			'<p><strong>' . __( 'For more information:' ) . '</strong></p>' .
-			'<p>' . __( '<a href="http://buddypress.org/community/groups/welcome-pack/" target="_blank">Support Forum</a>', 'dpw' ) . '</p>'
+			'<p><strong>' . __( 'For more information:', 'dpw' ) . '</strong></p>' .
+			'<p>' . sprintf( '<a href="http://buddypress.org/community/groups/welcome-pack/" target="_blank">%s</a>', __( 'Support Forum', 'dpw' ) ) . '</p>'
 		);
 	}
 

@@ -1,5 +1,7 @@
 <?php
 /**
+ * This file contains functions for displaying Welcome Pack's wp-admin menus, and updating the configuration settings.
+ *
  * The idea of using the meta boxes came from Joost de Valk (http://yoast.com).
  * The implementation of the above is credited to http://www.code-styling.de/english/how-to-use-wordpress-metaboxes-at-own-plugins.
  * Thanks to both!
@@ -24,6 +26,7 @@ class DP_Welcome_Pack_Admin {
 	 * @since 3.0
 	 */
 	public function __construct() {
+		// Set up the admin menu
 		$this->setup_menu();
 	}
 
@@ -34,6 +37,8 @@ class DP_Welcome_Pack_Admin {
 	 */
 	protected function setup_menu() {
 		add_options_page( __( 'Welcome Pack', 'dpw' ), __( 'Welcome Pack', 'dpw' ), 'manage_options', 'welcome-pack', array( $this, 'admin_page' ) );
+
+		// Hook in to an early action that fires when our admin screen is being displayed, so we can set some custom javascript and CSS.
 		add_action( 'load-settings_page_welcome-pack', array( $this, 'init' ) );
 	}
 
@@ -66,7 +71,7 @@ class DP_Welcome_Pack_Admin {
 		add_meta_box( 'dpw-paypal', __( 'Give Kudos', 'dpw' ), array( $this, 'paypal' ), 'settings_page_welcome-pack', 'side', 'default' );
 		add_meta_box( 'dpw-latest', __( 'Latest News', 'dpw' ), array( $this, 'metabox_latest_news' ), 'settings_page_welcome-pack', 'side', 'default' );
 
-		// Javascripts for meta box
+		// Javascripts for meta box drag-and-drop
 		wp_enqueue_script( 'postbox' );
 		wp_enqueue_script( 'dashboard' );
 	}
@@ -80,8 +85,10 @@ class DP_Welcome_Pack_Admin {
 	public function admin_page() {
 		global $screen_layout_columns;
 
+		// Get Welcome Pack's setttings
 		$settings = DP_Welcome_Pack::get_settings();
 
+		// Which tab have we been asked to load?
 		if ( !empty( $_GET['tab'] ) ) {
 			switch ( $_GET['tab'] ) {
 				default:
@@ -117,13 +124,15 @@ class DP_Welcome_Pack_Admin {
 			'startpage' == $tab && !$settings['dpw_startpagetoggle'] )
 			$tab = 'settings';
 
-
+		// Check if a form was submitted, and if we need to save our settings again.
 		$updated = $this->maybe_save();
 		$url     = network_admin_url( 'options-general.php?page=welcome-pack' );
 
-		// Update settings if they've just been updated in the database
+		// If admin settings were just updated, fetch the new values from the database so that we aren't using stale data
 		if ( $updated )
 			$settings = DP_Welcome_Pack::get_settings();
+
+		// Below, we output some custom CSS, Google +1 button javascript, and the tab bar for our admin screen.
 	?>
 
 		<script type="text/javascript" src="https://apis.google.com/js/plusone.js">
@@ -211,6 +220,7 @@ class DP_Welcome_Pack_Admin {
 						<?php endif; ?>
 
 						<?php
+						// This logic decides whether to print the support page, settings page, or one of the component pages.
 						if ( 'support' == $tab )
 							$this->admin_page_support();
 						elseif ( 'settings' == $tab )
@@ -234,12 +244,13 @@ class DP_Welcome_Pack_Admin {
 	 * @since 3.0
 	 */
 	protected function admin_page_support() {
-		// Email contact form
+		// Handle email contact form submission.
 		if ( !empty( $_POST['contact_body'] ) && !empty( $_POST['contact_type'] ) && !empty( $_POST['contact_email'] ) ) {
 			$body  = force_balance_tags( wp_filter_kses( stripslashes( $_POST['contact_body'] ) ) );
 			$type  = force_balance_tags( wp_filter_kses( stripslashes( $_POST['contact_type'] ) ) );
 			$email = sanitize_email( force_balance_tags( wp_filter_kses( stripslashes( $_POST['contact_email'] ) ) ) );
 
+			// Message, request type and email address have been entered; send the email!
 			if ( $body && $type && $email && is_email( $email ) )
 				$email_sent = wp_mail( array( 'paul@byotos.com', $email ), "Welcome Pack support request: " . $type, $body );
 		}
@@ -278,7 +289,7 @@ class DP_Welcome_Pack_Admin {
 	}
 
 	/**
-	 * Main tab's content for the admin page
+	 * Setting tab's content for the admin page
 	 *
 	 * @param array $settings Plugin settings (from DB)
 	 * @param bool $updated Have settings been updated on the previous page submission?
@@ -337,7 +348,7 @@ class DP_Welcome_Pack_Admin {
 	}
 
 	/**
-	 * Generic method to produce the admin page for a specific component of Welcome Pack (friends, groups, welcome message, and so on)
+	 * Method to produce the admin page for a specific component of Welcome Pack (friends, groups, welcome message, and so on)
 	 *
 	 * @global object $bp BuddyPress settings object
 	 * @global wpdb $wpdb WordPress database object
@@ -351,6 +362,7 @@ class DP_Welcome_Pack_Admin {
 
 		$data = array();
 
+		// Depending on which $tab we're displaying, maybe fetch some information from the database.
 		if ( 'groups' == $tab && bp_is_active( 'groups' ) )
 			$data = $wpdb->get_results( $wpdb->prepare( "SELECT id, name FROM {$bp->groups->table_name} ORDER BY name ASC" ) );
 		elseif ( ( 'members' == $tab && bp_is_active( 'friends' ) ) || ( 'welcomemessage' == $tab && bp_is_active( 'messages' ) ) )
@@ -362,7 +374,7 @@ class DP_Welcome_Pack_Admin {
 			<?php wp_nonce_field( 'meta-box-order', 'meta-box-order-nonce', false ); ?>
 			<?php wp_nonce_field( 'dpw-admin', 'dpw-admin-nonce', false ); ?>
 
-			<!-- Friends -->
+			<!-- Friends tab -->
 			<?php if ( 'members' == $tab && bp_is_active( 'friends' ) ) : ?>
 				<p><?php _e( 'Invite the new user to become friends with these people:', 'dpw' ); ?></p>
 
@@ -372,7 +384,7 @@ class DP_Welcome_Pack_Admin {
 					<?php endforeach; ?>
 				</select>
 
-			<!-- Groups -->
+			<!-- Groups tab -->
 			<?php elseif ( 'groups' == $tab && bp_is_active( 'groups' ) ) : ?>
 				<p><?php _e( "Ask the new user if they'd like to join these groups:", 'dpw' ); ?></p>
 
@@ -382,13 +394,13 @@ class DP_Welcome_Pack_Admin {
 					<?php endforeach; ?>
 				</select>
 
-			<!-- Start Page -->
+			<!-- Start Page tab -->
 			<?php elseif ( 'startpage' == $tab ) : ?>
 
 				<p><?php _e( "When the new user logs into your site for the very first time, redirect them to this URL:", 'dpw' ); ?></p>
 				<input type="url" name="startpage" value="<?php echo esc_attr( $settings['startpage'] ); ?>" />
 
-			<!-- Welcome Message -->
+			<!-- Welcome Message tab -->
 			<?php elseif ( 'welcomemessage' == $tab && bp_is_active( 'messages' ) ) : ?>
 
 				<p><?php _e( 'Send the new user a Welcome Message&hellip;', 'dpw' ); ?></p>
@@ -422,9 +434,11 @@ class DP_Welcome_Pack_Admin {
 	 * @static
 	 */
 	protected static function maybe_save() {
+		// Fetch existing settings
 		$settings = $existing_settings = DP_Welcome_Pack::get_settings();
 		$updated  = false;
 
+		// Has the Friend invitation feature been toggled on/off?
 		if ( !empty( $_POST['dpw_friendstoggle'] ) ) {
 			if ( 'on' == $_POST['dpw_friendstoggle'] )
 				$settings['dpw_friendstoggle'] = true;
@@ -432,6 +446,7 @@ class DP_Welcome_Pack_Admin {
 				$settings['dpw_friendstoggle'] = false;
 		}
 
+		// Has the Group invitation feature been toggled on/off?
 		if ( !empty( $_POST['dpw_groupstoggle'] ) ) {
 			if ( 'on' == $_POST['dpw_groupstoggle'] )
 				$settings['dpw_groupstoggle'] = true;
@@ -439,6 +454,7 @@ class DP_Welcome_Pack_Admin {
 				$settings['dpw_groupstoggle'] = false;
 		}
 
+		// Has the Start Page feature been toggled on/off?
 		if ( !empty( $_POST['dpw_startpagetoggle'] ) ) {
 			if ( 'on' == $_POST['dpw_startpagetoggle'] )
 				$settings['dpw_startpagetoggle'] = true;
@@ -446,6 +462,7 @@ class DP_Welcome_Pack_Admin {
 				$settings['dpw_startpagetoggle'] = false;
 		}
 
+		// Has the Welcome Message feature been toggled on/off?
 		if ( !empty( $_POST['dpw_welcomemsgtoggle'] ) ) {
 			if ( 'on' == $_POST['dpw_welcomemsgtoggle'] )
 				$settings['dpw_welcomemsgtoggle'] = true;
@@ -453,6 +470,7 @@ class DP_Welcome_Pack_Admin {
 				$settings['dpw_welcomemsgtoggle'] = false;
 		}
 
+		// Has the email customisation feature been toggled on/off?
 		if ( !empty( $_POST['dpw_emailtoggle'] ) ) {
 			if ( 'on' == $_POST['dpw_emailtoggle'] )
 				$settings['dpw_emailtoggle'] = true;
@@ -460,24 +478,31 @@ class DP_Welcome_Pack_Admin {
 				$settings['dpw_emailtoggle'] = false;
 		}
 
+		// Has the list of friends (to send invites to) been updated?
 		if ( !empty( $_POST['friends'] ) )
 			$settings['friends'] = array_map( 'absint', (array) $_POST['friends'] );
 
+		// Has the list of groups (to send invites to) been updated?
 		if ( !empty( $_POST['groups'] ) )
 			$settings['groups'] = array_map( 'absint', (array) $_POST['groups'] );
 
+		// Has the Start Page URL been updated?
 		if ( !empty( $_POST['startpage'] ) )
 			$settings['startpage'] = sanitize_text_field( wp_kses_data( $_POST['startpage'] ) );
 
+		// Has the Welcome Message body text been updated?
 		if ( !empty( $_POST['welcomemsg'] ) )
 			$settings['welcomemsg'] = stripslashes( wp_filter_kses( $_POST['welcomemsg'] ) );
 
+		// Has the Welcome Message subject text been updated?
 		if ( !empty( $_POST['welcomemsgsubject'] ) )
 			$settings['welcomemsgsubject'] = stripslashes( sanitize_text_field( wp_filter_kses( $_POST['welcomemsgsubject'] ) ) );
 
+		// Has the Welcome Message sender (who the message is sent from) been updated?
 		if ( !empty( $_POST['welcomemsgsender'] ) )
 			$settings['welcomemsgsender'] = absint( $_POST['welcomemsgsender'] );
 
+		// If the new settings are different from the existing settings, then they've been changed. Save them to the database!
 		if ( $settings != $existing_settings ) {
 			check_admin_referer( 'dpw-admin', 'dpw-admin-nonce' );
 			update_site_option( 'welcomepack', $settings );
@@ -495,6 +520,8 @@ class DP_Welcome_Pack_Admin {
 	 */
 	public function metabox_latest_news( $settings) {
 		$rss = fetch_feed( 'http://feeds.feedburner.com/BYOTOS' );
+
+		// Check the feed was downloaded (the site could have gone down, or we could have received an error message)
 		if ( !is_wp_error( $rss ) ) {
 			$content = '<ul>';
 			$items = $rss->get_items( 0, $rss->get_item_quantity( 3 ) );
@@ -525,6 +552,7 @@ class DP_Welcome_Pack_Admin {
 		$active_plugins = array();
 		$all_plugins    = apply_filters( 'all_plugins', get_plugins() );
 
+		// Get a list of active plugins
 		foreach ( $all_plugins as $filename => $plugin ) {
 			if ( 'Welcome Pack' != $plugin['Name'] && 'BuddyPress' != $plugin['Name'] && is_plugin_active( $filename ) )
 				$active_plugins[] = $plugin['Name'] . ': ' . $plugin['Version'];
@@ -534,6 +562,7 @@ class DP_Welcome_Pack_Admin {
 		if ( !$active_plugins )
 			$active_plugins[] = __( 'No other plugins are active', 'dpw' );
 
+		// Is multisite active?
 		if ( is_multisite() ) {
 			if ( is_subdomain_install() )
 				$is_multisite = __( 'subdomain', 'dpw' );
@@ -544,6 +573,7 @@ class DP_Welcome_Pack_Admin {
 			$is_multisite = __( 'no', 'dpw' );
 		}
 
+		// Find out the BuddyPress BP_ROOT_BLOG value
 		if ( 1 == constant( 'BP_ROOT_BLOG' ) )
 			$is_bp_root_blog = __( 'standard', 'dpw' );
 		else
@@ -552,15 +582,18 @@ class DP_Welcome_Pack_Admin {
 		$is_bp_default_child_theme = __( 'no', 'dpw' );
 		$theme = current_theme_info();
 
+		// Is the current theme a child theme of BP-Default?
 		if ( 'BuddyPress Default' == $theme->parent_theme )
 			$is_bp_default_child_theme = __( 'yes', 'dpw' );
 
 		if ( 'BuddyPress Default' == $theme->name )
 			$is_bp_default_child_theme = __( 'n/a', 'dpw' );
 
+		// Is the site using pretty permalinks?
 	  if ( empty( $wp_rewrite->permalink_structure ) )
 			$custom_permalinks = __( 'default', 'dpw' );
 		else
+			// Or is the site using (almost) pretty permalinks?
 			if ( strpos( $wp_rewrite->permalink_structure, 'index.php' ) )
 				$custom_permalinks = __( 'almost', 'dpw' );
 			else

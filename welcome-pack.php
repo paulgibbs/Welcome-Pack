@@ -77,6 +77,7 @@ class DP_Welcome_Pack {
 		static $instance = false;
 
 		if ( !$instance ) {
+			// Look in /plugins/welcome-pack/languages/ for translations (.mo files)
 			load_plugin_textdomain( 'dpw', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
 			$instance = new DP_Welcome_Pack;
 		}
@@ -95,17 +96,18 @@ class DP_Welcome_Pack {
 	public function __construct() {
 		require( dirname( __FILE__ ) . '/welcome-pack-filters.php' );
 
+		// Register admin menu pages, and a settings link on the Plugins page
 		add_action( bp_core_admin_hook(), array( $this, 'setup_admin_menu' ) );
 		add_filter( 'plugin_action_links', array( $this, 'add_settings_link' ), 10, 2 );
 
-		// Emails
+		// Email customisation...
 		add_action( 'bp_init', array( $this, 'register_post_types' ) );
 
-		// Start page
+		// Start page...
 		add_filter( 'login_redirect', array( $this, 'redirect_login' ), 20, 3 );
 		add_filter( 'ws_plugin__s2member_fill_login_redirect_rc_vars', array( $this, 'redirect_s2member_login' ), 10, 2 );
 
-		// Things that happen when a user's account is activated
+		// And finally, things that happen when a user's account is activated (e.g. everything else).
 		add_action( 'bp_core_activated_user', array( $this, 'user_activated' ) );
 	}
 
@@ -115,6 +117,7 @@ class DP_Welcome_Pack {
 	 * @since 3.0
 	 */
 	function register_post_types() {
+		// Labels
 		$email_labels = array(
 			'name'               => __( 'Emails',                   'dpw' ),
 			'singular_name'      => __( 'Email',                    'dpw' ),
@@ -127,29 +130,34 @@ class DP_Welcome_Pack {
 			'view_item'          => __( 'View email',               'dpw' ),
 			'search_items'       => __( 'Search emails',            'dpw' ),
 			'not_found'          => __( 'No emails found',          'dpw' ),
-			'not_found_in_trash' => __( 'No emails found in Trash', 'dpw' )
+			'not_found_in_trash' => __( 'No emails found in Trash', 'dpw' ),
 		);
 
+		// Which standard post type features do we support?
 		$email_supports = array(
 			'editor',
-			'page-attributes',
 			'revisions',
-			'title'
+			'title',
 		);
 
+		// Configure the post type - show it in the admin menu, but restrict front-end access.
 		$email_cpt = array(
 			'labels'          => $email_labels,
 			'public'          => false,
-			'show_in_menu'    => false,
+			'show_in_menu'    => true,
 			'show_ui'         => true,
-			'supports'        => $email_supports
+			'supports'        => $email_supports,
 		);
 
+		// Register the post type
 		register_post_type( 'dpw_email', $email_cpt );
+
+		// Call an action for third-parties to hook into
+		do_action( 'dpw_register_post_types' );
 	}
 
 	/**
-	 * Load the admin menu if current user is an admin
+	 * Load the admin menu if the current user is an admin
 	 *
 	 * @since 3.0
 	 */
@@ -158,28 +166,32 @@ class DP_Welcome_Pack {
 			return;
 
 		require( dirname( __FILE__ ) . '/welcome-pack-admin.php' );
-		do_action( 'dpw_admin_menu' );
+		do_action( 'dpw_setup_admin_menu' );
 	}
 
 	/**
-	 * Add link to settings screen on the WP Admin 'plugins' page
+	 * Add link to settings screen on the wp-admin Plugins screen
 	 *
 	 * @param array $links Item links
 	 * @param string $file Plugin's file name
 	 * @since 3.0
 	 */
 	public function add_settings_link( $links, $file ) {
+		// Check we're dealing with Welcome Pack
 		if ( 'welcome-pack/welcome-pack.php' != $file )
 			return $links;
 
+		// Add Settings link
 		array_unshift( $links, sprintf( '<a href="%s">%s</a>', admin_url( 'options-general.php?page=welcome-pack' ), __( 'Settings', 'dpw' ) ) );
-		do_action( 'dpw_add_settings_link' );
 
-		return $links;
+		return apply_filters( 'dpw_add_settings_link', $links, $file );
 	}
 
 	/**
 	 * Convenience function to retrieve the plugin's setting
+	 *
+	 * Supplies default values if they are missing from the database, or haven't been set.
+	 * This avoids a lot of checks elsewhere in the plugin.
 	 *
 	 * @since 3.0
 	 * @static
@@ -204,17 +216,20 @@ class DP_Welcome_Pack {
 	function redirect_login( $redirect_to, $not_used, $user ) {
 		global $bp;
 
+		// Check that we haven't been passed an error object
 		if ( is_wp_error( $user ) || empty( $user->ID ) )
 			return $redirect_to;
 
+		// Is Start Page enabled?
 		$settings = DP_Welcome_Pack::get_settings();
 		if ( !$settings['dpw_startpagetoggle'] )
 			return $redirect_to;
 
-		// If the last_activity meta is not set, then this is the user's first log in
+		// If the last_activity meta is set, then this is *not* the user's first log in
 		if ( get_user_meta( $user->ID, 'last_activity', true ) )
 			return $redirect_to;
 
+		// Filter the URL for sanitisation and to allow keyword replacement
 		$url = apply_filters( 'dpw_keyword_replacement', $settings['startpage'], $user->ID );
 		if ( empty( $url ) )
 			return $redirect_to;
@@ -230,7 +245,8 @@ class DP_Welcome_Pack {
 	 * @since 3.0
 	 */
 	function redirect_s2member_login( $redirect_to, $login_info ) {
-	  if ( empty( $login_info['current_user'] ) )
+		// Check that we haven't been passed an error object
+	  if ( is_wp_error( $login_info ) || empty( $login_info['current_user'] ) )
 	    return $redirect_to;
 
 	  return apply_filters( 'dpw_redirect_s2member_login', $this->redirect_login( $redirect_to, array(), array() ), $redirect_to, $login_info );
@@ -246,34 +262,41 @@ class DP_Welcome_Pack {
 	function user_activated( $user_id ) {
 		$settings = DP_Welcome_Pack::get_settings();
 
-		// Friends
+		// Is the Friend invitations component enabled?
 		if ( !empty( $settings['dpw_friendstoggle'] ) && bp_is_active( 'friends' ) ) {
 			if ( empty( $settings['friends'] ) )
 				break;
 
+			// Send friend requests
 			foreach ( (array) $settings['friends'] as $friend_id )
 				friends_add_friend( (int) $friend_id, $user_id, constant( 'WELCOME_PACK_AUTOACCEPT_INVITATIONS' ) );
 		}
 
-		// Groups
+		// Is the Group invitations component enabled?
 		if ( !empty( $settings['dpw_groupstoggle'] ) && bp_is_active( 'groups' ) ) {
 			if ( empty( $settings['groups'] ) )
 				break;
 
 			foreach ( (array) $settings['groups'] as $group_id ) {
 				$group = new BP_Groups_Group( (int) $group_id );
+
+				// Send group invites
 				groups_invite_user( array( 'user_id' => $user_id, 'group_id' => (int) $group_id, 'inviter_id' => $group->creator_id, 'is_confirmed' => constant( 'WELCOME_PACK_AUTOACCEPT_INVITATIONS' ) ) );
 				groups_send_invites( $group->creator_id, (int) $group_id );
 			}
 		}
 
-		// Welcome message
+		// Is the Welcome Message component enabled?
 		if ( !empty( $settings['dpw_welcomemsgtoggle'] ) && bp_is_active( 'messages' ) ) {
 			if ( empty( $settings['welcomemsgsender'] ) || empty( $settings['welcomemsgsubject'] ) || empty( $settings['welcomemsg'] ) )
 				break;
 
+			// Send private messages
 			messages_new_message( array( 'sender_id' => $settings['welcomemsgsender'], 'recipients' => $user_id, 'subject' => apply_filters( 'dpw_keyword_replacement', $settings['welcomemsgsubject'], $user_id ), 'content' => apply_filters( 'dpw_keyword_replacement', $settings['welcomemsg'], $user_id ) ) );
 		}
+
+		// Call an action for third-parties to hook into
+		do_action( 'dpw_user_activated', $user_id );
 	}
 }
 add_action( 'bp_include', array( 'DP_Welcome_Pack', 'init' ) );

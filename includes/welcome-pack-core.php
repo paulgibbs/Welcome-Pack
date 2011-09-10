@@ -3,7 +3,7 @@
 /**
  * Register email post type
  *
- * @since 2.3
+ * @since 3.0
  */
 function dpw_register_post_types() {
 	$email_labels = array(
@@ -91,7 +91,7 @@ add_action( 'bp_core_activated_user', 'dpw_user_registration' );
  * @param string $redirect_to URL
  * @param unknown $not_used unknown
  * @param WP_User $WP_User WordPress user object
- * @since 2.3
+ * @since 3.0
  */
 function dpw_user_login_redirect( $redirect_to, $not_used, $WP_User ) {
 	global $bp;
@@ -120,7 +120,7 @@ add_filter( 'login_redirect', 'dpw_user_login_redirect', 20, 3 );
  *
  * @param string $url Redirect to URL
  * @param array $login_info See wp_get_current_user()
- * @since 2.3
+ * @since 3.0
  */
 function dpw_user_login_redirect_s2member( $url, $login_info ) {
   if ( empty( $login_info['current_user'] ) )

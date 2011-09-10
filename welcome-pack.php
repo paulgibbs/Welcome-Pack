@@ -158,7 +158,7 @@ class DP_Welcome_Pack {
 	function redirect_login( $redirect_to, $not_used, $user ) {
 		global $bp;
 
-		if ( empty( $bp->loggedin_user->id ) || is_wp_error( $user ) )
+		if ( is_wp_error( $user ) || empty( $user->ID ) )
 			return $redirect_to;
 
 		$settings = DP_Welcome_Pack::get_settings();
@@ -166,10 +166,10 @@ class DP_Welcome_Pack {
 			return $redirect_to;
 
 		// If the last_activity meta is not set, then this is the user's first log in
-		if ( get_user_meta( $bp->loggedin_user->id, 'last_activity', true ) )
+		if ( get_user_meta( $user->ID, 'last_activity', true ) )
 			return $redirect_to;
 
-		$url = apply_filters( 'dpw_keyword_replacement', $settings['startpage'] );
+		$url = apply_filters( 'dpw_keyword_replacement', $settings['startpage'], $user->ID );
 		if ( empty( $url ) )
 			return $redirect_to;
 

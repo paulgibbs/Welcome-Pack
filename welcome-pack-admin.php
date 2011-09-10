@@ -114,11 +114,12 @@ class DP_Welcome_Pack_Admin {
 		if ( 'groups' == $tab && ( !bp_is_active( 'groups' ) || !$settings['dpw_friendstoggle'] ) ||
 			'members' == $tab && ( !bp_is_active( 'friends' ) || !$settings['dpw_groupstoggle'] ) ||
 			'welcomemessage' == $tab && ( !bp_is_active( 'messages' ) || !$settings['dpw_welcomemsgtoggle'] ) ||
-			'startpage' == $tab && !$settings['dpw_welcomemsgtoggle'] )
+			'startpage' == $tab && !$settings['dpw_startpagetoggle'] )
 			$tab = 'settings';
 
-		$updated  = $this->maybe_save();
-		$url      = network_admin_url( 'options-general.php?page=welcome-pack' );
+
+		$updated = $this->maybe_save();
+		$url     = network_admin_url( 'options-general.php?page=welcome-pack' );
 
 		// Update settings if they've just been updated in the database
 		if ( $updated )

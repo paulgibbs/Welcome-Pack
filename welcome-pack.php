@@ -10,7 +10,7 @@
  * Author: Paul Gibbs
  * Author URI: http://byotos.com/
  * Network: true
- * Domain Path: /includes/languages/
+ * Domain Path: /languages/
  * Text Domain: dpw
  */
 

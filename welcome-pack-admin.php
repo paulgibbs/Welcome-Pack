@@ -26,8 +26,7 @@ class DP_Welcome_Pack_Admin {
 	 * @since 3.0
 	 */
 	public function __construct() {
-		// Set up the admin menu
-		$this->setup_menu();
+		add_action( bp_core_admin_hook(), array( $this, 'setup_menu' ) );
 	}
 
 	/**
@@ -35,11 +34,32 @@ class DP_Welcome_Pack_Admin {
 	 *
 	 * @since 3.0
 	 */
-	protected function setup_menu() {
+	public function setup_menu() {
+		if ( !is_admin() || ( !is_user_logged_in() || !is_super_admin() ) )
+			return;
+
 		add_options_page( __( 'Welcome Pack', 'dpw' ), __( 'Welcome Pack', 'dpw' ), 'manage_options', 'welcome-pack', array( $this, 'admin_page' ) );
 
 		// Hook in to an early action that fires when our admin screen is being displayed, so we can set some custom javascript and CSS.
 		add_action( 'load-settings_page_welcome-pack', array( $this, 'init' ) );
+	}
+
+	/**
+	 * Add link to settings screen on the wp-admin Plugins screen
+	 *
+	 * @param array $links Item links
+	 * @param string $file Plugin's file name
+	 * @since 3.0
+	 */
+	public function add_settings_link( $links, $file ) {
+		// Check we're dealing with Welcome Pack
+		if ( 'welcome-pack/welcome-pack.php' != $file )
+			return $links;
+
+		// Add Settings link
+		array_unshift( $links, sprintf( '<a href="%s">%s</a>', admin_url( 'options-general.php?page=welcome-pack' ), __( 'Settings', 'dpw' ) ) );
+
+		return apply_filters( 'dpw_add_settings_link', $links, $file );
 	}
 
 	/**
@@ -716,5 +736,4 @@ class DP_Welcome_Pack_Admin {
 	<?php
 	}
 }
-new DP_Welcome_Pack_Admin();
 ?>

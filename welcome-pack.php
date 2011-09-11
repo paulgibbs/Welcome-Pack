@@ -66,6 +66,8 @@ if ( !defined( 'WELCOME_PACK_AUTOACCEPT_INVITATIONS' ) )
  * @since 3.0
  */
 class DP_Welcome_Pack {
+	protected $admin_obj = null;
+
 	/**
 	 * Creates an instance of the DP_Welcome_Pack class, and loads i18n.
 	 *
@@ -94,14 +96,17 @@ class DP_Welcome_Pack {
 	 * @since 3.0
 	 */
 	public function __construct() {
+		// Load globally shared filters
 		require( dirname( __FILE__ ) . '/welcome-pack-filters.php' );
+
+		// Set up the admin menu object
+		add_action( 'bp_init', array( $this, 'setup_admin' ), 9 );
 
 		// Register an install/upgrade handler
 		//add_action( 'dpw_register_post_types', array( $this, 'check_installed' ) );
 
 		// Register admin menu pages, and a settings link on the Plugins page
-		add_action( bp_core_admin_hook(), array( $this, 'setup_admin_menu' ) );
-		add_filter( 'plugin_action_links', array( $this, 'add_settings_link' ), 10, 2 );
+		add_filter( 'plugin_action_links', array( $this->admin_obj, 'add_settings_link' ), 10, 2 );
 
 		// Email customisation...
 		add_action( 'bp_init', array( $this, 'register_post_types' ) );
@@ -177,11 +182,12 @@ class DP_Welcome_Pack {
 
 		// Configure the post type - show it in the admin menu, but restrict front-end access.
 		$email_cpt = array(
-			'labels'          => $email_labels,
-			'public'          => false,
-			'show_in_menu'    => true,
-			'show_ui'         => true,
-			'supports'        => $email_supports,
+			'labels'               => $email_labels,
+			'public'               => false,
+			'register_meta_box_cb' => array( $this->admin_obj, 'email_meta_box_callback' ),
+			'show_in_menu'         => true,
+			'show_ui'              => true,
+			'supports'             => $email_supports,
 		);
 
 		// Register the post type
@@ -192,34 +198,24 @@ class DP_Welcome_Pack {
 	}
 
 	/**
-	 * Load the admin menu if the current user is an admin
+	 * Function used when setting up the meta boxes for the email post type.
 	 *
 	 * @since 3.0
 	 */
-	public function setup_admin_menu() {
-		if ( !is_admin() || ( !is_user_logged_in() || !is_super_admin() ) )
-			return;
-
-		require( dirname( __FILE__ ) . '/welcome-pack-admin.php' );
-		do_action( 'dpw_setup_admin_menu' );
+	function email_meta_box_callback() {
+		//add_meta_box(‘setcustommeta’, __(‘Attributes’), ‘set_custom_meta_boxes’, $args->post_type, ‘normal’, ‘core’);
 	}
 
 	/**
-	 * Add link to settings screen on the wp-admin Plugins screen
+	 * Instantiate the admin menu object
 	 *
-	 * @param array $links Item links
-	 * @param string $file Plugin's file name
 	 * @since 3.0
 	 */
-	public function add_settings_link( $links, $file ) {
-		// Check we're dealing with Welcome Pack
-		if ( 'welcome-pack/welcome-pack.php' != $file )
-			return $links;
+	public function setup_admin() {
+		require( dirname( __FILE__ ) . '/welcome-pack-admin.php' );
+		$this->admin_obj = new DP_Welcome_Pack_Admin();
 
-		// Add Settings link
-		array_unshift( $links, sprintf( '<a href="%s">%s</a>', admin_url( 'options-general.php?page=welcome-pack' ), __( 'Settings', 'dpw' ) ) );
-
-		return apply_filters( 'dpw_add_settings_link', $links, $file );
+		do_action( 'dpw_setup_admin_menu' );
 	}
 
 	/**

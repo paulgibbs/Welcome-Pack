@@ -447,13 +447,13 @@ class DP_Welcome_Pack_Admin {
 			<!-- Welcome Message tab -->
 			<?php elseif ( 'welcomemessage' == $tab && bp_is_active( 'messages' ) ) : ?>
 
-				<p><?php _e( 'Send the new user a Welcome Message&hellip;', 'dpw' ); ?></p>
+				<p><?php _e( 'When a user logs in to your site for the first time, send them a message:', 'dpw' ); ?></p>
 				<textarea name="welcomemsg"><?php echo esc_textarea( $settings['welcomemsg'] ); ?></textarea>
 
-				<p><?php _e( '&hellip;with this subject:', 'dpw' ); ?></p>
+				<p><?php _e( 'Message subject:', 'dpw' ); ?></p>
 				<input type="text" name="welcomemsgsubject" value="<?php echo esc_attr( $settings['welcomemsgsubject'] ); ?>" />
 
-				<p><?php _e( '&hellip;from this user:', 'dpw' ); ?></p>
+				<p><?php _e( 'Send message from this user:', 'dpw' ); ?></p>
 				<select name="welcomemsgsender">
 					<?php foreach ( (array) $data as $member ) : ?>
 						<option value="<?php echo esc_attr( $member->ID ); ?>"<?php if ( (int) $settings['welcomemsgsender'] && $member->ID == (int) $settings['welcomemsgsender'] ) echo " selected='selected'"; ?>><?php echo apply_filters( 'bp_core_get_user_displayname', $member->display_name, $member->ID ); ?></option>

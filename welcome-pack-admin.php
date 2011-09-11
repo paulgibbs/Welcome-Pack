@@ -72,12 +72,12 @@ class DP_Welcome_Pack_Admin {
 
 				case 'startpage':
 					$tab       = 'startpage';
-					$help_text = '<p>' . __( "When a user logs in to your site for the first time, they'll be redirected to this URL. If you want to take them to their user profile, enter <em>USER_URL</em>.", 'dpw' ) . '</p>';
+					$help_text = '<p>' . __( "When a user logs in to your site for the first time, they'll be redirected to this URL. If you want to take them to their user profile, enter <code>USER_URL</code>.", 'dpw' ) . '</p>';
 				break;
 
 				case 'welcomemessage':
 					$tab       = 'welcomemessage';
-					$help_text = '<p>' . __( 'The subject, sender and message details are mandatory. You can personalise the message by including their <em>NICKNAME</em> or their <em>USERNAME</em> in the subject or message.', 'dpw' ) . '</p>';
+					$help_text = '<p>' . __( 'The subject, sender and message details are mandatory. You can personalise the message by including their <code>NICKNAME</code> or their <code>USERNAME</code> in the subject or message.', 'dpw' ) . '</p>';
 				break;
 			}
 

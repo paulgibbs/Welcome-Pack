@@ -43,7 +43,7 @@ if ( !defined( 'ABSPATH' ) )
 /**
  * Version number
  */
-define ( 'WELCOME_PACK_VERSION', 3.0 );
+define ( 'WELCOME_PACK_VERSION', 3 );
 
 /**
  * Constant for third-party plugins to check if Welcome Pack is active (for backpat - deprecated).
@@ -96,6 +96,9 @@ class DP_Welcome_Pack {
 	public function __construct() {
 		require( dirname( __FILE__ ) . '/welcome-pack-filters.php' );
 
+		// Register an install/upgrade handler
+		//add_action( 'dpw_register_post_types', array( $this, 'check_installed' ) );
+
 		// Register admin menu pages, and a settings link on the Plugins page
 		add_action( bp_core_admin_hook(), array( $this, 'setup_admin_menu' ) );
 		add_filter( 'plugin_action_links', array( $this, 'add_settings_link' ), 10, 2 );
@@ -112,11 +115,37 @@ class DP_Welcome_Pack {
 	}
 
 	/**
+	 * This is an install/upgrade handler; we use this to put the default emails in to the database.
+	 *
+	 * @since 3.0
+	 */
+	public function check_installed() {
+		// Is this first run of Welcome Pack? Check if default emails have been added to the database.
+		$version = get_site_option( 'welcomepack-db-version', 0 );
+		if ( !$version && WELCOME_PACK_VERSION == $version )
+			return;
+
+		if ( $version != WELCOME_PACK_VERSION ) {
+			for ( $i=$version; $i<WELCOME_PACK_VERSION; $i++ ) {
+				switch ( $i ) {
+					case 0:
+					case 1:
+					case 2:
+					case 3:
+					break;
+				}
+			}
+
+			update_site_option( 'welcomepack-db-version', WELCOME_PACK_VERSION );
+		}
+	}
+
+	/**
 	 * Register email post type
 	 *
 	 * @since 3.0
 	 */
-	function register_post_types() {
+	public function register_post_types() {
 		// Is email customisation enabled?
 		$settings = DP_Welcome_Pack::get_settings();
 		if ( !$settings['dpw_emailtoggle'] )
@@ -128,6 +157,7 @@ class DP_Welcome_Pack {
 			'singular_name'      => __( 'Email',                    'dpw' ),
 			'add_new'            => __( 'New email',                'dpw' ),
 			'add_new_item'       => __( 'Create new email',         'dpw' ),
+			'all_items'          => __( 'Emails',                   'dpw' ),
 			'edit'               => __( 'Edit',                     'dpw' ),
 			'edit_item'          => __( 'Edit email',               'dpw' ),
 			'new_item'           => __( 'New email',                'dpw' ),

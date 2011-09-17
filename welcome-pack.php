@@ -198,15 +198,6 @@ class DP_Welcome_Pack {
 	}
 
 	/**
-	 * Function used when setting up the meta boxes for the email post type.
-	 *
-	 * @since 3.0
-	 */
-	function email_meta_box_callback() {
-		//add_meta_box(‘setcustommeta’, __(‘Attributes’), ‘set_custom_meta_boxes’, $args->post_type, ‘normal’, ‘core’);
-	}
-
-	/**
 	 * Instantiate the admin menu object
 	 *
 	 * @since 3.0
@@ -228,7 +219,7 @@ class DP_Welcome_Pack {
 	 * @static
 	 */
 	public static function get_settings() {
-		return get_site_option( 'welcomepack', array( 'dpw_welcomemsgtoggle' => false, 'dpw_friendstoggle' => false, 'dpw_groupstoggle' => false, 'dpw_startpagetoggle' => false, 'dpw_emailtoggle' => false, 'friends' => array(), 'groups' => array(), 'startpage' => '', 'welcomemsg' => '', 'welcomemsgsender' => 0, 'welcomemsgsubject' => '' ) );
+		return bp_get_option( 'welcomepack', array( 'dpw_welcomemsgtoggle' => false, 'dpw_friendstoggle' => false, 'dpw_groupstoggle' => false, 'dpw_startpagetoggle' => false, 'dpw_emailtoggle' => false, 'friends' => array(), 'groups' => array(), 'startpage' => '', 'welcomemsg' => '', 'welcomemsgsender' => 0, 'welcomemsgsubject' => '' ) );
 	}
 
 	/**

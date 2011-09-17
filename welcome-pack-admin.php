@@ -42,6 +42,12 @@ class DP_Welcome_Pack_Admin {
 
 		// Hook in to an early action that fires when our admin screen is being displayed, so we can set some custom javascript and CSS.
 		add_action( 'load-settings_page_welcome-pack', array( $this, 'init' ) );
+
+		// Change some of the text on the email cpt screens
+		add_filter( 'enter_title_here', array( $this, 'email_subject_placeholder' ) );
+
+		// Save handler for the email cpt screen
+		add_action( 'save_post', array( $this, 'email_maybe_save' ), 10, 2 );
 	}
 
 	/**
@@ -569,7 +575,7 @@ class DP_Welcome_Pack_Admin {
 		// If the new settings are different from the existing settings, then they've been changed. Save them to the database!
 		if ( $settings != $existing_settings ) {
 			check_admin_referer( 'dpw-admin', 'dpw-admin-nonce' );
-			update_site_option( 'welcomepack', $settings );
+			bp_update_option( 'welcomepack', $settings );
 			$updated = true;
 		}
 
@@ -732,6 +738,173 @@ class DP_Welcome_Pack_Admin {
 			<input type="image" src="https://www.paypalobjects.com/en_US/GB/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="<?php esc_attr_e( 'PayPal', 'dpw' ); ?>">
 			<img alt="" border="0" src="https://www.paypalobjects.com/en_GB/i/scr/pixel.gif" width="1" height="1" />
 		</form>
+
+	<?php
+	}
+
+	/**
+	 * Get list of email templates.
+	 *
+	 * This is so we can map BuddyPress' emails (via subject line) to one of our email posts.
+	 * Parts of this function intentionally use the BuddyPress text domain.
+	 *
+	 * @return array Associative array like ['BP Email Subject' => 'Welcome Pack Email ID']
+	 * @since 3.0
+	 * @todo The email ID mapping sucks and should be done automagically somehow; see email_meta_box()
+	 */
+	public static function email_get_types() {
+		$emails = array(
+			__( 'Activate Your Account', 'buddypress' ) => 1,
+		);
+
+		return apply_filters( 'dpw_email_get_types', $emails );
+	}
+
+	/**
+	 * Get an array of email templates
+	 *
+	 * @return array Key is the template name, value is the filename of the template
+	 * @see get_page_templates() WordPress Core
+	 * @since 3.0
+	 * @static
+	 */
+	public static function email_get_templates() {
+		$themes         = get_themes();
+		$theme          = get_current_theme();
+		$templates      = $themes[$theme]['Template Files'];
+
+		// Always add the fallback that comes bundled with Welcome Pack
+		$page_templates = array( 'Welcome Pack Default' => 'welcome_pack_default.php' );
+
+		if ( is_array( $templates ) ) {
+			$base = array( trailingslashit( get_template_directory() ), trailingslashit( get_stylesheet_directory() ) );
+
+			foreach ( $templates as $template ) {
+				$basename = str_replace( $base, '', $template );
+
+				// Don't allow template files in subdirectories
+				if ( false !== strpos( $basename, '/' ) )
+					continue;
+
+				if ( 'functions.php' == $basename )
+					continue;
+
+				$template_data = implode( '', file( $template ) );
+
+				$name = '';
+				if ( preg_match( '|Email Template:(.*)$|mi', $template_data, $name ) )
+					$name = _cleanup_header_comment( $name[1] );
+
+				if ( !empty( $name ) )
+					$page_templates[trim( $name )] = $basename;
+			}
+		}
+
+		return apply_filters( 'dpw_email_get_templates', $page_templates );
+	}
+
+	/**
+	 * Filter the "enter title here" text on the email CPT screens.
+	 *
+	 * @param string $title Default text
+	 * @return string
+	 * @since 3.0
+	 */
+	public function email_subject_placeholder( $title ) {
+		$screen = get_current_screen();
+
+		if ( 'dpw_email' == $screen->post_type )
+			$title = __( 'Enter subject here', 'dpw' );
+
+		return apply_filters( 'dpw_email_subject_placeholder', $title );
+	}
+
+	/**
+	 * Save handler for the email CPT.
+	 *
+	 * @param int $post_ID
+	 * @param WP_Post $post
+	 * @since 3.0
+	 */
+	public function email_maybe_save( $post_ID, $post ) {
+		// Check this is an email
+		if ( 'dpw_email' != $post->post_type )
+			return;
+
+		if ( empty( $_POST['dpw_email_template'] ) && empty( $_POST['dpw_email_for'] ) )
+			return;
+
+		// Email template
+		if ( !empty( $_POST['dpw_email_template'] ) ) {
+			$template = stripslashes( sanitize_text_field( wp_filter_kses( $_POST['dpw_email_template'] ) ) );
+			$template = apply_filters( 'dpw_email_maybe_save_template', $template, $post_ID, $post );
+
+			if ( !empty( $template ) )
+				update_post_meta( $post_ID, 'welcomepack_template', $template );
+		}
+
+		// Email type
+		if ( !empty( $_POST['dpw_email_for'] ) ) {
+			$type = apply_filters( 'dpw_email_maybe_save_type', absint( $_POST['dpw_email_for'] ), $post_ID, $post );
+
+			if ( $type )
+				update_post_meta( $post_ID, 'welcomepack_type', $type );
+		}
+
+		do_action( 'dpw_email_maybe_save', $post_ID, $post );
+	}
+
+	/**
+	 * Function used when setting up the meta boxes for the email post type.
+	 *
+	 * @since 3.0
+	 */
+	public function email_meta_box_callback() {
+		add_meta_box( 'dpw_template', __( 'Email Attributes', 'dpw' ), array( $this, 'email_meta_box' ), 'dpw_email', 'side' );
+	}
+
+	/**
+	 * Email template chooser meta box for the email post options
+	 *
+	 * Based on WordPress core's get_page_templates()
+	 *
+	 * @global int $post_ID
+	 * @since 3.0
+	 * @todo The email ID mapping sucks and should be done automagically somehow; see email_get_types()
+	 * @todo Prevent multiple email posts being assigned the same email type
+	 */
+	public function email_meta_box() {
+		global $post_ID;
+
+		$templates = DP_Welcome_Pack_Admin::email_get_templates();
+		ksort( $templates );
+
+		// Find out which template this email's using
+		$current_template = get_post_meta( $post_ID, 'welcomepack_template', true );
+		if ( empty( $current_template ) )
+			$current_template = 'welcome_pack_default.php';
+	?>
+
+	<p><strong><?php _e( 'Use this email for:', 'dpw' ); ?></strong></p>
+	<label class="screen-reader-text" for="dpw_email_for"><?php _e( 'Use this email for:', 'dpw' ); ?></label>
+	<select name="dpw_email_for" id="dpw_email_for">
+		<option value="1"><?php _e( 'Account Activation', 'dpw' ); ?></option>
+	</select>
+
+	<p><strong><?php _e( 'Template', 'dpw' ); ?></strong></p>
+	<label class="screen-reader-text" for="dpw_email_template"><?php _e( 'Email Template', 'dpw' ); ?></label>
+	<select name="dpw_email_template" id="dpw_email_template">
+		<?php
+			foreach ( array_keys( $templates ) as $template ) {
+				if ( $current_template == $templates[$template] )
+					$selected = " selected='selected'";
+				else
+					$selected = '';
+
+				echo "\n\t<option value='" . $templates[$template] . "' $selected>$template</option>";
+			}
+		?>
+	</select>
 
 	<?php
 	}

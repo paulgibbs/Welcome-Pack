@@ -750,11 +750,25 @@ class DP_Welcome_Pack_Admin {
 	 *
 	 * @return array Associative array like ['BP Email Subject' => 'Welcome Pack Email ID']
 	 * @since 3.0
-	 * @todo The email ID mapping sucks and should be done automagically somehow; see email_meta_box()
+	 * @todo The email ID mapping sucks and should be done better; see email_meta_box()
 	 */
 	public static function email_get_types() {
 		$emails = array(
-			__( 'Activate Your Account', 'buddypress' ) => 1,
+			__( 'Activate Your Account', 'buddypress' )                      => 1,
+			__( '%s mentioned you in an update', 'buddypress' )              => 2,
+			__( '%s replied to one of your updates', 'buddypress' )          => 3,
+			__( '%s replied to one of your comments', 'buddypress' )         => 4,
+			__( 'Activate %s', 'buddypress' )                                => 5,
+			__( '%1$s mentioned you in the group "%2$s"', 'buddypress' )     => 6,  // Deprecated in BuddyPress 1.5
+			__( 'New friendship request from %s', 'buddypress' )             => 7,
+			__( '%s accepted your friendship request', 'buddypress' )        => 8,
+			__( 'Group Details Updated', 'buddypress' )                      => 9,
+			__( 'Membership request for group: %s', 'buddypress' )           => 10,
+			__( 'Membership request for group "%s" accepted', 'buddypress' ) => 11,
+			__( 'Membership request for group "%s" rejected', 'buddypress' ) => 12,
+			__( 'You have been promoted in the group: "%s"', 'buddypress' )  => 13,
+			__( 'You have an invitation to the group: "%s"', 'buddypress' )  => 14,
+			_( 'New message from %s', 'buddypress' )                         => 15,
 		);
 
 		return apply_filters( 'dpw_email_get_types', $emails );
@@ -870,7 +884,7 @@ class DP_Welcome_Pack_Admin {
 	 *
 	 * @global int $post_ID
 	 * @since 3.0
-	 * @todo The email ID mapping sucks and should be done automagically somehow; see email_get_types()
+	 * @todo The email ID mapping sucks and should be done better; see email_get_types()
 	 * @todo Prevent multiple email posts being assigned the same email type
 	 */
 	public function email_meta_box() {
@@ -888,7 +902,21 @@ class DP_Welcome_Pack_Admin {
 	<p><strong><?php _e( 'Use this email for:', 'dpw' ); ?></strong></p>
 	<label class="screen-reader-text" for="dpw_email_for"><?php _e( 'Use this email for:', 'dpw' ); ?></label>
 	<select name="dpw_email_for" id="dpw_email_for">
-		<option value="1"><?php _e( 'Account Activation', 'dpw' ); ?></option>
+		<option value="1"><?php _e( 'Account activation', 'dpw' ); ?></option>
+		<option value="2"><?php _e( 'Mentioned in an update', 'dpw' ); ?></option>
+		<option value="3"><?php _e( 'Replied to an update', 'dpw' ); ?></option>
+		<option value="4"><?php _e( 'Replied to a comment', 'dpw' ); ?></option>
+		<option value="5"><?php _e( 'Account and blog activation', 'dpw' ); ?></option>
+
+		<option value="7"><?php _e( 'New friendship request', 'dpw' ); ?></option>
+		<option value="8"><?php _e( 'Friendship request accepted', 'dpw' ); ?></option>
+		<option value="9"><?php _e( 'Group details updated', 'dpw' ); ?></option>
+		<option value="10"><?php _e( 'Group membership request', 'dpw' ); ?></option>
+		<option value="11"><?php _e( 'Group membership request accepted', 'dpw' ); ?></option>
+		<option value="12"><?php _e( 'Group membership request rejected', 'dpw' ); ?></option>
+		<option value="13"><?php _e( 'Promoted in a group', 'dpw' ); ?></option>
+		<option value="14"><?php _e( 'Invitation to a group', 'dpw' ); ?></option>
+		<option value="15"><?php _e( 'New private message', 'dpw' ); ?></option>
 	</select>
 
 	<p><strong><?php _e( 'Template', 'dpw' ); ?></strong></p>

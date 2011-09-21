@@ -66,8 +66,6 @@ if ( !defined( 'WELCOME_PACK_AUTOACCEPT_INVITATIONS' ) )
  * @since 3.0
  */
 class DP_Welcome_Pack {
-	protected $admin_obj = null;
-
 	/**
 	 * Creates an instance of the DP_Welcome_Pack class, and loads i18n.
 	 *
@@ -100,23 +98,24 @@ class DP_Welcome_Pack {
 		require( dirname( __FILE__ ) . '/welcome-pack-filters.php' );
 
 		// Set up the admin menu object
-		add_action( 'bp_init', array( $this, 'setup_admin' ), 9 );
+		add_action( 'bp_init', array( 'DP_Welcome_Pack', 'setup_admin' ), 9 );
 
 		// Register an install/upgrade handler
-		//add_action( 'dpw_register_post_types', array( $this, 'check_installed' ) );
+		//add_action( 'dpw_register_post_types', array( 'DP_Welcome_Pack', 'check_installed' ) );
 
 		// Register admin menu pages, and a settings link on the Plugins page
-		add_filter( 'plugin_action_links', array( $this->admin_obj, 'add_settings_link' ), 10, 2 );
+		add_filter( 'plugin_action_links', array( 'DP_Welcome_Pack_Admin', 'add_settings_link' ), 10, 2 );
 
 		// Email customisation...
-		add_action( 'bp_init', array( $this, 'register_post_types' ) );
+		add_action( 'bp_init', array( 'DP_Welcome_Pack', 'register_post_types' ) );
+		add_filter( 'wp_mail_content_type', array( 'DP_Welcome_Pack', 'email_get_content_type' ) );
 
 		// Start page...
-		add_filter( 'login_redirect', array( $this, 'redirect_login' ), 20, 3 );
-		add_filter( 'ws_plugin__s2member_fill_login_redirect_rc_vars', array( $this, 'redirect_s2member_login' ), 10, 2 );
+		add_filter( 'login_redirect', array( 'DP_Welcome_Pack', 'redirect_login' ), 20, 3 );
+		add_filter( 'ws_plugin__s2member_fill_login_redirect_rc_vars', array( 'DP_Welcome_Pack', 'redirect_s2member_login' ), 10, 2 );
 
 		// And finally, things that happen when a user's account is activated (e.g. everything else).
-		add_action( 'bp_core_activated_user', array( $this, 'user_activated' ) );
+		add_action( 'bp_core_activated_user', array( 'DP_Welcome_Pack', 'user_activated' ) );
 	}
 
 	/**
@@ -184,7 +183,7 @@ class DP_Welcome_Pack {
 		$email_cpt = array(
 			'labels'               => $email_labels,
 			'public'               => false,
-			'register_meta_box_cb' => array( $this->admin_obj, 'email_meta_box_callback' ),
+			'register_meta_box_cb' => array( 'DP_Welcome_Pack_Admin', 'email_meta_box_callback' ),
 			'show_in_menu'         => true,
 			'show_ui'              => true,
 			'supports'             => $email_supports,
@@ -204,7 +203,7 @@ class DP_Welcome_Pack {
 	 */
 	public function setup_admin() {
 		require( dirname( __FILE__ ) . '/welcome-pack-admin.php' );
-		$this->admin_obj = new DP_Welcome_Pack_Admin();
+		new DP_Welcome_Pack_Admin();
 
 		do_action( 'dpw_setup_admin_menu' );
 	}
@@ -271,7 +270,8 @@ class DP_Welcome_Pack {
 	  if ( is_wp_error( $login_info ) || empty( $login_info['current_user'] ) )
 	    return $redirect_to;
 
-	  return apply_filters( 'dpw_redirect_s2member_login', $this->redirect_login( $redirect_to, array(), array() ), $redirect_to, $login_info );
+		$new_redirect = redirect_login( $redirect_to, array(), array() );
+	  return apply_filters( 'dpw_redirect_s2member_login', $new_redirect, $redirect_to, $login_info );
 	}
 
 	/**
@@ -319,6 +319,49 @@ class DP_Welcome_Pack {
 
 		// Call an action for third-parties to hook into
 		do_action( 'dpw_user_activated', $user_id );
+	}
+
+	/**
+	 * Get list of email templates.
+	 *
+	 * This is so we can map BuddyPress' emails (via subject line) to one of our email posts.
+	 * Parts of this function intentionally use the BuddyPress text domain.
+	 *
+	 * @return array Associative array like ['BP Email Subject' => 'Welcome Pack Email ID']
+	 * @since 3.0
+	 * @static
+	 * @todo The email ID mapping sucks and should be done better; see email_meta_box()
+	 */
+	public static function email_get_types() {
+		$emails = array(
+			__( 'Activate Your Account', 'buddypress' )                      => 1,
+			__( '%s mentioned you in an update', 'buddypress' )              => 2,
+			__( '%s replied to one of your updates', 'buddypress' )          => 3,
+			__( '%s replied to one of your comments', 'buddypress' )         => 4,
+			__( 'Activate %s', 'buddypress' )                                => 5,
+			__( '%1$s mentioned you in the group "%2$s"', 'buddypress' )     => 6,  // Deprecated in BuddyPress 1.5
+			__( 'New friendship request from %s', 'buddypress' )             => 7,
+			__( '%s accepted your friendship request', 'buddypress' )        => 8,
+			__( 'Group Details Updated', 'buddypress' )                      => 9,
+			__( 'Membership request for group: %s', 'buddypress' )           => 10,
+			__( 'Membership request for group "%s" accepted', 'buddypress' ) => 11,
+			__( 'Membership request for group "%s" rejected', 'buddypress' ) => 12,
+			__( 'You have been promoted in the group: "%s"', 'buddypress' )  => 13,
+			__( 'You have an invitation to the group: "%s"', 'buddypress' )  => 14,
+			_( 'New message from %s', 'buddypress' )                         => 15,
+		);
+
+		return apply_filters( 'dpw_email_get_types', $emails );
+	}
+
+	/**
+	 * Send HTML emails
+	 *
+	 * @since 3.0
+	 * @static
+	 */
+	public static function email_get_content_type() {
+		return 'text/html';
 	}
 }
 add_action( 'bp_include', array( 'DP_Welcome_Pack', 'init' ) );

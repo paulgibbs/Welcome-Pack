@@ -26,7 +26,7 @@ class DP_Welcome_Pack_Admin {
 	 * @since 3.0
 	 */
 	public function __construct() {
-		add_action( bp_core_admin_hook(), array( $this, 'setup_menu' ) );
+		add_action( bp_core_admin_hook(), array( 'DP_Welcome_Pack_Admin', 'setup_menu' ) );
 	}
 
 	/**
@@ -38,16 +38,16 @@ class DP_Welcome_Pack_Admin {
 		if ( !is_admin() || ( !is_user_logged_in() || !is_super_admin() ) )
 			return;
 
-		add_options_page( __( 'Welcome Pack', 'dpw' ), __( 'Welcome Pack', 'dpw' ), 'manage_options', 'welcome-pack', array( $this, 'admin_page' ) );
+		add_options_page( __( 'Welcome Pack', 'dpw' ), __( 'Welcome Pack', 'dpw' ), 'manage_options', 'welcome-pack', array( 'DP_Welcome_Pack_Admin', 'admin_page' ) );
 
 		// Hook in to an early action that fires when our admin screen is being displayed, so we can set some custom javascript and CSS.
-		add_action( 'load-settings_page_welcome-pack', array( $this, 'init' ) );
+		add_action( 'load-settings_page_welcome-pack', array( 'DP_Welcome_Pack_Admin', 'init' ) );
 
 		// Change some of the text on the email cpt screens
-		add_filter( 'enter_title_here', array( $this, 'email_subject_placeholder' ) );
+		add_filter( 'enter_title_here', array( 'DP_Welcome_Pack_Admin', 'email_subject_placeholder' ) );
 
 		// Save handler for the email cpt screen
-		add_action( 'save_post', array( $this, 'email_maybe_save' ), 10, 2 );
+		add_action( 'save_post', array( 'DP_Welcome_Pack_Admin', 'email_maybe_save' ), 10, 2 );
 	}
 
 	/**
@@ -123,16 +123,16 @@ class DP_Welcome_Pack_Admin {
 		add_screen_option( 'layout_columns', array( 'max' => 2 ) );
 
 		// All tabs
-		add_meta_box( 'dpw-paypal', __( 'Give Kudos', 'dpw' ), array( $this, 'paypal' ), 'settings_page_welcome-pack', 'side', 'default' );
+		add_meta_box( 'dpw-paypal', __( 'Give Kudos', 'dpw' ), array( 'DP_Welcome_Pack_Admin', 'paypal' ), 'settings_page_welcome-pack', 'side', 'default' );
 
 		// Support tab
 		if ( 'support' == $tab )
-			add_meta_box( 'dpw-helpushelpyou', __( 'Help Us Help You', 'dpw' ), array( $this, 'helpushelpyou'), 'settings_page_welcome-pack', 'side', 'high' );
+			add_meta_box( 'dpw-helpushelpyou', __( 'Help Us Help You', 'dpw' ), array( 'DP_Welcome_Pack_Admin', 'helpushelpyou'), 'settings_page_welcome-pack', 'side', 'high' );
 		else
-			add_meta_box( 'dpw-likethis', __( 'Love Welcome Pack?', 'dpw' ), array( $this, 'like_this_plugin' ), 'settings_page_welcome-pack', 'side', 'default' );
+			add_meta_box( 'dpw-likethis', __( 'Love Welcome Pack?', 'dpw' ), array( 'DP_Welcome_Pack_Admin', 'like_this_plugin' ), 'settings_page_welcome-pack', 'side', 'default' );
 
 		// All tabs
-		add_meta_box( 'dpw-latest', __( 'Latest News', 'dpw' ), array( $this, 'metabox_latest_news' ), 'settings_page_welcome-pack', 'side', 'default' );
+		add_meta_box( 'dpw-latest', __( 'Latest News', 'dpw' ), array( 'DP_Welcome_Pack_Admin', 'metabox_latest_news' ), 'settings_page_welcome-pack', 'side', 'default' );
 
 		// Javascripts for meta box drag-and-drop
 		wp_enqueue_script( 'postbox' );
@@ -195,7 +195,7 @@ class DP_Welcome_Pack_Admin {
 			$tab = 'settings';
 
 		// Check if a form was submitted, and if we need to save our settings again.
-		$updated = $this->maybe_save();
+		$updated = DP_Welcome_Pack_Admin::maybe_save();
 		$url     = network_admin_url( 'options-general.php?page=welcome-pack' );
 
 		// If admin settings were just updated, fetch the new values from the database so that we aren't using stale data
@@ -292,11 +292,11 @@ class DP_Welcome_Pack_Admin {
 						<?php
 						// This logic decides whether to print the support page, settings page, or one of the component pages.
 						if ( 'support' == $tab )
-							$this->admin_page_support();
+							DP_Welcome_Pack_Admin::admin_page_support();
 						elseif ( 'settings' == $tab )
-							$this->admin_page_settings( $settings, $updated );
+							DP_Welcome_Pack_Admin::admin_page_settings( $settings, $updated );
 						else
-							$this->admin_page_component( $tab, $settings, $updated );
+							DP_Welcome_Pack_Admin::admin_page_component( $tab, $settings, $updated );
 						?>
 					</div><!-- #post-body-content -->
 				</div><!-- #post-body -->
@@ -743,38 +743,6 @@ class DP_Welcome_Pack_Admin {
 	}
 
 	/**
-	 * Get list of email templates.
-	 *
-	 * This is so we can map BuddyPress' emails (via subject line) to one of our email posts.
-	 * Parts of this function intentionally use the BuddyPress text domain.
-	 *
-	 * @return array Associative array like ['BP Email Subject' => 'Welcome Pack Email ID']
-	 * @since 3.0
-	 * @todo The email ID mapping sucks and should be done better; see email_meta_box()
-	 */
-	public static function email_get_types() {
-		$emails = array(
-			__( 'Activate Your Account', 'buddypress' )                      => 1,
-			__( '%s mentioned you in an update', 'buddypress' )              => 2,
-			__( '%s replied to one of your updates', 'buddypress' )          => 3,
-			__( '%s replied to one of your comments', 'buddypress' )         => 4,
-			__( 'Activate %s', 'buddypress' )                                => 5,
-			__( '%1$s mentioned you in the group "%2$s"', 'buddypress' )     => 6,  // Deprecated in BuddyPress 1.5
-			__( 'New friendship request from %s', 'buddypress' )             => 7,
-			__( '%s accepted your friendship request', 'buddypress' )        => 8,
-			__( 'Group Details Updated', 'buddypress' )                      => 9,
-			__( 'Membership request for group: %s', 'buddypress' )           => 10,
-			__( 'Membership request for group "%s" accepted', 'buddypress' ) => 11,
-			__( 'Membership request for group "%s" rejected', 'buddypress' ) => 12,
-			__( 'You have been promoted in the group: "%s"', 'buddypress' )  => 13,
-			__( 'You have an invitation to the group: "%s"', 'buddypress' )  => 14,
-			_( 'New message from %s', 'buddypress' )                         => 15,
-		);
-
-		return apply_filters( 'dpw_email_get_types', $emails );
-	}
-
-	/**
 	 * Get an array of email templates
 	 *
 	 * @return array Key is the template name, value is the filename of the template
@@ -874,7 +842,7 @@ class DP_Welcome_Pack_Admin {
 	 * @since 3.0
 	 */
 	public function email_meta_box_callback() {
-		add_meta_box( 'dpw_template', __( 'Email Attributes', 'dpw' ), array( $this, 'email_meta_box' ), 'dpw_email', 'side' );
+		add_meta_box( 'dpw_template', __( 'Email Attributes', 'dpw' ), array( 'DP_Welcome_Pack_Admin', 'email_meta_box' ), 'dpw_email', 'side' );
 	}
 
 	/**
@@ -890,7 +858,7 @@ class DP_Welcome_Pack_Admin {
 	public function email_meta_box() {
 		global $post_ID;
 
-		$templates = DP_Welcome_Pack_Admin::email_get_templates();
+		$templates = DP_Welcome_Pack::email_get_templates();
 		ksort( $templates );
 
 		// Find out which template this email's using
@@ -903,20 +871,19 @@ class DP_Welcome_Pack_Admin {
 	<label class="screen-reader-text" for="dpw_email_for"><?php _e( 'Use this email for:', 'dpw' ); ?></label>
 	<select name="dpw_email_for" id="dpw_email_for">
 		<option value="1"><?php _e( 'Account activation', 'dpw' ); ?></option>
-		<option value="2"><?php _e( 'Mentioned in an update', 'dpw' ); ?></option>
-		<option value="3"><?php _e( 'Replied to an update', 'dpw' ); ?></option>
-		<option value="4"><?php _e( 'Replied to a comment', 'dpw' ); ?></option>
 		<option value="5"><?php _e( 'Account and blog activation', 'dpw' ); ?></option>
-
-		<option value="7"><?php _e( 'New friendship request', 'dpw' ); ?></option>
 		<option value="8"><?php _e( 'Friendship request accepted', 'dpw' ); ?></option>
 		<option value="9"><?php _e( 'Group details updated', 'dpw' ); ?></option>
 		<option value="10"><?php _e( 'Group membership request', 'dpw' ); ?></option>
 		<option value="11"><?php _e( 'Group membership request accepted', 'dpw' ); ?></option>
 		<option value="12"><?php _e( 'Group membership request rejected', 'dpw' ); ?></option>
-		<option value="13"><?php _e( 'Promoted in a group', 'dpw' ); ?></option>
 		<option value="14"><?php _e( 'Invitation to a group', 'dpw' ); ?></option>
+		<option value="2"><?php _e( 'Mentioned in an update', 'dpw' ); ?></option>
+		<option value="7"><?php _e( 'New friendship request', 'dpw' ); ?></option>
 		<option value="15"><?php _e( 'New private message', 'dpw' ); ?></option>
+		<option value="13"><?php _e( 'Promoted in a group', 'dpw' ); ?></option>
+		<option value="4"><?php _e( 'Replied to a comment', 'dpw' ); ?></option>
+		<option value="3"><?php _e( 'Replied to an update', 'dpw' ); ?></option>
 	</select>
 
 	<p><strong><?php _e( 'Template', 'dpw' ); ?></strong></p>

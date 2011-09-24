@@ -101,31 +101,73 @@ class DP_Welcome_Pack {
 		add_action( 'bp_init', array( 'DP_Welcome_Pack', 'setup_admin' ), 9 );
 
 		// Register an install/upgrade handler
-		//add_action( 'dpw_register_post_types', array( 'DP_Welcome_Pack', 'check_installed' ) );
+		add_action( 'dpw_register_post_types', array( 'DP_Welcome_Pack', 'check_installed' ) );
 
 		// Register admin menu pages, and a settings link on the Plugins page
 		add_filter( 'plugin_action_links', array( 'DP_Welcome_Pack_Admin', 'add_settings_link' ), 10, 2 );
 
-		// Email customisation...
+		// Register post type
 		add_action( 'bp_init', array( 'DP_Welcome_Pack', 'register_post_types' ) );
-		add_filter( 'wp_mail_content_type', array( 'DP_Welcome_Pack', 'email_get_content_type' ) );
 
-		// Start page...
+		// Start page
 		add_filter( 'login_redirect', array( 'DP_Welcome_Pack', 'redirect_login' ), 20, 3 );
 		add_filter( 'ws_plugin__s2member_fill_login_redirect_rc_vars', array( 'DP_Welcome_Pack', 'redirect_s2member_login' ), 10, 2 );
 
 		// And finally, things that happen when a user's account is activated (e.g. everything else).
 		add_action( 'bp_core_activated_user', array( 'DP_Welcome_Pack', 'user_activated' ) );
+
+
+		/**
+		 * Email customisation
+		 */
+		$subjects = apply_filters( 'dpw_raw_email_subjects', array( 'bp_activity_at_message_notification_subject', 'bp_activity_new_comment_notification_subject', 'bp_activity_new_comment_notification_comment_author_subject', 'bp_core_activation_signup_blog_notification_subject', 'bp_core_activation_signup_user_notification_subject', 'groups_at_message_notification_subject', 'friends_notification_new_request_subject', 'friends_notification_accepted_request_subject', 'groups_notification_group_updated_subject', 'groups_notification_new_membership_request_subject', 'groups_notification_membership_request_completed_subject', 'groups_notification_promoted_member_subject', 'groups_notification_group_invites_subject', 'bp_core_signup_send_validation_email_subject', 'messages_notification_new_message_subject' ) );
+		foreach ( (array) $subjects as $filter_name )
+			add_filter( $filter_name, array( 'DP_Welcome_Pack', 'email_subject' ), 14 );
+
+		$messages = apply_filters( 'dpw_raw_email_messages', array( 'bp_activity_at_message_notification_message', 'bp_activity_new_comment_notification_message', 'bp_activity_new_comment_notification_comment_author_message', 'bp_core_activation_signup_blog_notification_message', 'bp_core_activation_signup_user_notification_message', 'groups_at_message_notification_message', 'friends_notification_new_request_message', 'friends_notification_accepted_request_message', 'groups_notification_group_updated_message', 'groups_notification_new_membership_request_message', 'groups_notification_membership_request_completed_message', 'groups_notification_promoted_member_message', 'groups_notification_group_invites_message', 'bp_core_signup_send_validation_email_message', 'messages_notification_new_message_message' ) );
+ 		foreach ( (array) $messages as $filter_name )
+			add_filter( $filter_name, array( 'DP_Welcome_Pack', 'email_message' ), 14 );
+
+		// When sending a BuddyPress email, set the content type to HTML for awesomeness
+		add_filter( 'wp_mail_content_type', array( 'DP_Welcome_Pack', 'email_get_content_type' ) );
 	}
 
 	/**
-	 * This is an install/upgrade handler; we use this to put the default emails in to the database.
+	 * Filter subject line for BuddyPress' emails.
+	 *
+	 * @param string $subject
+	 * @since 3.0
+	 */
+	public function email_subject( $subject ) {
+		return apply_filters( 'dpw_email_subject', $subject );
+	}
+
+	/**
+	 * Filter email content for BuddyPress' emails.
+	 *
+	 * @param string $message
+	 * @since 3.0
+	 */
+	public function email_message( $message ) {
+		return apply_filters( 'dpw_email_message', $message );
+	}
+
+	/**
+	 * Install/upgrade handler.
+	 *
+	 * Put the default emails into the database; intentionally uses the BuddyPress text domain in parts.
 	 *
 	 * @since 3.0
 	 */
 	public function check_installed() {
+		global $bp;
+
+		// Only run this for super admins, so our emails aren't inserted into the database by a non-admin.
+		if ( empty( $bp->loggedin_user->is_super_admin ) )
+			return;
+
 		// Is this first run of Welcome Pack? Check if default emails have been added to the database.
-		$version = get_site_option( 'welcomepack-db-version', 0 );
+		$version = bp_get_option( 'welcomepack-db-version', 0 );
 		if ( !$version && WELCOME_PACK_VERSION == $version )
 			return;
 
@@ -134,13 +176,29 @@ class DP_Welcome_Pack {
 				switch ( $i ) {
 					case 0:
 					case 1:
+					default:
+						break;
+
 					case 2:
-					case 3:
+						$emails = DP_Welcome_Pack::get_default_emails();
+
+						// Add the emails to the database
+						foreach ( $emails as $email ) {
+							// [0] is the subject, [1] is the email body
+							$subject = __( array_shift( $email ), 'buddypress' );
+							$body    = __( array_shift( $email ), 'buddypress' );
+
+							// Further parts are optional and are added on to the end of the email body
+							foreach ( (array) $email as $email_part )
+								$body .= __( $email_part, 'buddypress' );
+
+							wp_insert_post( array( 'comment_status' => 'closed', 'ping_status' => 'closed', 'post_title' => $subject, 'post_content' => $body, 'post_status' => 'publish', 'post_type' => 'dpw_email' ) );
+						}
 					break;
 				}
 			}
 
-			update_site_option( 'welcomepack-db-version', WELCOME_PACK_VERSION );
+			bp_update_option( 'welcomepack-db-version', WELCOME_PACK_VERSION );
 		}
 	}
 
@@ -206,6 +264,124 @@ class DP_Welcome_Pack {
 		new DP_Welcome_Pack_Admin();
 
 		do_action( 'dpw_setup_admin_menu' );
+	}
+
+	/**
+	 * Convenience function to return default email content
+	 *
+	 * @return array Multi-dimensional array; [0] is subject, [1] is first part of message body, [...] are additional parts of the body (optional)
+	 * @since 3.0
+	 * @static
+	*/
+	public static function get_default_emails() {
+		// Intentionally not passed to gettext.
+		$emails = array(
+array( 'Activate Your Account', "Thanks for registering! To complete the activation of your account please click the following link:\n\n%s\n\n" ),
+array( 'Activate %s', "Thanks for registering! To complete the activation of your account and blog, please click the following link:\n\n%1\$s\n\n\n\nAfter you activate, you can visit your blog here:\n\n%2\$s" ),
+array( 'New message from %s', '%s sent you a new message:
+
+Subject: %s
+
+"%s"
+
+To view and read your messages please log in and visit: %s
+
+---------------------
+', 'To disable these notifications please log in and go to: %s' ),
+array( 'Group Details Updated', 'Group details for the group "%1$s" were updated:
+
+To view the group: %2$s
+
+---------------------
+', 'To disable these notifications please log in and go to: %s' ),
+array( 'Membership request for group: %s', '%1$s wants to join the group "%2$s".
+
+Because you are the administrator of this group, you must either accept or reject the membership request.
+
+To view all pending membership requests for this group, please visit:
+%3$s
+
+To view %4$s\'s profile: %5$s
+
+---------------------
+', 'To disable these notifications please log in and go to: %s' ),
+array( 'Membership request for group "%s" accepted', 'Your membership request for the group "%1$s" has been accepted.
+
+To view the group please login and visit: %2$s
+
+---------------------
+', 'To disable these notifications please log in and go to: %s' ),
+array( 'Membership request for group "%s" rejected', 'Your membership request for the group "%1$s" has been rejected.
+
+To submit another request please log in and visit: %2$s
+
+---------------------
+', 'To disable these notifications please log in and go to: %s' ),
+array( 'You have been promoted in the group: "%s"', 'You have been promoted to %1$s for the group: "%2$s".
+
+To view the group please visit: %3$s
+
+---------------------
+', 'To disable these notifications please log in and go to: %s', 'an administrator', 'a moderator' ),
+array( 'You have an invitation to the group: "%s"', 'One of your friends %1$s has invited you to the group: "%2$s".
+
+To view your group invites visit: %3$s
+
+To view the group visit: %4$s
+
+To view %5$s\'s profile visit: %6$s
+
+---------------------
+', 'To disable these notifications please log in and go to: %s' ),
+array( '%s mentioned you in an update', '%1$s mentioned you in the group "%2$s":
+
+"%3$s"
+
+To view and respond to the message, log in and visit: %4$s
+
+---------------------
+', 'To disable these notifications please log in and go to: %s' ),
+array( '%s accepted your friendship request', '%1$s accepted your friend request.
+
+To view %2$s\'s profile: %3$s
+
+---------------------
+', 'To disable these notifications please log in and go to: %s' ),
+array( 'New friendship request from %s', "%1\$s wants to add you as a friend.
+
+To view all of your pending friendship requests: %2\$s
+
+To view %3\$s\'s profile: %4\$s
+
+---------------------
+", 'To disable these notifications please log in and go to: %s' ),
+array( '%s mentioned you in an update', '%1$s mentioned you in an update:
+
+"%2$s"
+
+To view and respond to the message, log in and visit: %3$s
+
+---------------------
+', 'To disable these notifications please log in and go to: %s' ),
+array( '%s replied to one of your updates', '%1$s replied to one of your updates:
+
+"%2$s"
+
+To view your original update and all comments, log in and visit: %3$s
+
+---------------------
+', 'To disable these notifications please log in and go to: %s' ),
+array( '%s replied to one of your comments', '%1$s replied to one of your comments:
+
+"%2$s"
+
+To view the original activity, your comment and all replies, log in and visit: %3$s
+
+---------------------
+', 'To disable these notifications please log in and go to: %s' )
+		);
+
+		return apply_filters( 'dpw_get_default_emails', $emails );
 	}
 
 	/**
@@ -348,20 +524,21 @@ class DP_Welcome_Pack {
 			__( 'Membership request for group "%s" rejected', 'buddypress' ) => 12,
 			__( 'You have been promoted in the group: "%s"', 'buddypress' )  => 13,
 			__( 'You have an invitation to the group: "%s"', 'buddypress' )  => 14,
-			_( 'New message from %s', 'buddypress' )                         => 15,
+			__( 'New message from %s', 'buddypress' )                        => 15,
 		);
 
 		return apply_filters( 'dpw_email_get_types', $emails );
 	}
 
 	/**
-	 * Send HTML emails
+	 * Send emails as HTML
 	 *
+	 * @return string Email content type
 	 * @since 3.0
 	 * @static
 	 */
 	public static function email_get_content_type() {
-		return 'text/html';
+		return apply_filters( 'dpw_email_get_content_type', 'text/html' );
 	}
 }
 add_action( 'bp_include', array( 'DP_Welcome_Pack', 'init' ) );

@@ -375,7 +375,7 @@ class DP_Welcome_Pack_Admin {
 			<p style="margin-bottom: 2em;"><?php _e( 'When a user registers on your site, Welcome Pack lets you automatically send them a friend or group invitation, a Welcome Message and can redirect them to a Start Page. You can also customise the emails sent by BuddyPress so that they match your site\'s brand, in plain text or rich HTML versions.', 'dpw' ); ?></p>
 
 			<h4><?php _e( 'Email Customisation', 'dpw' ); ?></h4>
-			<p><?php printf( __( "Customise the emails sent by BuddyPress, either in plain text or rich HTML versions. <strong>To change the emails, visit the <a href='%s'>Settings > Emails</a> page.</strong>", 'dpw' ), 's' ); ?></p>
+			<p><?php printf( __( "Customise the emails sent by BuddyPress, either in plain text or rich HTML versions. <strong>To change the emails, visit the <a href='%s'>Settings > Emails</a> page.</strong>", 'dpw' ), admin_url( 'edit.php?post_type=dpw_email' ) ); ?></p>
 			<label><?php _e( 'On', 'dpw' ); ?> <input type="radio" name="dpw_emailtoggle" class="dpw_emailtoggle" value="on" <?php checked( $settings['dpw_emailtoggle'] ); ?>/></label>
 			<label><?php _e( 'Off', 'dpw' ); ?> <input type="radio" name="dpw_emailtoggle" class="dpw_emailtoggle" value="off" <?php checked( $settings['dpw_emailtoggle'], false ); ?>/></label>
 

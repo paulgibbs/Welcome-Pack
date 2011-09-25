@@ -858,7 +858,7 @@ class DP_Welcome_Pack_Admin {
 	public function email_meta_box() {
 		global $post_ID;
 
-		$templates = DP_Welcome_Pack::email_get_templates();
+		$templates = DP_Welcome_Pack_Admin::email_get_templates();
 		ksort( $templates );
 
 		// Find out which template this email's using
@@ -870,6 +870,7 @@ class DP_Welcome_Pack_Admin {
 	<p><strong><?php _e( 'Use this email for:', 'dpw' ); ?></strong></p>
 	<label class="screen-reader-text" for="dpw_email_for"><?php _e( 'Use this email for:', 'dpw' ); ?></label>
 	<select name="dpw_email_for" id="dpw_email_for">
+		<option value="0"><?php _e( '-----', 'dpw' ); ?></option>
 		<option value="1"><?php _e( 'Account activation', 'dpw' ); ?></option>
 		<option value="5"><?php _e( 'Account and blog activation', 'dpw' ); ?></option>
 		<option value="8"><?php _e( 'Friendship request accepted', 'dpw' ); ?></option>

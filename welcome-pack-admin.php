@@ -890,6 +890,8 @@ class DP_Welcome_Pack_Admin {
 		<option value="8" <?php selected( $current_email_type, 8 ); ?>><?php _e( 'Promoted in a group', 'dpw' ); ?></option>
 		<option value="14" <?php selected( $current_email_type, 14 ); ?>><?php _e( 'Replied to a comment', 'dpw' ); ?></option>
 		<option value="13" <?php selected( $current_email_type, 13 ); ?>><?php _e( 'Replied to an update', 'dpw' ); ?></option>
+
+		<?php do_action( 'dpw_email_meta_box', $current_email_type ); ?>
 	</select>
 
 	<p><strong><?php _e( 'Template', 'dpw' ); ?></strong></p>

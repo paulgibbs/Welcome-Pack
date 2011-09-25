@@ -157,8 +157,8 @@ class DP_Welcome_Pack {
 			return $original_subject;
 
 		// Set the content type to HTML
-		if ( !has_filter( 'wp_mail_content_type', array( 'DP_Welcome_Pack', 'email_get_content_type' ) ) )
-			add_filter( 'wp_mail_content_type', array( 'DP_Welcome_Pack', 'email_get_content_type' ) );
+		if ( !has_filter( 'wp_mail_content_type', array( 'DP_Welcome_Pack', 'email_set_content_type' ) ) )
+			add_filter( 'wp_mail_content_type', array( 'DP_Welcome_Pack', 'email_set_content_type' ) );
 
 		return apply_filters( 'dpw_email_subject', $bp->welcome_pack[$subject]->subject );
 	}
@@ -567,8 +567,8 @@ To view the original activity, your comment and all replies, log in and visit: %
 	 * @since 3.0
 	 * @static
 	 */
-	public static function email_get_content_type() {
-		return apply_filters( 'dpw_email_get_content_type', 'text/html' );
+	public static function email_set_content_type() {
+		return apply_filters( 'dpw_email_set_content_type', 'text/html' );
 	}
 }
 add_action( 'bp_include', array( 'DP_Welcome_Pack', 'init' ) );

@@ -487,20 +487,19 @@ To view the original activity, your comment and all replies, log in and visit: %
 	public static function email_get_types() {
 		$emails = array(
 			__( 'Activate Your Account', 'buddypress' )                      => 1,
-			__( '%s mentioned you in an update', 'buddypress' )              => 2,
-			__( '%s replied to one of your updates', 'buddypress' )          => 3,
-			__( '%s replied to one of your comments', 'buddypress' )         => 4,
-			__( 'Activate %s', 'buddypress' )                                => 5,
-			__( '%1$s mentioned you in the group "%2$s"', 'buddypress' )     => 6,  // Deprecated in BuddyPress 1.5
-			__( 'New friendship request from %s', 'buddypress' )             => 7,
-			__( '%s accepted your friendship request', 'buddypress' )        => 8,
-			__( 'Group Details Updated', 'buddypress' )                      => 9,
-			__( 'Membership request for group: %s', 'buddypress' )           => 10,
-			__( 'Membership request for group "%s" accepted', 'buddypress' ) => 11,
-			__( 'Membership request for group "%s" rejected', 'buddypress' ) => 12,
-			__( 'You have been promoted in the group: "%s"', 'buddypress' )  => 13,
-			__( 'You have an invitation to the group: "%s"', 'buddypress' )  => 14,
-			__( 'New message from %s', 'buddypress' )                        => 15,
+			__( 'Activate %s', 'buddypress' )                                => 2,
+			__( 'New message from %s', 'buddypress' )                        => 3,
+			__( 'Group Details Updated', 'buddypress' )                      => 4,
+			__( 'Membership request for group: %s', 'buddypress' )           => 5,
+			__( 'Membership request for group "%s" accepted', 'buddypress' ) => 6,
+			__( 'Membership request for group "%s" rejected', 'buddypress' ) => 7,
+			__( 'You have been promoted in the group: "%s"', 'buddypress' )  => 8,
+			__( 'You have an invitation to the group: "%s"', 'buddypress' )  => 9,
+			__( '%s accepted your friendship request', 'buddypress' )        => 10,
+			__( 'New friendship request from %s', 'buddypress' )             => 11,
+			__( '%s mentioned you in an update', 'buddypress' )              => 12,
+			__( '%s replied to one of your updates', 'buddypress' )          => 13,
+			__( '%s replied to one of your comments', 'buddypress' )         => 14,
 		);
 
 		return apply_filters( 'dpw_email_get_types', $emails );
@@ -528,17 +527,21 @@ To view the original activity, your comment and all replies, log in and visit: %
 	 * @param string $original_subject
 	 * @return string Email subject
 	 * @since 3.0
+	 * @todo Any way to do current_email_subject more elegantly?
 	 */
 	public function email_subject( $original_subject ) {
 		global $bp;
 
 		// Strip [site name] from the front of all the emails' subject lines
-		$sitename = '[' . wp_specialchars_decode( get_blog_option( bp_get_root_blog_id(), 'blogname' ), ENT_QUOTES ) . ']';
+		$sitename = '[' . wp_specialchars_decode( get_blog_option( bp_get_root_blog_id(), 'blogname' ), ENT_QUOTES ) . '] ';
 		$subject  = str_replace( $sitename, '', $original_subject );
 
 		// Fetch relevant email details from database, if not done previously
 		if ( !isset( $bp->welcome_pack ) || !isset( $bp->welcome_pack[$subject] ) )
 			DP_Welcome_Pack::email_load_emails( $subject );
+
+		// Store the subject as a key so that the email_message filter knows which email to lookup
+		$bp->welcome_pack['current_email_subject'] = $subject;
 
 		// Check that a new subject is set
 		if ( empty( $bp->welcome_pack[$subject]->subject ) )
@@ -555,19 +558,25 @@ To view the original activity, your comment and all replies, log in and visit: %
 	 * Filter email message for BuddyPress' emails.
 	 *
 	 * @global object $bp
-	 * @param string $message
+	 * @param string $original_message
 	 * @return string Email message
 	 * @see email_subject()
 	 * @since 3.0
 	 */
-	public function email_message( $message ) {
+	public function email_message( $original_message ) {
 		global $bp;
+
+		// Find the stored subject line so that we can grab the appropriate email object
+		if ( empty( $bp->welcome_pack['current_email_subject'] ) )
+			return $original_message;
+
+		$subject = $bp->welcome_pack['current_email_subject'];
 
 		// Check that a new message is set; see email_subject()
 		if ( empty( $bp->welcome_pack[$subject]->message ) )
-			return $message;
+			return $original_message;
 
-		return apply_filters( 'dpw_email_message', $message );
+		return apply_filters( 'dpw_email_message', $bp->welcome_pack[$subject]->message );
 	}
 
 	/**
@@ -582,13 +591,20 @@ To view the original activity, your comment and all replies, log in and visit: %
 		if ( !isset( $bp->welcome_pack ) )
 			$bp->welcome_pack = array();
 
+		// Triple-check that the email subject passed matches one of the hardcoded email types
+		$email_types = DP_Welcome_Pack::email_get_types();
+
 		// This email hasn't been loaded from the database
 		if ( !isset( $bp->welcome_pack[$subject] ) ) {
-			// ...
-
 			$bp->welcome_pack[$subject] = new stdClass;
-			$bp->welcome_pack[$subject]->subject = '';
-			$bp->welcome_pack[$subject]->message = '';
+
+			$email = get_posts( array( 'meta_key' => 'welcomepack_type', 'meta_value' => (int) $email_types[$subject], 'numberposts' => 1, 'post_type' => 'dpw_email', ) );
+			if ( !$email || is_wp_error( $email ) )
+				return;
+
+			$email = array_shift( $email );
+			$bp->welcome_pack[$subject]->subject = $email->post_title;
+			$bp->welcome_pack[$subject]->message = $email->post_content;
 		}
 
 		// Allow third-party plugins to hook in

@@ -130,59 +130,6 @@ class DP_Welcome_Pack {
 	}
 
 	/**
-	 * Filter subject line for BuddyPress' emails.
-	 *
-	 * Fetches relevant email details from database, store in global
-	 * Sets HTML email type
-	 * Return new subject
-	 *
-	 * @global object $bp
-	 * @param string $original_subject
-	 * @return string Email subject
-	 * @since 3.0
-	 */
-	public function email_subject( $original_subject ) {
-		global $bp;
-
-		// Strip [site name] from the front of all the emails' subject lines
-		$sitename = '[' . wp_specialchars_decode( get_blog_option( bp_get_root_blog_id(), 'blogname' ), ENT_QUOTES ) . ']';
-		$subject  = str_replace( $sitename, '', $original_subject );
-
-		// Fetch relevant email details from database, if not done previously
-		if ( !isset( $bp->welcome_pack ) || !isset( $bp->welcome_pack[$subject] ) ) {
-		}
-
-		// Check that a new subject is set
-		if ( empty( $bp->welcome_pack[$subject]->subject ) )
-			return $original_subject;
-
-		// Set the content type to HTML
-		if ( !has_filter( 'wp_mail_content_type', array( 'DP_Welcome_Pack', 'email_set_content_type' ) ) )
-			add_filter( 'wp_mail_content_type', array( 'DP_Welcome_Pack', 'email_set_content_type' ) );
-
-		return apply_filters( 'dpw_email_subject', $bp->welcome_pack[$subject]->subject );
-	}
-
-	/**
-	 * Filter email message for BuddyPress' emails.
-	 *
-	 * @global object $bp
-	 * @param string $message
-	 * @return string Email message
-	 * @see email_subject()
-	 * @since 3.0
-	 */
-	public function email_message( $message ) {
-		global $bp;
-
-		// Check that a new message is set; see email_subject()
-		if ( empty( $bp->welcome_pack[$subject]->message ) )
-			return $message;
-
-		return apply_filters( 'dpw_email_message', $message );
-	}
-
-	/**
 	 * Install/upgrade handler.
 	 *
 	 * Put the default emails into the database; intentionally uses the BuddyPress text domain in parts.
@@ -569,6 +516,84 @@ To view the original activity, your comment and all replies, log in and visit: %
 	 */
 	public static function email_set_content_type() {
 		return apply_filters( 'dpw_email_set_content_type', 'text/html' );
+	}
+
+	/**
+	 * Filter subject line for BuddyPress' emails.
+	 *
+	 * Fetches relevant email details from database, store in global
+	 * Sets HTML email type
+	 * Return new subject
+	 *
+	 * @global object $bp
+	 * @param string $original_subject
+	 * @return string Email subject
+	 * @since 3.0
+	 */
+	public function email_subject( $original_subject ) {
+		global $bp;
+
+		// Strip [site name] from the front of all the emails' subject lines
+		$sitename = '[' . wp_specialchars_decode( get_blog_option( bp_get_root_blog_id(), 'blogname' ), ENT_QUOTES ) . ']';
+		$subject  = str_replace( $sitename, '', $original_subject );
+
+		// Fetch relevant email details from database, if not done previously
+		if ( !isset( $bp->welcome_pack ) || !isset( $bp->welcome_pack[$subject] ) )
+			DP_Welcome_Pack::email_load_emails( $subject );
+
+		// Check that a new subject is set
+		if ( empty( $bp->welcome_pack[$subject]->subject ) )
+			return $original_subject;
+
+		// Set the content type to HTML
+		if ( !has_filter( 'wp_mail_content_type', array( 'DP_Welcome_Pack', 'email_set_content_type' ) ) )
+			add_filter( 'wp_mail_content_type', array( 'DP_Welcome_Pack', 'email_set_content_type' ) );
+
+		return apply_filters( 'dpw_email_subject', $bp->welcome_pack[$subject]->subject );
+	}
+
+	/**
+	 * Filter email message for BuddyPress' emails.
+	 *
+	 * @global object $bp
+	 * @param string $message
+	 * @return string Email message
+	 * @see email_subject()
+	 * @since 3.0
+	 */
+	public function email_message( $message ) {
+		global $bp;
+
+		// Check that a new message is set; see email_subject()
+		if ( empty( $bp->welcome_pack[$subject]->message ) )
+			return $message;
+
+		return apply_filters( 'dpw_email_message', $message );
+	}
+
+	/**
+	 * Load the email from the database that has been associated with the email that's being sent
+	 *
+	 * @param string $subject Email subject
+	 * @global object $bp
+	 */
+	public function email_load_emails( $subject ) {
+		global $bp;
+
+		if ( !isset( $bp->welcome_pack ) )
+			$bp->welcome_pack = array();
+
+		// This email hasn't been loaded from the database
+		if ( !isset( $bp->welcome_pack[$subject] ) ) {
+			// ...
+
+			$bp->welcome_pack[$subject] = new stdClass;
+			$bp->welcome_pack[$subject]->subject = '';
+			$bp->welcome_pack[$subject]->message = '';
+		}
+
+		// Allow third-party plugins to hook in
+		do_action( 'dpw_email_load_emails', $subject );
 	}
 }
 add_action( 'bp_include', array( 'DP_Welcome_Pack', 'init' ) );

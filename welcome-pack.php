@@ -101,7 +101,7 @@ class DP_Welcome_Pack {
 		add_action( 'bp_init', array( 'DP_Welcome_Pack', 'setup_admin' ), 9 );
 
 		// Register an install/upgrade handler
-		add_action( 'dpw_register_post_types', array( 'DP_Welcome_Pack', 'check_installed' ) );
+		add_action( 'bp_init', array( 'DP_Welcome_Pack', 'check_installed' ) );
 
 		// Register admin menu pages, and a settings link on the Plugins page
 		add_filter( 'plugin_action_links', array( 'DP_Welcome_Pack_Admin', 'add_settings_link' ), 10, 2 );
@@ -160,16 +160,23 @@ class DP_Welcome_Pack {
 						$emails = DP_Welcome_Pack::get_default_emails();
 
 						// Add the emails to the database
-						foreach ( $emails as $email ) {
+						for ( $i=0, $email_count=count( $emails ); $i<$email_count; $i++ ) {
 							// [0] is the subject, [1] is the email body
-							$subject = __( array_shift( $email ), 'buddypress' );
-							$body    = __( array_shift( $email ), 'buddypress' );
+							$subject = __( array_shift( $emails[$i] ), 'buddypress' );
+							$body    = __( array_shift( $emails[$i] ), 'buddypress' );
 
 							// Further parts are optional and are added on to the end of the email body
-							foreach ( (array) $email as $email_part )
+							foreach ( (array) $emails[$i] as $email_part )
 								$body .= __( $email_part, 'buddypress' );
 
-							wp_insert_post( array( 'comment_status' => 'closed', 'ping_status' => 'closed', 'post_title' => $subject, 'post_content' => $body, 'post_status' => 'publish', 'post_type' => 'dpw_email' ) );
+							// Insert
+							$post_id = wp_insert_post( array( 'comment_status' => 'closed', 'ping_status' => 'closed', 'post_title' => $subject, 'post_content' => $body, 'post_status' => 'publish', 'post_type' => 'dpw_email', ) );
+							if ( !$post_id || is_wp_error( $post_id ) )
+								continue;
+
+							// Set email assocation mata
+							update_post_meta( $post_id, 'welcomepack_template', 'welcome_pack_default.php' );
+							update_post_meta( $post_id, 'welcomepack_type', $i + 1 );  // Integer is critical. See notes around email_meta_box().
 						}
 					break;
 				}
@@ -307,14 +314,6 @@ To view your group invites visit: %3$s
 To view the group visit: %4$s
 
 To view %5$s\'s profile visit: %6$s
-
----------------------
-', 'To disable these notifications please log in and go to: %s' ),
-array( '%s mentioned you in an update', '%1$s mentioned you in the group "%2$s":
-
-"%3$s"
-
-To view and respond to the message, log in and visit: %4$s
 
 ---------------------
 ', 'To disable these notifications please log in and go to: %s' ),

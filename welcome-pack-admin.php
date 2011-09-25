@@ -872,19 +872,19 @@ class DP_Welcome_Pack_Admin {
 	<select name="dpw_email_for" id="dpw_email_for">
 		<option value="0"><?php _e( '-----', 'dpw' ); ?></option>
 		<option value="1"><?php _e( 'Account activation', 'dpw' ); ?></option>
-		<option value="5"><?php _e( 'Account and blog activation', 'dpw' ); ?></option>
-		<option value="8"><?php _e( 'Friendship request accepted', 'dpw' ); ?></option>
-		<option value="9"><?php _e( 'Group details updated', 'dpw' ); ?></option>
-		<option value="10"><?php _e( 'Group membership request', 'dpw' ); ?></option>
-		<option value="11"><?php _e( 'Group membership request accepted', 'dpw' ); ?></option>
-		<option value="12"><?php _e( 'Group membership request rejected', 'dpw' ); ?></option>
-		<option value="14"><?php _e( 'Invitation to a group', 'dpw' ); ?></option>
-		<option value="2"><?php _e( 'Mentioned in an update', 'dpw' ); ?></option>
-		<option value="7"><?php _e( 'New friendship request', 'dpw' ); ?></option>
-		<option value="15"><?php _e( 'New private message', 'dpw' ); ?></option>
-		<option value="13"><?php _e( 'Promoted in a group', 'dpw' ); ?></option>
-		<option value="4"><?php _e( 'Replied to a comment', 'dpw' ); ?></option>
-		<option value="3"><?php _e( 'Replied to an update', 'dpw' ); ?></option>
+		<option value="2"><?php _e( 'Account and blog activation', 'dpw' ); ?></option>
+		<option value="10"><?php _e( 'Friendship request accepted', 'dpw' ); ?></option>
+		<option value="4"><?php _e( 'Group details updated', 'dpw' ); ?></option>
+		<option value="5"><?php _e( 'Group membership request', 'dpw' ); ?></option>
+		<option value="6"><?php _e( 'Group membership request accepted', 'dpw' ); ?></option>
+		<option value="7"><?php _e( 'Group membership request rejected', 'dpw' ); ?></option>
+		<option value="9"><?php _e( 'Invitation to a group', 'dpw' ); ?></option>
+		<option value="12"><?php _e( 'Mentioned in an update', 'dpw' ); ?></option>
+		<option value="11"><?php _e( 'New friendship request', 'dpw' ); ?></option>
+		<option value="3"><?php _e( 'New private message', 'dpw' ); ?></option>
+		<option value="8"><?php _e( 'Promoted in a group', 'dpw' ); ?></option>
+		<option value="14"><?php _e( 'Replied to a comment', 'dpw' ); ?></option>
+		<option value="13"><?php _e( 'Replied to an update', 'dpw' ); ?></option>
 	</select>
 
 	<p><strong><?php _e( 'Template', 'dpw' ); ?></strong></p>

@@ -116,17 +116,16 @@ class DP_Welcome_Pack {
 		// And finally, things that happen when a user's account is activated (e.g. everything else).
 		add_action( 'bp_core_activated_user', array( 'DP_Welcome_Pack', 'user_activated' ) );
 
-
 		/**
 		 * Email customisation
 		 */
 		$subjects = apply_filters( 'dpw_raw_email_subjects', array( 'bp_activity_at_message_notification_subject', 'bp_activity_new_comment_notification_subject', 'bp_activity_new_comment_notification_comment_author_subject', 'bp_core_activation_signup_blog_notification_subject', 'bp_core_activation_signup_user_notification_subject', 'groups_at_message_notification_subject', 'friends_notification_new_request_subject', 'friends_notification_accepted_request_subject', 'groups_notification_group_updated_subject', 'groups_notification_new_membership_request_subject', 'groups_notification_membership_request_completed_subject', 'groups_notification_promoted_member_subject', 'groups_notification_group_invites_subject', 'bp_core_signup_send_validation_email_subject', 'messages_notification_new_message_subject' ) );
 		foreach ( (array) $subjects as $filter_name )
-			add_filter( $filter_name, array( 'DP_Welcome_Pack', 'email_subject' ), 14 );
+			add_filter( $filter_name, array( 'DP_Welcome_Pack', 'email_subject' ), 14, 10 );
 
 		$messages = apply_filters( 'dpw_raw_email_messages', array( 'bp_activity_at_message_notification_message', 'bp_activity_new_comment_notification_message', 'bp_activity_new_comment_notification_comment_author_message', 'bp_core_activation_signup_blog_notification_message', 'bp_core_activation_signup_user_notification_message', 'groups_at_message_notification_message', 'friends_notification_new_request_message', 'friends_notification_accepted_request_message', 'groups_notification_group_updated_message', 'groups_notification_new_membership_request_message', 'groups_notification_membership_request_completed_message', 'groups_notification_promoted_member_message', 'groups_notification_group_invites_message', 'bp_core_signup_send_validation_email_message', 'messages_notification_new_message_message' ) );
  		foreach ( (array) $messages as $filter_name )
-			add_filter( $filter_name, array( 'DP_Welcome_Pack', 'email_message' ), 14 );
+			add_filter( $filter_name, array( 'DP_Welcome_Pack', 'email_message' ), 14, 10 );
 	}
 
 	/**
@@ -555,7 +554,7 @@ To view the original activity, your comment and all replies, log in and visit: %
 	}
 
 	/**
-	 * Filter email message for BuddyPress' emails.
+	 * Get the new, customised, email message
 	 *
 	 * @global object $bp
 	 * @param string $original_message
@@ -566,17 +565,30 @@ To view the original activity, your comment and all replies, log in and visit: %
 	public function email_message( $original_message ) {
 		global $bp;
 
-		// Find the stored subject line so that we can grab the appropriate email object
 		if ( empty( $bp->welcome_pack['current_email_subject'] ) )
 			return $original_message;
 
+		// Find the stored subject line so that we can grab the appropriate email object
 		$subject = $bp->welcome_pack['current_email_subject'];
 
 		// Check that a new message is set; see email_subject()
 		if ( empty( $bp->welcome_pack[$subject]->message ) )
 			return $original_message;
 
-		return apply_filters( 'dpw_email_message', $bp->welcome_pack[$subject]->message );
+		// Get the unknown number of unknown strings which we need to run through sprintf() to rebuild the original email
+		$args = func_get_args();
+		array_shift( $args );
+
+		// BuddyPress 1.5's filters aren't helpful enough to JUST return the tokens we need, so here's a big huge IF statement.
+		//djpaultodo
+
+		// Put the tokens back into the message
+		$t = array( '', '', '', '', '', '', '', '', '', '' );
+		for ( $i=0, $token_count=count( $args ); $i<$token_count; $i++ )
+			$t[$i] = $args[$i];
+
+		// Filter the message so 3rd party plugins can affect the output
+		return apply_filters( 'dpw_email_message', sprintf( $original_message, $t[0], $t[1], $t[2], $t[3], $t[4], $t[5], $t[6], $t[7], $t[8], $t[9] ) );
 	}
 
 	/**
@@ -607,7 +619,7 @@ To view the original activity, your comment and all replies, log in and visit: %
 			$bp->welcome_pack[$subject]->message = $email->post_content;
 		}
 
-		// Allow third-party plugins to hook in
+		// Allow third-party plugins to modify the updated email text
 		do_action( 'dpw_email_load_emails', $subject );
 	}
 }

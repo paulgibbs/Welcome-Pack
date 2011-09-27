@@ -346,6 +346,7 @@ To view your original update and all comments, log in and visit: %3$s
 
 ---------------------
 ', 'To disable these notifications please log in and go to: %s' ),
+/* See http://buddypress.trac.wordpress.org/ticket/363
 array( '%s replied to one of your comments', '%1$s replied to one of your comments:
 
 "%2$s"
@@ -353,7 +354,7 @@ array( '%s replied to one of your comments', '%1$s replied to one of your commen
 To view the original activity, your comment and all replies, log in and visit: %3$s
 
 ---------------------
-', 'To disable these notifications please log in and go to: %s' )
+', 'To disable these notifications please log in and go to: %s' )*/
 		);
 
 		return apply_filters( 'dpw_get_default_emails', $emails );
@@ -498,7 +499,7 @@ To view the original activity, your comment and all replies, log in and visit: %
 			__( 'New friendship request from %s', 'buddypress' )             => 11,
 			__( '%s mentioned you in an update', 'buddypress' )              => 12,
 			__( '%s replied to one of your updates', 'buddypress' )          => 13,
-			__( '%s replied to one of your comments', 'buddypress' )         => 14,
+//			__( '%s replied to one of your comments', 'buddypress' )         => 14,  // See http://buddypress.trac.wordpress.org/ticket/363
 		);
 
 		return apply_filters( 'dpw_email_get_types', $emails );
@@ -579,13 +580,120 @@ To view the original activity, your comment and all replies, log in and visit: %
 		$args = func_get_args();
 		array_shift( $args );
 
-		// BuddyPress 1.5's filters aren't helpful enough to JUST return the tokens we need, so here's a big huge IF statement.
-		//djpaultodo
-
-		// Put the tokens back into the message
+		/**
+		 * Put the tokens back into the message.
+		 * BuddyPress 1.5's filters aren't helpful enough to JUST return the tokens we need, so here's a big huge SWITCH to figure it out.
+		 */
 		$t = array( '', '', '', '', '', '', '', '', '', '' );
-		for ( $i=0, $token_count=count( $args ); $i<$token_count; $i++ )
-			$t[$i] = $args[$i];
+
+		switch ( $subject ) {
+			case __( 'Activate Your Account', 'buddypress' ):
+				$t[0] = $args[0];
+			break;
+
+			case __( 'Activate %s', 'buddypress' ):
+				$t[0] = $args[0];
+				$t[1] = $args[1];
+			break;
+
+			case __( 'New message from %s', 'buddypress' ):
+				$t[0] = $args[0];
+				$t[1] = $args[1];
+				$t[2] = $args[2];
+				$t[3] = $args[3];
+				$t[4] = $args[4];  // Notification settings
+			break;
+
+			case __( 'Group Details Updated', 'buddypress' ):
+				$t[0] = $args[0]->name;
+				$t[1] = $args[1];
+				$t[2] = $args[2];  // Notification settings
+			break;
+
+			case __( 'Membership request for group: %s', 'buddypress' ):
+				$t[0] = $args[1];
+				$t[1] = $args[0]->name;
+				$t[2] = $args[3];
+				$t[3] = $args[1];
+				$t[4] = $args[2];
+				$t[5] = $args[4];  // Notification settings
+			break;
+
+			case __( 'Membership request for group "%s" accepted', 'buddypress' ):
+				$t[0] = $args[0]->name;
+				$t[1] = $args[1];
+				$t[2] = $args[2];  // Notification settings
+			break;
+
+			case __( 'Membership request for group "%s" rejected', 'buddypress' ):
+				$t[0] = $args[0]->name;
+				$t[1] = $args[1];
+				$t[2] = $args[2];  // Notification settings
+			break;
+
+			case __( 'You have been promoted in the group: "%s"', 'buddypress' ):
+				$t[0] = $args[1];
+				$t[1] = $args[0]->name;
+				$t[2] = $args[2];
+				$t[3] = $args[3];  // Notification settings
+			break;
+
+			case __( 'You have an invitation to the group: "%s"', 'buddypress' ):
+				$t[0] = $args[1];
+				$t[1] = $args[0]->name;
+				$t[2] = $args[3];
+				$t[3] = $args[4];
+				$t[4] = $args[1];
+				$t[5] = $args[2];
+				$t[6] = $args[5];  // Notification settings
+			break;
+
+			case __( '%s accepted your friendship request', 'buddypress' ):
+				$t[0] = $args[0];
+				$t[1] = $args[0];
+				$t[2] = $args[1];
+				$t[3] = $args[2];  // Notification settings
+			break;
+
+			case __( 'New friendship request from %s', 'buddypress' ):
+				$t[0] = $args[0];
+				$t[1] = $args[2];
+				$t[2] = $args[0];
+				$t[3] = $args[1];
+				$t[4] = $args[3];  // Notification settings
+			break;
+
+			case __( '%s mentioned you in an update', 'buddypress' ):
+				if ( bp_is_active( 'groups' ) && bp_is_group() ) {
+					$t[0] = $args[0];
+					$t[1] = bp_get_current_group_name();
+					$t[2] = $args[1];
+					$t[3] = $args[2];
+					$t[4] = $args[3];  // Notification settings
+
+				} else {
+					$t[0] = $args[0];
+					$t[1] = $args[1];
+					$t[2] = $args[2];
+					$t[3] = $args[3];  // Notification settings
+				}
+			break;
+
+			case __( '%s replied to one of your updates', 'buddypress' ):
+				$t[0] = $args[0];
+				$t[1] = $args[1];
+				$t[2] = $args[2];
+				$t[3] = $args[3];  // Notification settings
+			break;
+
+			// See http://buddypress.trac.wordpress.org/ticket/363
+			/*case __( '%s replied to one of your comments', 'buddypress' ):
+				$t[0] = $args[0];
+				$t[1] = $args[1];
+				$t[2] = $args[3]; xxx thread_link
+				$t[3] = $args[2];  // Notification settings
+			break;*/
+		}
 
 		// Filter the message so 3rd party plugins can affect the output
 		return apply_filters( 'dpw_email_message', sprintf( $original_message, $t[0], $t[1], $t[2], $t[3], $t[4], $t[5], $t[6], $t[7], $t[8], $t[9] ) );

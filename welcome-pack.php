@@ -695,8 +695,27 @@ To view the original activity, your comment and all replies, log in and visit: %
 			break;*/
 		}
 
+		$new_message = sprintf( $original_message, $t[0], $t[1], $t[2], $t[3], $t[4], $t[5], $t[6], $t[7], $t[8], $t[9] );
+
+		// Find the email template
+		$template_path = locate_template( $bp->welcome_pack[$subject]->template );
+		if ( empty( $template_path ) )
+			$template_path = apply_filters( 'dpw_default_email_template', WP_PLUGIN_DIR . '/welcome-pack/templates/welcome_pack_default.php' );
+
+		ob_start();
+		include( $template_path );
+		$template = ob_get_contents();
+		ob_end_clean();
+
+		// Keyword replacement
+		$template = str_replace( 'DPW_CONTENT', $new_message, $template );
+		$template = str_replace( 'DPW_BLOGNAME', get_bloginfo( 'name', 'display' ), $template );
+		$template = str_replace( 'DPW_BLOGURL', get_site_url(), $template );
+		$template = str_replace( 'DPW_BLOGDESC', get_bloginfo( 'description', 'display' ), $template );
+		$template = str_replace( 'DPW_ADMINEMAIL', get_option( 'admin_email' ), $template );
+
 		// Filter the message so 3rd party plugins can affect the output
-		return apply_filters( 'dpw_email_message', sprintf( $original_message, $t[0], $t[1], $t[2], $t[3], $t[4], $t[5], $t[6], $t[7], $t[8], $t[9] ) );
+		return apply_filters( 'dpw_email_message', $template, $new_message );
 	}
 
 	/**
@@ -723,8 +742,9 @@ To view the original activity, your comment and all replies, log in and visit: %
 				return;
 
 			$email = array_shift( $email );
-			$bp->welcome_pack[$subject]->subject = $email->post_title;
-			$bp->welcome_pack[$subject]->message = $email->post_content;
+			$bp->welcome_pack[$subject]->subject  = $email->post_title;
+			$bp->welcome_pack[$subject]->message  = $email->post_content;
+			$bp->welcome_pack[$subject]->template = get_post_meta( $email->ID, 'welcomepack_template', true	 );
 		}
 
 		// Allow third-party plugins to modify the updated email text

@@ -756,7 +756,7 @@ class DP_Welcome_Pack_Admin {
 		$templates      = $themes[$theme]['Template Files'];
 
 		// Always add the fallback that comes bundled with Welcome Pack
-		$page_templates = array( 'Welcome Pack Default' => 'welcome_pack_default.php' );
+		$page_templates = array( 'BP Default' => 'welcome_pack_default.php' );
 
 		if ( is_array( $templates ) ) {
 			$base = array( trailingslashit( get_template_directory() ), trailingslashit( get_stylesheet_directory() ) );

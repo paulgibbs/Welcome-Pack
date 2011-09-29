@@ -588,7 +588,7 @@ To view the original activity, your comment and all replies, log in and visit: %
 
 		switch ( $subject ) {
 			case __( 'Activate Your Account', 'buddypress' ):
-				$t[0] = $args[0];
+				$t[0] = $args[1];
 			break;
 
 			case __( 'Activate %s', 'buddypress' ):
@@ -695,7 +695,7 @@ To view the original activity, your comment and all replies, log in and visit: %
 			break;*/
 		}
 
-		$new_message = sprintf( $original_message, $t[0], $t[1], $t[2], $t[3], $t[4], $t[5], $t[6], $t[7], $t[8], $t[9] );
+		$new_message = sprintf( $bp->welcome_pack[$subject]->message, $t[0], $t[1], $t[2], $t[3], $t[4], $t[5], $t[6], $t[7], $t[8], $t[9] );
 
 		// Find the email template
 		$template_path = locate_template( $bp->welcome_pack[$subject]->template );
@@ -709,10 +709,6 @@ To view the original activity, your comment and all replies, log in and visit: %
 
 		// Keyword replacement
 		$template = str_replace( 'DPW_CONTENT', $new_message, $template );
-		$template = str_replace( 'DPW_BLOGNAME', get_bloginfo( 'name', 'display' ), $template );
-		$template = str_replace( 'DPW_BLOGURL', get_site_url(), $template );
-		$template = str_replace( 'DPW_BLOGDESC', get_bloginfo( 'description', 'display' ), $template );
-		$template = str_replace( 'DPW_ADMINEMAIL', get_option( 'admin_email' ), $template );
 
 		// Filter the message so 3rd party plugins can affect the output
 		return apply_filters( 'dpw_email_message', $template, $new_message );

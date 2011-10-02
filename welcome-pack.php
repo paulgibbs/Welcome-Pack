@@ -346,7 +346,7 @@ To view your original update and all comments, log in and visit: %3$s
 
 ---------------------
 ', 'To disable these notifications please log in and go to: %s' ),
-/* See http://buddypress.trac.wordpress.org/ticket/363
+/* See http://buddypress.trac.wordpress.org/ticket/3634
 array( '%s replied to one of your comments', '%1$s replied to one of your comments:
 
 "%2$s"
@@ -499,7 +499,7 @@ To view the original activity, your comment and all replies, log in and visit: %
 			__( 'New friendship request from %s', 'buddypress' )             => 11,
 			__( '%s mentioned you in an update', 'buddypress' )              => 12,
 			__( '%s replied to one of your updates', 'buddypress' )          => 13,
-//			__( '%s replied to one of your comments', 'buddypress' )         => 14,  // See http://buddypress.trac.wordpress.org/ticket/363
+//			__( '%s replied to one of your comments', 'buddypress' )         => 14,  // See http://buddypress.trac.wordpress.org/ticket/3634
 		);
 
 		return apply_filters( 'dpw_email_get_types', $emails );
@@ -686,7 +686,7 @@ To view the original activity, your comment and all replies, log in and visit: %
 				$t[3] = $args[3];  // Notification settings
 			break;
 
-			// See http://buddypress.trac.wordpress.org/ticket/363
+			// See http://buddypress.trac.wordpress.org/ticket/3634
 			/*case __( '%s replied to one of your comments', 'buddypress' ):
 				$t[0] = $args[0];
 				$t[1] = $args[1];
@@ -734,7 +734,7 @@ To view the original activity, your comment and all replies, log in and visit: %
 		$email_types = DP_Welcome_Pack::email_get_types();
 
 		// This email hasn't been loaded from the database
-		if ( !isset( $bp->welcome_pack[$subject] ) ) {
+		if ( !empty( $email_types[$subject] ) && !isset( $bp->welcome_pack[$subject] ) ) {
 			$bp->welcome_pack[$subject] = new stdClass;
 
 			$email = get_posts( array( 'meta_key' => 'welcomepack_type', 'meta_value' => (int) $email_types[$subject], 'numberposts' => 1, 'post_type' => 'dpw_email', ) );

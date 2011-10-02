@@ -536,6 +536,28 @@ To view the original activity, your comment and all replies, log in and visit: %
 		$sitename = '[' . wp_specialchars_decode( get_blog_option( bp_get_root_blog_id(), 'blogname' ), ENT_QUOTES ) . '] ';
 		$subject  = str_replace( $sitename, '', $original_subject );
 
+		/**
+		 * Some email subjects use a string replacement (only a single %s across all BP's email subjects, thankfully).
+		 * But the subject comes through with the token already replaced... so let's reverse it.
+		 */
+		$args = func_get_args();
+		array_shift( $args );
+
+		// Was there a token?
+		if ( !empty( $args[0] ) ) {
+	
+			// Special case for certain Group emails 
+			if ( is_object( $args[0] ) ) {
+				if ( class_exists( 'BP_Groups_Group' ) && $args[0] instanceof BP_Groups_Group )
+					$args[0] = $args[0]->name;
+				else
+					$args[0] = '';
+			}
+
+			// Take out the value, and put the token back in
+			$subject = str_replace( $args[0], '%s', $subject );
+		}
+
 		// Fetch relevant email details from database, if not done previously
 		if ( !isset( $bp->welcome_pack ) || !isset( $bp->welcome_pack[$subject] ) )
 			DP_Welcome_Pack::email_load_emails( $subject );
@@ -544,14 +566,18 @@ To view the original activity, your comment and all replies, log in and visit: %
 		$bp->welcome_pack['current_email_subject'] = $subject;
 
 		// Check that a new subject is set
-		if ( empty( $bp->welcome_pack[$subject]->subject ) )
+		if ( empty( $bp->welcome_pack[$subject] ) || empty( $bp->welcome_pack[$subject]->subject ) )
 			return $original_subject;
 
-		// Set the content type to HTML
+		// Set the content type to HTML (@todo: things after this might bug out if the subject line is left intentionally blank)
 		if ( !has_filter( 'wp_mail_content_type', array( 'DP_Welcome_Pack', 'email_set_content_type' ) ) )
 			add_filter( 'wp_mail_content_type', array( 'DP_Welcome_Pack', 'email_set_content_type' ) );
 
-		return apply_filters( 'dpw_email_subject', $bp->welcome_pack[$subject]->subject );
+		// Was there a token? Maybe reverse-reverse tokenise the subject.
+		if ( !empty( $args[0] ) )
+			$subject = sprintf( $bp->welcome_pack[$subject]->subject, $args[0] );
+
+		return apply_filters( 'dpw_email_subject', $subject, $original_subject );
 	}
 
 	/**
@@ -744,7 +770,7 @@ To view the original activity, your comment and all replies, log in and visit: %
 			$email = array_shift( $email );
 			$bp->welcome_pack[$subject]->subject  = $email->post_title;
 			$bp->welcome_pack[$subject]->message  = $email->post_content;
-			$bp->welcome_pack[$subject]->template = get_post_meta( $email->ID, 'welcomepack_template', true	 );
+			$bp->welcome_pack[$subject]->template = get_post_meta( $email->ID, 'welcomepack_template', true );
 		}
 
 		// Allow third-party plugins to modify the updated email text

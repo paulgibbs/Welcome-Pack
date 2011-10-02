@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=P3K7Z
 Tags: buddypress,friend,group,welcome,message,email,customise,customize,initial,redirect,registration,start
 Requires at least: WordPress 3.2, BuddyPress 1.5
 Tested up to: WP 3.2.1, BuddyPress 1.5
-Stable tag: 3.0
+Stable tag: 2.2.1
 
 Automatically send friend/group invites and a welcome message to new users, and redirect them to a custom page. Also provides email customisation options.
 

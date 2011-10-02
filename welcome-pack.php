@@ -3,7 +3,7 @@
  * Plugin Name: Welcome Pack
  * Plugin URI: http://buddypress.org/community/groups/welcome-pack/
  * Description: Automatically send friend/group invites and a welcome message to new users, and redirect them to a custom page. Also provides email customisation options.
- * Version: 3.0
+ * Version: 3.0-beta-1
  * Requires at least: WordPress 3.2, BuddyPress 1.5
  * Tested up to: WP 3.2, BuddyPress 1.5
  * License: GPL3
@@ -699,8 +699,12 @@ To view the original activity, your comment and all replies, log in and visit: %
 
 		// Find the email template
 		$template_path = locate_template( $bp->welcome_pack[$subject]->template );
-		if ( empty( $template_path ) )
-			$template_path = apply_filters( 'dpw_default_email_template', WP_PLUGIN_DIR . '/welcome-pack/templates/welcome_pack_default.php' );
+		if ( empty( $template_path ) ) {
+			if ( 'simplicity.php' == $bp->welcome_pack[$subject]->template )
+				$template_path = apply_filters( 'dpw_default_email_template', WP_PLUGIN_DIR . '/welcome-pack/templates/simplicity.php' );
+			else
+				$template_path = apply_filters( 'dpw_default_email_template', WP_PLUGIN_DIR . '/welcome-pack/templates/welcome_pack_default.php' );
+		}
 
 		ob_start();
 		include( $template_path );

@@ -767,9 +767,12 @@ To view the original activity, your comment and all replies, log in and visit: %
 			if ( !$email || is_wp_error( $email ) )
 				return;
 
-			$email = array_shift( $email );
-			$bp->welcome_pack[$subject]->subject  = $email->post_title;
-			$bp->welcome_pack[$subject]->message  = $email->post_content;
+			$email        = array_shift( $email );
+			$post_content = apply_filters( 'the_content', $email->post_content );
+			$post_title   = apply_filters( 'the_title', $email->post_title, $email->ID );
+
+			$bp->welcome_pack[$subject]->message  = $post_content;
+			$bp->welcome_pack[$subject]->subject  = $post_title;
 			$bp->welcome_pack[$subject]->template = get_post_meta( $email->ID, 'welcomepack_template', true );
 		}
 

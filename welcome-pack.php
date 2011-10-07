@@ -437,9 +437,7 @@ To view the original activity, your comment and all replies, log in and visit: %
 		$settings = DP_Welcome_Pack::get_settings();
 
 		// Is the Friend invitations component enabled?
-		if ( !empty( $settings['dpw_friendstoggle'] ) && bp_is_active( 'friends' ) ) {
-			if ( empty( $settings['friends'] ) )
-				break;
+		if ( !empty( $settings['dpw_friendstoggle'] ) && bp_is_active( 'friends' ) && !empty( $settings['friends'] ) ) {
 
 			// Send friend requests
 			foreach ( (array) $settings['friends'] as $friend_id )
@@ -447,10 +445,7 @@ To view the original activity, your comment and all replies, log in and visit: %
 		}
 
 		// Is the Group invitations component enabled?
-		if ( !empty( $settings['dpw_groupstoggle'] ) && bp_is_active( 'groups' ) ) {
-			if ( empty( $settings['groups'] ) )
-				break;
-
+		if ( !empty( $settings['dpw_groupstoggle'] ) && bp_is_active( 'groups' ) && !empty( $settings['groups'] ) ) {
 			foreach ( (array) $settings['groups'] as $group_id ) {
 				$group = new BP_Groups_Group( (int) $group_id );
 
@@ -461,13 +456,8 @@ To view the original activity, your comment and all replies, log in and visit: %
 		}
 
 		// Is the Welcome Message component enabled?
-		if ( !empty( $settings['dpw_welcomemsgtoggle'] ) && bp_is_active( 'messages' ) ) {
-			if ( empty( $settings['welcomemsgsender'] ) || empty( $settings['welcomemsgsubject'] ) || empty( $settings['welcomemsg'] ) )
-				break;
-
-			// Send private messages
+		if ( !empty( $settings['dpw_welcomemsgtoggle'] ) && bp_is_active( 'messages' ) && !empty( $settings['welcomemsgsender'] ) && !empty( $settings['welcomemsgsubject'] ) && !empty( $settings['welcomemsg'] ) )
 			messages_new_message( array( 'sender_id' => $settings['welcomemsgsender'], 'recipients' => $user_id, 'subject' => apply_filters( 'dpw_keyword_replacement', $settings['welcomemsgsubject'], $user_id ), 'content' => apply_filters( 'dpw_keyword_replacement', $settings['welcomemsg'], $user_id ) ) );
-		}
 
 		// Call an action for third-parties to hook into
 		do_action( 'dpw_user_activated', $user_id );

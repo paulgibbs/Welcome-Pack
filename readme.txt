@@ -2,9 +2,9 @@
 Contributors: DJPaul
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=P3K7Z7NHWZ5CL&lc=GB&item_name=B%2eY%2eO%2eT%2eO%2eS%20%2d%20BuddyPress%20plugins&currency_code=GBP&bn=PP%2dDon
 Tags: buddypress,friend,group,welcome,message,email,customise,customize,initial,redirect,registration,start
-Requires at least: WordPress 3.2, BuddyPress 1.5
-Tested up to: WP 3.2.1, BuddyPress 1.5
-Stable tag: 3.1
+Requires at least: WordPress 3.2, BuddyPress 1.5.1
+Tested up to: WP 3.2.1, BuddyPress 1.5.1
+Stable tag: 3.2
 
 Automatically send friend/group invites and a welcome message to new users, and redirect them to a custom page. Also provides email customisation options.
 
@@ -20,6 +20,9 @@ Welcome Pack is a BuddyPress plugin that enhances the new user experience. When 
 1. Activate the plugin through the 'Plugins' menu in WordPress
 
 == Upgrade Notice == 
+
+= 3.2 =
+Fixes missing admin menu in multisite, links not being correctly replaced into certain emails, and wrong text for the "you've been promoted" email.
 
 = 3.1 =
 Fixes error handling when something goes wrong sending a welcome message.

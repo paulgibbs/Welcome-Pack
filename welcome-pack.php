@@ -3,9 +3,9 @@
  * Plugin Name: Welcome Pack
  * Plugin URI: http://buddypress.org/community/groups/welcome-pack/
  * Description: Automatically send friend/group invites and a welcome message to new users, and redirect them to a custom page. Also provides email customisation options.
- * Version: 3.1
- * Requires at least: WordPress 3.2, BuddyPress 1.5
- * Tested up to: WP 3.2, BuddyPress 1.5
+ * Version: 3.2
+ * Requires at least: WordPress 3.2.1, BuddyPress 1.5.1
+ * Tested up to: WP 3.2.1, BuddyPress 1.5.1
  * License: GPL3
  * Author: Paul Gibbs
  * Author URI: http://byotos.com/
@@ -43,7 +43,7 @@ if ( !defined( 'ABSPATH' ) )
 /**
  * Version number
  */
-define ( 'WELCOME_PACK_VERSION', 3 );
+define ( 'WELCOME_PACK_VERSION', 3 );  // This a DB version ID, not a software version number.
 
 /**
  * Constant for third-party plugins to check if Welcome Pack is active (for backpat - deprecated).
@@ -305,7 +305,7 @@ array( 'You have been promoted in the group: "%s"', 'You have been promoted to %
 To view the group please visit: %3$s
 
 ---------------------
-', 'To disable these notifications please log in and go to: %s', 'an administrator', 'a moderator' ),
+', 'To disable these notifications please log in and go to: %s' ),
 array( 'You have an invitation to the group: "%s"', 'One of your friends %1$s has invited you to the group: "%2$s".
 
 To view your group invites visit: %3$s
@@ -602,6 +602,20 @@ To view the original activity, your comment and all replies, log in and visit: %
 		 */
 		$t = array( '', '', '', '', '', '', '', '', '', '' );
 
+		/**
+		 * @todo $replace_last_i18n is used for the notification setting strings because
+		 * if the numbered gettext (%1$s, %2$s, etc) format is used, we get "%s" added
+		 * to the end and gettext defaults to the equivalent of %1$s. Oops.
+		 *
+		 * We're making this change here rather than when we insert the strings into the
+		 * database, so we don't break the i18n of the BuddyPress strings which we insert
+		 * into the database.
+		 *
+		 * Still, this sucks -- and probably a more elaborate regex should be used to
+		 * strip out all the positions, and then add them all back in again.
+		 */
+		$replace_last_i18n = 0;
+
 		switch ( $subject ) {
 			case __( 'Activate Your Account', 'buddypress' ):
 				$t[0] = $args[1];
@@ -624,6 +638,7 @@ To view the original activity, your comment and all replies, log in and visit: %
 				$t[0] = $args[0]->name;
 				$t[1] = $args[1];
 				$t[2] = $args[2];  // Notification settings
+				$replace_last_i18n = 3;
 			break;
 
 			case __( 'Membership request for group: %s', 'buddypress' ):
@@ -633,18 +648,21 @@ To view the original activity, your comment and all replies, log in and visit: %
 				$t[3] = $args[1];
 				$t[4] = $args[2];
 				$t[5] = $args[4];  // Notification settings
+				$replace_last_i18n = 6;
 			break;
 
 			case __( 'Membership request for group "%s" accepted', 'buddypress' ):
 				$t[0] = $args[0]->name;
 				$t[1] = $args[1];
 				$t[2] = $args[2];  // Notification settings
+				$replace_last_i18n = 3;
 			break;
 
 			case __( 'Membership request for group "%s" rejected', 'buddypress' ):
 				$t[0] = $args[0]->name;
 				$t[1] = $args[1];
 				$t[2] = $args[2];  // Notification settings
+				$replace_last_i18n = 3;
 			break;
 
 			case __( 'You have been promoted in the group: "%s"', 'buddypress' ):
@@ -652,6 +670,7 @@ To view the original activity, your comment and all replies, log in and visit: %
 				$t[1] = $args[0]->name;
 				$t[2] = $args[2];
 				$t[3] = $args[3];  // Notification settings
+				$replace_last_i18n = 4;
 			break;
 
 			case __( 'You have an invitation to the group: "%s"', 'buddypress' ):
@@ -662,6 +681,7 @@ To view the original activity, your comment and all replies, log in and visit: %
 				$t[4] = $args[1];
 				$t[5] = $args[2];
 				$t[6] = $args[5];  // Notification settings
+				$replace_last_i18n = 7;
 			break;
 
 			case __( '%s accepted your friendship request', 'buddypress' ):
@@ -669,6 +689,7 @@ To view the original activity, your comment and all replies, log in and visit: %
 				$t[1] = $args[0];
 				$t[2] = $args[1];
 				$t[3] = $args[2];  // Notification settings
+				$replace_last_i18n = 4;
 			break;
 
 			case __( 'New friendship request from %s', 'buddypress' ):
@@ -677,6 +698,7 @@ To view the original activity, your comment and all replies, log in and visit: %
 				$t[2] = $args[0];
 				$t[3] = $args[1];
 				$t[4] = $args[3];  // Notification settings
+				$replace_last_i18n = 5;
 			break;
 
 			case __( '%s mentioned you in an update', 'buddypress' ):
@@ -686,12 +708,14 @@ To view the original activity, your comment and all replies, log in and visit: %
 					$t[2] = $args[1];
 					$t[3] = $args[2];
 					$t[4] = $args[3];  // Notification settings
+					$replace_last_i18n = 5;
 
 				} else {
 					$t[0] = $args[0];
 					$t[1] = $args[1];
 					$t[2] = $args[2];
 					$t[3] = $args[3];  // Notification settings
+					$replace_last_i18n = 4;
 				}
 			break;
 
@@ -700,6 +724,7 @@ To view the original activity, your comment and all replies, log in and visit: %
 				$t[1] = $args[1];
 				$t[2] = $args[2];
 				$t[3] = $args[3];  // Notification settings
+				$replace_last_i18n = 4;
 			break;
 
 			// See http://buddypress.trac.wordpress.org/ticket/3634
@@ -708,10 +733,18 @@ To view the original activity, your comment and all replies, log in and visit: %
 				$t[1] = $args[1];
 				$t[2] = $args[3]; xxx thread_link
 				$t[3] = $args[2];  // Notification settings
+				$replace_last_i18n = 4;
 			break;*/
 		}
 
-		$new_message = sprintf( $bp->welcome_pack[$subject]->message, $t[0], $t[1], $t[2], $t[3], $t[4], $t[5], $t[6], $t[7], $t[8], $t[9] );
+		$msg = $bp->welcome_pack[$subject]->message;
+
+		if ( $replace_last_i18n ) {
+			$last_pos = strrpos( $msg, '%s' );
+			$msg      = substr_replace( $msg, '%' . $replace_last_i18n . '$s', $last_pos, 2 );
+		}
+
+		$new_message = sprintf( $msg, $t[0], $t[1], $t[2], $t[3], $t[4], $t[5], $t[6], $t[7], $t[8], $t[9] );
 
 		// Find the email template
 		$template_path = locate_template( $bp->welcome_pack[$subject]->template );

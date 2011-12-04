@@ -38,7 +38,9 @@ class DP_Welcome_Pack_Admin {
 		if ( !is_admin() || ( !is_user_logged_in() || !is_super_admin() ) )
 			return;
 
-		add_options_page( __( 'Welcome Pack', 'dpw' ), __( 'Welcome Pack', 'dpw' ), 'manage_options', 'welcome-pack', array( 'DP_Welcome_Pack_Admin', 'admin_page' ) );
+		// Get URL for site admin or network admin, as appropriate (is this running in a network?)
+		$page  = bp_core_do_network_admin()  ? 'settings.php' : 'options-general.php'; 
+		add_submenu_page( $page, __( 'Welcome Pack', 'dpw' ), __( 'Welcome Pack', 'dpw' ), 'manage_options', 'welcome-pack', array( 'DP_Welcome_Pack_Admin', 'admin_page' ) );
 
 		// Hook in to an early action that fires when our admin screen is being displayed, so we can set some custom javascript and CSS.
 		add_action( 'load-settings_page_welcome-pack', array( 'DP_Welcome_Pack_Admin', 'init' ) );
@@ -57,13 +59,14 @@ class DP_Welcome_Pack_Admin {
 	 * @param string $file Plugin's file name
 	 * @since 3.0
 	 */
-	public function add_settings_link( $links, $file ) {
+	public static function add_settings_link( $links, $file ) {
 		// Check we're dealing with Welcome Pack
 		if ( 'welcome-pack/welcome-pack.php' != $file )
 			return $links;
 
 		// Add Settings link
-		array_unshift( $links, sprintf( '<a href="%s">%s</a>', admin_url( 'options-general.php?page=welcome-pack' ), __( 'Settings', 'dpw' ) ) );
+		$url = add_query_arg( 'page', 'welcome-pack', bp_core_do_network_admin() ? network_admin_url( 'settings.php' ) : admin_url( 'options-general.php' ) ); 
+		array_unshift( $links, sprintf( '<a href="%s">%s</a>', $url, __( 'Settings', 'dpw' ) ) );
 
 		return apply_filters( 'dpw_add_settings_link', $links, $file );
 	}
@@ -196,7 +199,9 @@ class DP_Welcome_Pack_Admin {
 
 		// Check if a form was submitted, and if we need to save our settings again.
 		$updated = DP_Welcome_Pack_Admin::maybe_save();
-		$url     = network_admin_url( 'options-general.php?page=welcome-pack' );
+
+		// Build URL back to this screen
+		$url = add_query_arg( 'page', 'welcome-pack', bp_core_do_network_admin() ? network_admin_url( 'settings.php' ) : admin_url( 'options-general.php' ) ); 
 
 		// If admin settings were just updated, fetch the new values from the database so that we aren't using stale data
 		if ( $updated )
@@ -324,6 +329,9 @@ class DP_Welcome_Pack_Admin {
 			if ( $body && $type && $email && is_email( $email ) )
 				$email_sent = wp_mail( array( 'paul@byotos.com', $email ), "Welcome Pack support request: " . $type, $body );
 		}
+
+		// Build URL back to this screen
+		$url = add_query_arg( array( 'page' => 'welcome-pack', 'tab' => 'support' ), bp_core_do_network_admin() ? network_admin_url( 'settings.php' ) : admin_url( 'options-general.php' ) ); 
 	?>
 
 		<?php wp_nonce_field( 'closedpostboxes', 'closedpostboxesnonce', false ); ?>
@@ -338,7 +346,7 @@ class DP_Welcome_Pack_Admin {
 			</div>
 		<?php endif; ?>
 
-		<form id="dpw_contact_form" name="contact_form" method="post" action="<?php echo admin_url( 'options-general.php?page=welcome-pack&amp;tab=support' ); ?>">
+		<form id="dpw_contact_form" name="contact_form" method="post" action="<?php echo esc_attr( $url ); ?>">
 			<p><?php _e( "What type of request do you have?", 'dpw' ); ?></p>
 			<select name="contact_type">
 				<option value="bug" selected="selected"><?php _e( "Bug report", 'dpw' ); ?></option>
@@ -366,8 +374,9 @@ class DP_Welcome_Pack_Admin {
 	 * @since 3.0
 	 */
 	protected function admin_page_settings( $settings, $updated ) {
+		$url = add_query_arg( 'page', 'welcome-pack', bp_core_do_network_admin() ? network_admin_url( 'settings.php' ) : admin_url( 'options-general.php' ) );
 	?>
-		<form method="post" action="<?php echo admin_url( 'options-general.php?page=welcome-pack' ); ?>" id="dpw-form">
+		<form method="post" action="<?php echo esc_attr( $url ); ?>" id="dpw-form">
 			<?php wp_nonce_field( 'closedpostboxes', 'closedpostboxesnonce', false ); ?>
 			<?php wp_nonce_field( 'meta-box-order', 'meta-box-order-nonce', false ); ?>
 			<?php wp_nonce_field( 'dpw-admin', 'dpw-admin-nonce', false ); ?>
@@ -437,9 +446,11 @@ class DP_Welcome_Pack_Admin {
 			$data = $wpdb->get_results( $wpdb->prepare( "SELECT id, name FROM {$bp->groups->table_name} ORDER BY name ASC" ) );
 		elseif ( ( 'members' == $tab && bp_is_active( 'friends' ) ) || ( 'welcomemessage' == $tab && bp_is_active( 'messages' ) ) )
 			$data = get_users( array( 'fields' => array( 'ID', 'display_name' ), 'orderby' => 'display_name' ) );
+
+		$url = add_query_arg( array( 'page' => 'welcome-pack', 'tab' => $tab ), bp_core_do_network_admin() ? network_admin_url( 'settings.php' ) : admin_url( 'options-general.php' ) );
 		?>
 
-		<form method="post" action="<?php echo admin_url( 'options-general.php?page=welcome-pack&tab=' . esc_attr( $tab ) ); ?>" id="dpw-form">
+		<form method="post" action="<?php echo esc_attr( $url ); ?>" id="dpw-form">
 			<?php wp_nonce_field( 'closedpostboxes', 'closedpostboxesnonce', false ); ?>
 			<?php wp_nonce_field( 'meta-box-order', 'meta-box-order-nonce', false ); ?>
 			<?php wp_nonce_field( 'dpw-admin', 'dpw-admin-nonce', false ); ?>

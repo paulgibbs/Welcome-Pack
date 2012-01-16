@@ -3,9 +3,9 @@
  * Plugin Name: Welcome Pack
  * Plugin URI: http://buddypress.org/community/groups/welcome-pack/
  * Description: Automatically send friend/group invites and a welcome message to new users, and redirect them to a custom page. Also provides email customisation options.
- * Version: 3.2
- * Requires at least: WordPress 3.2.1, BuddyPress 1.5.1
- * Tested up to: WP 3.2.1, BuddyPress 1.5.1
+ * Version: 3.3
+ * Requires at least: WordPress 3.2, BuddyPress 1.5.1
+ * Tested up to: WP 3.3.1, BuddyPress 1.5.3.1
  * License: GPL3
  * Author: Paul Gibbs
  * Author URI: http://byotos.com/
@@ -18,7 +18,7 @@
  * Automatically send friend/group invites and a welcome message to new users, and redirect them to a custom page. Also provides email customisation options.
  *
  * "Welcome Pack"
- * Copyright (C) 2009-11 Paul Gibbs
+ * Copyright (C) 2009-12 Paul Gibbs
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as published by
@@ -97,6 +97,9 @@ class DP_Welcome_Pack {
 		// Load globally shared filters
 		require( dirname( __FILE__ ) . '/welcome-pack-filters.php' );
 
+		// Get our settings
+		$settings = DP_Welcome_Pack::get_settings();
+
 		// Set up the admin menu object
 		add_action( 'bp_init', array( 'DP_Welcome_Pack', 'setup_admin' ), 9 );
 
@@ -107,7 +110,8 @@ class DP_Welcome_Pack {
 		add_filter( 'plugin_action_links', array( 'DP_Welcome_Pack_Admin', 'add_settings_link' ), 10, 2 );
 
 		// Register post type
-		add_action( 'bp_init', array( 'DP_Welcome_Pack', 'register_post_types' ) );
+		if ( $settings['dpw_emailtoggle'] )
+			add_action( 'bp_init', array( 'DP_Welcome_Pack', 'register_post_types' ) );
 
 		// Start page
 		add_filter( 'login_redirect', array( 'DP_Welcome_Pack', 'redirect_login' ), 20, 3 );
@@ -119,13 +123,15 @@ class DP_Welcome_Pack {
 		/**
 		 * Email customisation
 		 */
-		$subjects = apply_filters( 'dpw_raw_email_subjects', array( 'bp_activity_at_message_notification_subject', 'bp_activity_new_comment_notification_subject', 'bp_activity_new_comment_notification_comment_author_subject', 'bp_core_activation_signup_blog_notification_subject', 'bp_core_activation_signup_user_notification_subject', 'groups_at_message_notification_subject', 'friends_notification_new_request_subject', 'friends_notification_accepted_request_subject', 'groups_notification_group_updated_subject', 'groups_notification_new_membership_request_subject', 'groups_notification_membership_request_completed_subject', 'groups_notification_promoted_member_subject', 'groups_notification_group_invites_subject', 'bp_core_signup_send_validation_email_subject', 'messages_notification_new_message_subject' ) );
-		foreach ( (array) $subjects as $filter_name )
-			add_filter( $filter_name, array( 'DP_Welcome_Pack', 'email_subject' ), 14, 10 );
+		if ( $settings['dpw_emailtoggle'] ) {
+			$subjects = apply_filters( 'dpw_raw_email_subjects', array( 'bp_activity_at_message_notification_subject', 'bp_activity_new_comment_notification_subject', 'bp_activity_new_comment_notification_comment_author_subject', 'bp_core_activation_signup_blog_notification_subject', 'bp_core_activation_signup_user_notification_subject', 'groups_at_message_notification_subject', 'friends_notification_new_request_subject', 'friends_notification_accepted_request_subject', 'groups_notification_group_updated_subject', 'groups_notification_new_membership_request_subject', 'groups_notification_membership_request_completed_subject', 'groups_notification_promoted_member_subject', 'groups_notification_group_invites_subject', 'bp_core_signup_send_validation_email_subject', 'messages_notification_new_message_subject' ) );
+			foreach ( (array) $subjects as $filter_name )
+				add_filter( $filter_name, array( 'DP_Welcome_Pack', 'email_subject' ), 14, 10 );
 
-		$messages = apply_filters( 'dpw_raw_email_messages', array( 'bp_activity_at_message_notification_message', 'bp_activity_new_comment_notification_message', 'bp_activity_new_comment_notification_comment_author_message', 'bp_core_activation_signup_blog_notification_message', 'bp_core_activation_signup_user_notification_message', 'groups_at_message_notification_message', 'friends_notification_new_request_message', 'friends_notification_accepted_request_message', 'groups_notification_group_updated_message', 'groups_notification_new_membership_request_message', 'groups_notification_membership_request_completed_message', 'groups_notification_promoted_member_message', 'groups_notification_group_invites_message', 'bp_core_signup_send_validation_email_message', 'messages_notification_new_message_message' ) );
- 		foreach ( (array) $messages as $filter_name )
-			add_filter( $filter_name, array( 'DP_Welcome_Pack', 'email_message' ), 14, 10 );
+			$messages = apply_filters( 'dpw_raw_email_messages', array( 'bp_activity_at_message_notification_message', 'bp_activity_new_comment_notification_message', 'bp_activity_new_comment_notification_comment_author_message', 'bp_core_activation_signup_blog_notification_message', 'bp_core_activation_signup_user_notification_message', 'groups_at_message_notification_message', 'friends_notification_new_request_message', 'friends_notification_accepted_request_message', 'groups_notification_group_updated_message', 'groups_notification_new_membership_request_message', 'groups_notification_membership_request_completed_message', 'groups_notification_promoted_member_message', 'groups_notification_group_invites_message', 'bp_core_signup_send_validation_email_message', 'messages_notification_new_message_message' ) );
+	 		foreach ( (array) $messages as $filter_name )
+				add_filter( $filter_name, array( 'DP_Welcome_Pack', 'email_message' ), 14, 10 );
+		}
 	}
 
 	/**

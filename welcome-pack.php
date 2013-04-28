@@ -541,8 +541,8 @@ To view the original activity, your comment and all replies, log in and visit: %
 
 		// Was there a token?
 		if ( !empty( $args[0] ) ) {
-	
-			// Special case for certain Group emails 
+
+			// Special case for certain Group emails
 			if ( is_object( $args[0] ) ) {
 				if ( class_exists( 'BP_Groups_Group' ) && $args[0] instanceof BP_Groups_Group )
 					$args[0] = $args[0]->name;
@@ -555,14 +555,14 @@ To view the original activity, your comment and all replies, log in and visit: %
 		}
 
 		// Fetch relevant email details from database, if not done previously
-		if ( !isset( $bp->welcome_pack ) || !isset( $bp->welcome_pack[$subject] ) )
+		if ( !isset( $bp->welcome_pack ) || !isset( $bp->welcome_pack->$subject ) )
 			DP_Welcome_Pack::email_load_emails( $subject );
 
 		// Store the subject as a key so that the email_message filter knows which email to lookup
-		$bp->welcome_pack['current_email_subject'] = $subject;
+		$bp->welcome_pack->current_email_subject = $subject;
 
 		// Check that a new subject is set
-		if ( empty( $bp->welcome_pack[$subject] ) || empty( $bp->welcome_pack[$subject]->subject ) )
+		if ( empty( $bp->welcome_pack->$subject ) || empty( $bp->welcome_pack->$subject->subject ) )
 			return $original_subject;
 
 		// Set the content type to HTML (@todo: things after this might bug out if the subject line is left intentionally blank)
@@ -571,7 +571,7 @@ To view the original activity, your comment and all replies, log in and visit: %
 
 		// Was there a token? Maybe reverse-reverse tokenise the subject.
 		if ( !empty( $args[0] ) )
-			$subject = sprintf( $bp->welcome_pack[$subject]->subject, $args[0] );
+			$subject = sprintf( $bp->welcome_pack->$subject->subject, $args[0] );
 
 		return apply_filters( 'dpw_email_subject', $subject, $original_subject );
 	}
@@ -588,14 +588,14 @@ To view the original activity, your comment and all replies, log in and visit: %
 	public function email_message( $original_message ) {
 		global $bp;
 
-		if ( empty( $bp->welcome_pack['current_email_subject'] ) )
+		if ( empty( $bp->welcome_pack->current_email_subject ) )
 			return $original_message;
 
 		// Find the stored subject line so that we can grab the appropriate email object
-		$subject = $bp->welcome_pack['current_email_subject'];
+		$subject = $bp->welcome_pack->current_email_subject;
 
 		// Check that a new message is set; see email_subject()
-		if ( empty( $bp->welcome_pack[$subject]->message ) )
+		if ( empty( $bp->welcome_pack->$subject->message ) )
 			return $original_message;
 
 		// Get the unknown number of unknown strings which we need to run through sprintf() to rebuild the original email
@@ -743,7 +743,7 @@ To view the original activity, your comment and all replies, log in and visit: %
 			break;*/
 		}
 
-		$msg = $bp->welcome_pack[$subject]->message;
+		$msg = $bp->welcome_pack->$subject->message;
 
 		if ( $replace_last_i18n ) {
 			$last_pos = strrpos( $msg, '%s' );
@@ -753,9 +753,9 @@ To view the original activity, your comment and all replies, log in and visit: %
 		$new_message = sprintf( $msg, $t[0], $t[1], $t[2], $t[3], $t[4], $t[5], $t[6], $t[7], $t[8], $t[9] );
 
 		// Find the email template
-		$template_path = locate_template( $bp->welcome_pack[$subject]->template );
+		$template_path = locate_template( $bp->welcome_pack->$subject->template );
 		if ( empty( $template_path ) ) {
-			if ( 'simplicity.php' == $bp->welcome_pack[$subject]->template )
+			if ( 'simplicity.php' == $bp->welcome_pack->$subject->template )
 				$template_path = apply_filters( 'dpw_default_email_template', WP_PLUGIN_DIR . '/welcome-pack/templates/simplicity.php' );
 			else
 				$template_path = apply_filters( 'dpw_default_email_template', WP_PLUGIN_DIR . '/welcome-pack/templates/welcome_pack_default.php' );
@@ -783,14 +783,14 @@ To view the original activity, your comment and all replies, log in and visit: %
 		global $bp;
 
 		if ( !isset( $bp->welcome_pack ) )
-			$bp->welcome_pack = array();
+			$bp->welcome_pack = new stdClass();
 
 		// Triple-check that the email subject passed matches one of the hardcoded email types
 		$email_types = DP_Welcome_Pack::email_get_types();
 
 		// This email hasn't been loaded from the database
-		if ( !empty( $email_types[$subject] ) && !isset( $bp->welcome_pack[$subject] ) ) {
-			$bp->welcome_pack[$subject] = new stdClass;
+		if ( !empty( $email_types[$subject] ) && !isset( $bp->welcome_pack->$subject ) ) {
+			$bp->welcome_pack->$subject = new stdClass;
 
 			$email = get_posts( array( 'meta_key' => 'welcomepack_type', 'meta_value' => (int) $email_types[$subject], 'numberposts' => 1, 'post_type' => 'dpw_email', ) );
 			if ( !$email || is_wp_error( $email ) )
@@ -800,9 +800,9 @@ To view the original activity, your comment and all replies, log in and visit: %
 			$post_content = apply_filters( 'the_content', $email->post_content );
 			$post_title   = apply_filters( 'the_title', $email->post_title, $email->ID );
 
-			$bp->welcome_pack[$subject]->message  = $post_content;
-			$bp->welcome_pack[$subject]->subject  = $post_title;
-			$bp->welcome_pack[$subject]->template = get_post_meta( $email->ID, 'welcomepack_template', true );
+			$bp->welcome_pack->$subject->message  = $post_content;
+			$bp->welcome_pack->$subject->subject  = $post_title;
+			$bp->welcome_pack->$subject->template = get_post_meta( $email->ID, 'welcomepack_template', true );
 		}
 
 		// Allow third-party plugins to modify the updated email text

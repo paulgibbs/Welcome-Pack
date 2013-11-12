@@ -798,7 +798,7 @@ To view the original activity, your comment and all replies, log in and visit: %
 
 			$email        = array_shift( $email );
 			$post_content = apply_filters( 'the_content', $email->post_content );
-			$post_title   = apply_filters( 'the_title', $email->post_title, $email->ID );
+			$post_title   = apply_filters( 'dpw_email_subject', $email->post_title, $email->ID );
 
 			$bp->welcome_pack->$subject->message  = $post_content;
 			$bp->welcome_pack->$subject->subject  = $post_title;

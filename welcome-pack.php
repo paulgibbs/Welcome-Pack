@@ -141,7 +141,7 @@ class DP_Welcome_Pack {
 	 *
 	 * @since 3.0
 	 */
-	public function check_installed() {
+	public static function check_installed() {
 		global $bp;
 
 		// Only run this for super admins, so our emails aren't inserted into the database by a non-admin.
@@ -248,7 +248,7 @@ class DP_Welcome_Pack {
 	 *
 	 * @since 3.0
 	 */
-	public function setup_admin() {
+	public static function setup_admin() {
 		require( dirname( __FILE__ ) . '/welcome-pack-admin.php' );
 		new DP_Welcome_Pack_Admin();
 

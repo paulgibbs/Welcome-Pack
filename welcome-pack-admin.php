@@ -34,7 +34,7 @@ class DP_Welcome_Pack_Admin {
 	 *
 	 * @since 3.0
 	 */
-	public function setup_menu() {
+	public static function setup_menu() {
 		if ( !is_admin() || ( !is_user_logged_in() || !is_super_admin() ) )
 			return;
 
@@ -803,7 +803,7 @@ class DP_Welcome_Pack_Admin {
 	 * @return string
 	 * @since 3.0
 	 */
-	public function email_subject_placeholder( $title ) {
+	public static function email_subject_placeholder( $title ) {
 		$screen = get_current_screen();
 
 		if ( 'dpw_email' == $screen->post_type )
@@ -819,7 +819,7 @@ class DP_Welcome_Pack_Admin {
 	 * @param WP_Post $post
 	 * @since 3.0
 	 */
-	public function email_maybe_save( $post_ID, $post ) {
+	public static function email_maybe_save( $post_ID, $post ) {
 		// Check this is an email
 		if ( 'dpw_email' != $post->post_type )
 			return;
